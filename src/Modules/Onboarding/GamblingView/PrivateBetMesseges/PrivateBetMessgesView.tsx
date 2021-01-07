@@ -1,0 +1,369 @@
+import React from "react";
+import { View, Text, FlatList,  TouchableWithoutFeedback, Image, ScrollView, BackHandler } from "react-native";
+import styles from './styles';
+import Container from '../../../../Components/Container';
+import AppValidationComponent, { Field, AppValidationComponentState, AppValidationComponentProps } from "../../../../Util/AppValidationComponent";
+
+import AppScreens from "../../../../Util/AppScreens";
+import GetProfileResponse from "../../../../Services/Profile/GetProfileResponse";
+import { ISubheaderListener } from "../../../../Components/CustomComponents/SubHeader/SubHeader";
+import { MenuIconListener } from "../../../../Components/Icons/MenuIcon/MenuIcon";
+import { UDDAError } from "../../../../Entities";
+import { ServiceRequestStatus } from "../../../../ReduxStore/ServiceState";
+import AlertUtil from "../../../../Util/AlertUtil";
+import { GlobalAppState } from "../../../../ReduxStore";
+import PlayResponse from "../../../../Services/Dashboard/PlayResponse";
+import ProgressLoader from 'rn-progress-loader';
+import Application from "../../../../Entities/Application";
+import { LogoIconListener } from "../../../../Components/Icons/LogoIcon/LogoIcon";
+import RouterBuilder from "../../../../Router";
+import GetProfileRequest from "../../../../Services/Profile/GetProfileRequest";
+import GetProfileResponseParser from "../../../../Services/Profile/GetProfileResponseParser";
+import { ServiceType } from "../../../../Services/Core/ServiceFactory";
+import ServiceAction from "../../../../ReduxStore/Generic/GenericeServiceAction";
+import ServiceKeys from "../../../../Services/Core/ServiceKeys";
+import { connect } from 'react-redux';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp, heightPercentageToDP } from 'react-native-responsive-screen';
+import LogoutUtill from "../../../../Util/LogoutUtill";
+import UrlService from '../../../../Services/Core/ServiceURI'
+
+var update = require('immutability-helper');
+console.disableYellowBox = true;
+
+
+
+const ProfilePageContent = {
+   key: 'somethun',
+   page_title: 'PRIVATE BET MESSEGES',
+}
+
+
+interface G_PrivateBetMessgesViewProps extends AppValidationComponentProps {
+   getProfileRequestStatus?: ServiceRequestStatus
+   getProfileResponse?: GetProfileResponse
+   getProfileError?: UDDAError
+   serviceKey?: string
+   listeners?: any
+}
+
+interface G_PrivateBetMessgesViewState extends AppValidationComponentState {
+   showOverlayGameSelectionFlag: boolean
+   loader: any;
+   Datalist: any;
+   MessageViewFlag: any;
+   MessegeContains: any;
+   NoData: any;
+
+}
+
+
+
+// export default 
+class G_PrivateBetMessgesView extends AppValidationComponent<G_PrivateBetMessgesViewProps, G_PrivateBetMessgesViewState>
+   implements MenuIconListener, ISubheaderListener, LogoIconListener {
+
+   private authorisationToken = Application.sharedApplication().user!.authenticationToken;
+   private serviceRequestInProgress = false
+
+   constructor(props: any) {
+      super(props);
+      this.state = {
+         showOverlayGameSelectionFlag: false,
+         loader: false,
+         Datalist: [],
+         MessegeContains: [],
+         NoData:'',
+         MessageViewFlag: 'L' 
+
+      }
+   }
+
+   // ------------------------------------------------------- API calling ----------------------------------------------------------------------
+
+   async componentDidMount() {
+      this.callMethod();
+      BackHandler.addEventListener('hardwareBackPress', () => {
+         if (this.props) {
+            RouterBuilder.replaceRouteTo(AppScreens.G_ProfileView, this.props)
+            return true; 
+         }
+
+         return false;
+      });
+   }
+
+
+   callMethod = () => {
+      this.setState({ loader: true }); 
+      fetch(UrlService.CONSTURI +'index.php/'+ UrlService.APIVERSION3 +'/api/private_msglist', {
+         method: 'GET',
+         headers: {
+            'authorisation': this.authorisationToken
+         },
+      }).then((response) => response.json())
+         .then((responseJson) => {
+
+            console.log('Private bet Messege success: ' + JSON.stringify(responseJson));
+            this.setState({ Datalist: responseJson.data });
+            this.setState({ NoData: responseJson.error });
+            this.setState({ loader: false });
+            if (responseJson.message == "Access Expired.") {
+                  // AlertUtil.show("Session Expired ! Please login again");
+                  console.log("Footer comp ---->"+responseJson.message);
+                  LogoutUtill.logoutButtonPressed(this.props);
+                 }
+         })
+         .catch(error => {
+            this.setState({ loader: false }); 
+            console.log('Private bet Messege error ' + JSON.stringify(error));
+            AlertUtil.show('error ' + JSON.stringify(error));
+         })
+   }
+
+   getProfile() {
+      var profileRequest = new GetProfileRequest()
+      var serviceAction = new ServiceAction()
+      var responseParser = new GetProfileResponseParser()
+      this.props.dispatch!(serviceAction.request(ServiceType.User,
+         ServiceKeys.GetProfileServiceName,
+         profileRequest,
+         [this.constructor.name],
+         responseParser))
+   }
+
+   componentWillReceiveProps(nextProps: G_PrivateBetMessgesViewProps) {
+      if (nextProps.listeners!.includes(this.constructor.name)) {
+         if (nextProps.serviceKey === ServiceKeys.GetProfileServiceName) {
+            switch (nextProps.requestStatus) {
+               case ServiceRequestStatus.FinishedWithSuccess:
+                  this.serviceRequestInProgress = false
+                  var serviceAction = new ServiceAction()
+                  nextProps.dispatch!(serviceAction.reset())
+                  break
+               case ServiceRequestStatus.FinishedWithError:
+                  this.serviceRequestInProgress = false
+                  var errorMessage = nextProps.error!.message
+                  AlertUtil.show(errorMessage)
+                  var serviceAction = new ServiceAction()
+                  nextProps.dispatch!(serviceAction.reset())
+                  break
+               case ServiceRequestStatus.Started:
+               case ServiceRequestStatus.InProgress:
+                  this.serviceRequestInProgress = true
+                  break
+            }
+
+         }
+      }
+   }
+
+   callDetailMessege(item: any) {
+      this.setState({ MessageViewFlag: 'V' });
+
+      var params: any = {
+         'id': item.id
+      };
+
+      console.log('send Messege body data params' + JSON.stringify(params));
+      var formData = new FormData();
+
+      for (var k in params) {
+         formData.append(k, params[k]);
+      }
+
+      fetch(UrlService.CONSTURI +'index.php/'+ UrlService.APIVERSION3 +'/api/notification_msg', {
+         method: 'POST',
+         headers: {
+            'Content-Type': 'multipart/form-data',
+            'authorisation': this.authorisationToken
+         },
+         body: formData,
+      }).then((response) => response.json())
+         .then((responseJson) => {
+            console.log('Success get Messege' + JSON.stringify(responseJson));
+            if (responseJson.message == 'success') {
+               this.setState({ MessegeContains: responseJson.data })
+            }
+            else {
+               AlertUtil.show(JSON.stringify(responseJson.message));
+            }
+
+         })
+         .catch(error => {
+            console.log('get Messege error ' + JSON.stringify(error));
+            AlertUtil.show('error ' + JSON.stringify(error));
+
+         }) 
+   }
+
+
+
+   // ------------------------------------------------------- Methods ----------------------------------------------------------------------
+
+   LogoiconDidTapped() {
+     // RouterBuilder.replaceRouteTo(AppScreens.G_DashboardView, this.props)
+	 RouterBuilder.resetRouteTo(AppScreens.Gambling_ApplicationStack, this.props)
+   }
+
+   accountNameTapped() {
+      this.props.navigation!.navigate(AppScreens.G_ProfileView);
+
+   }
+
+   iconDidTapped() {
+      this.props.navigation!.navigate(AppScreens.G_Settings_2_View);
+   }
+
+   availableBalanceTapped() {
+   }
+
+   openPlaysTapped() {
+
+   }
+
+   coveredPlaysTapped() {
+      RouterBuilder.replaceRouteTo(AppScreens.G_GamingBetView, this.props)
+   }
+
+   gotoDashboard() {
+      RouterBuilder.replaceRouteTo(AppScreens.G_DashboardView, this.props)
+   }
+
+
+
+   // ------------------------------------------------------- Design and Design Methods  ---------------------------------------------------------
+
+
+   render() {
+
+      return (
+         <Container
+            title={ProfilePageContent.page_title}
+            isHeader={true}
+            isSubHeader={true}
+            isTitle={true}
+            showIndicator={false}
+            LogoIconListener={this}
+            menuIconListener={this}
+            accountNameListener={this}
+            availableBalanceListener={this}
+            openPlaysListener={this}
+            coveredPlaysListener={this}
+            showOverlay={this.state.showOverlayGameSelectionFlag}>
+
+            <View style={styles.scrollContent}>
+               <ProgressLoader
+                  visible={this.state.loader}
+                  isModal={true} isHUD={true}
+                  hudColor={"#68bcbc"}
+                  color={"#FFFFFF"} />
+
+               {this.state.MessageViewFlag == 'L' ?
+                  <ScrollView bounces={false} style={styles.scrollviewstyle}>
+                     <View>
+                        <FlatList
+                           extraData={this.state}
+                           data={this.state.Datalist}
+                           keyExtractor={(item: any, index) => index.toString()}
+                           bounces={false}
+                           renderItem={({ item, index }: any) => {
+
+                              return (
+                                 <View>
+                                    <TouchableWithoutFeedback onPress={() => { this.callDetailMessege(item) }}>
+                                       <View style={{ flexDirection: 'row', margin: 8 }}>
+                                          <View style={[styles.Image_Container]}>
+                                             {!item.photo ?
+                                                <Image source={require('../../../../images/Person_Image.png')} style={{ width: 40, height: 40 }} resizeMode='contain' />
+                                                :
+                                                <Image source={{ uri: item.photo }} style={{ width: 40, height: 40, borderRadius: 20, }} resizeMode='contain' />}
+                                          </View>
+                                          <View style={[{ flexDirection: 'column' }, styles.Data_Container]}>
+                                             <View>
+                                                <Text style={{ fontSize: hp(1.4), color: '#333333', fontFamily: 'Montserrat-SemiBold' }}>{item.username}</Text>
+                                             </View>
+                                             <View>
+                                                <Text style={{ fontSize: hp(1.2), color: '#333333', fontFamily: 'Montserrat-Regular' }}>{item.short_notification}</Text>
+                                             </View>
+                                          </View>
+                                       </View>
+                                    </TouchableWithoutFeedback>
+                                    <View style={styles.Line}></View>
+                                 </View>
+                              )
+                           }} />
+                     </View>
+                  </ScrollView>
+                  : null}
+
+               {this.state.NoData == 'ERROR_NO_RECORD_FOUND' ?
+
+                  <View style={styles.OtherTextContainer}>
+                     <View style={styles.OtherTextSubContainer}>
+                        <Text style={styles.UnderConstText}>No Record Found</Text>
+                     </View>
+                  </View>
+                  : null}
+
+               {this.state.MessageViewFlag == 'V' ?
+                  <View style={styles.Main_Container}>
+                     <View style={styles.Second_Container}>
+                        <View style={styles.Profile_Container}>
+                           <View style={styles.Image_Container}>
+                              {!this.state.MessegeContains.photo ?
+                                 <Image source={require('../../../../images/Person_Image.png')} style={{ width: 30, height: 30 }} resizeMode='contain' />
+                                 :
+                                 <Image source={{ uri: this.state.MessegeContains.photo }} style={{ width: 30, height: 30, borderRadius: 15 }} resizeMode='contain' />}
+
+                           </View>
+                           <View style={styles.UserDetail_Container}>
+                              <View style={{ flexDirection: 'row', width: '100%', height: 'auto' }}>
+                                 <Text style={{ width: '50%', fontSize: 12, color: '#888888', fontFamily: 'Montserrat-Regular', }}>From:
+                                                <Text style={{ fontSize: 14, color: '#333333', fontFamily: 'Montserrat-SemiBold', paddingLeft: 1 }}>  {Application.sharedApplication().user!.profile.firstName} </Text> </Text>
+                                 <Text style={{ width: '50%', fontSize: 10, color: '#888888', fontFamily: 'Montserrat-Regular' }}>{this.state.MessegeContains.created_at} </Text>
+                              </View>
+
+                              <Text style={{ fontSize: 12, color: '#888888', fontFamily: 'Montserrat-Regular' }}>To:
+                                              <Text style={{ fontSize: 14, color: '#333333', fontFamily: 'Montserrat-SemiBold' }}>  {this.state.MessegeContains.username}</Text>
+                              </Text>
+                           </View>
+                        </View>
+                        <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
+                           <View style={{ width: '95%', height: 250, backgroundColor: 'white', alignItems: 'center', marginTop: 15 }}>
+                              <Text style={{ width: '90%', marginTop: 15 }}>
+                                 {this.state.MessegeContains.notification}
+                              </Text>
+                           </View>
+                        </View>
+                     </View>
+
+                     <TouchableWithoutFeedback onPress={() => { this.gotoDashboard() }}>
+                        <View style={{ width: '100%', height: '15%', justifyContent: 'center', alignItems: 'center' }}>
+                           <Text style={{ color: '#68bcbc', fontSize: 16, textDecorationColor: '#68bcbc', textDecorationLine: 'underline', fontFamily: 'Montserrat-SemiBold' }}>
+                              Back to Dashboard
+                           </Text>
+                        </View>
+                     </TouchableWithoutFeedback>
+                  </View>
+                  : null}
+            </View>
+         </Container>
+
+
+      )
+   }
+}
+
+
+const mapStateToProps = (state: GlobalAppState) => ({
+   requestStatus: state.serviceReducer.requestStatus,
+   response: state.serviceReducer.response as PlayResponse,
+   error: state.serviceReducer.error,
+   serviceKey: state.serviceReducer.serviceKey,
+   listeners: state.serviceReducer.listeners,
+   getProfileRequestStatus: state.serviceReducer.requestStatus,
+   getProfileResponse: state.serviceReducer.response,
+   getProfileError: state.serviceReducer.error,
+})
+
+export default connect(mapStateToProps)(G_PrivateBetMessgesView);

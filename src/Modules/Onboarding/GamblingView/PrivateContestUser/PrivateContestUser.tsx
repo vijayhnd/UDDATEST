@@ -1,0 +1,497 @@
+import React from "react";
+import AppValidationComponent, {  AppValidationComponentState, AppValidationComponentProps } from "../../../../Util/AppValidationComponent";
+import { View, Text, TouchableWithoutFeedback,  Share,  Image, FlatList,  AsyncStorage } from "react-native";
+import styles from './styles';
+import Container from '../../../../Components/Container';
+import BigButton from '../../../../Components/Button/BigButton';
+import CircleImage from "../../../../Components/CustomComponents/CircleImage";
+import UpdateProfileResponse from "../../../../Services/Profile/UpdateProfileResponse";
+import AlertUtil from "../../../../Util/AlertUtil";
+import Application from "../../../../Entities/Application";
+import RouterBuilder from "../../../../Router";
+import AppScreens from "../../../../Util/AppScreens";
+import { connect } from 'react-redux';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { ISubheaderListener } from "../../../../Components/CustomComponents/SubHeader/SubHeader";
+import { MenuIconListener } from "../../../../Components/Icons/MenuIcon/MenuIcon";
+import { ServiceRequestStatus } from "../../../../ReduxStore/ServiceState";
+import { GlobalAppState } from "../../../../ReduxStore";
+import { UDDAError } from "../../../../Entities";
+import GetProfileResponse from "../../../../Services/Profile/GetProfileResponse";
+import { Dialog } from 'react-native-simple-dialogs';
+import ProgressLoader from 'rn-progress-loader';
+import LogoutUtill from "../../../../Util/LogoutUtill";
+import UrlService from '../../../../Services/Core/ServiceURI'
+import ReferralService from "../../../../Services/Referral/ReferralService";
+
+
+
+const ProfilePageContent = {
+    key: 'somethun',
+    page_title: 'PROFILE'
+}
+
+interface G_PrivateContestUserViewProps extends AppValidationComponentProps {
+    updateProfileRequestStatus?: ServiceRequestStatus
+    updateProfileResponse?: UpdateProfileResponse
+    updateProfileError?: UDDAError
+    getProfileRequestStatus?: ServiceRequestStatus
+    getProfileResponse?: GetProfileResponse
+    getProfileError?: UDDAError
+    serviceKey?: string
+    listeners?: any
+}
+
+interface ProflieViewState extends AppValidationComponentState {
+    contentInsetBottom: any;
+    dialogVisible: boolean;
+    OrderSummaryDialog: boolean;
+    JoinNowSelected: any;
+    Dialog: boolean;
+    StandlingList: any;
+    IsSelected: any;
+    loader: any;
+    RegisterDate: any;
+    ChallengeName: any;
+    EndDate: any;
+    Nodata: any;
+    selectedheader: any;
+    Private_Contsest_id: any;
+    shareDialog: any;
+    Share_Show_Msg: any;
+    MessageUrl: any;
+    MessageString: any;
+    private_contest_id: any;
+    ContestData: any;
+    invitesArray: any;
+    acceptedArray: any;
+    pendingArray: any;
+    declineArray: any;
+}
+
+
+const bottom_initial = 0;
+
+class G_PrivateContestUserView extends AppValidationComponent<G_PrivateContestUserViewProps, ProflieViewState>
+    implements MenuIconListener, ISubheaderListener {
+
+    private serviceRequestInProgress = false
+    private authorisationToken = Application.sharedApplication().user!.authenticationToken;
+    private Username = Application.sharedApplication().user!.profile.firstName + " " + Application.sharedApplication().user!.profile.lastName;
+    private my_referral_code = Application.sharedApplication().user!.profile.my_referral_code;
+    private referralservice = new ReferralService();
+    constructor(props: G_PrivateContestUserViewProps) {
+        super(props);
+        this.state = {
+            contentInsetBottom: bottom_initial,
+            dialogVisible: false,
+            OrderSummaryDialog: false,
+            JoinNowSelected: '',
+            Dialog: false,
+            StandlingList: '',
+            IsSelected: '',
+            loader: false,
+            RegisterDate: '',
+            ChallengeName: '',
+            EndDate: '',
+            Nodata: '',
+            selectedheader: 'I',
+            Private_Contsest_id: '',
+            shareDialog: false,
+            Share_Show_Msg: '',
+            MessageUrl: '',
+            MessageString: '',
+            private_contest_id: '',
+            ContestData: [],
+            invitesArray: '',
+            acceptedArray: '',
+            pendingArray: '',
+            declineArray: ''
+        }
+    }
+    componentDidMount() {
+
+        this.callMethod();
+    }
+    // -------------------------------------------------- API Calling ------------------------------------------------------
+
+    callMethod() {
+        this.setState({ loader: true }); 
+
+        AsyncStorage.multiGet(['Selected_contest']).then((data: any) => {
+            var params: any = {
+                'private_contest_id': data[0][1],
+            };
+
+            var formData = new FormData();
+
+            for (var k in params) {
+                formData.append(k, params[k]);
+            }
+            console.log('get_private_contest_details input' + JSON.stringify(params));
+
+            fetch(UrlService.CONSTURI +'index.php/'+ UrlService.APIVERSION3 +'/apiGaming/get_private_contest_details', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'authorisation': this.authorisationToken
+                },
+                body: formData,
+
+            }).then((response) => response.json())
+                .then((responseJson) => {
+                    this.setState({ loader: false });
+                    console.log('get_private_contest_details ' + JSON.stringify(responseJson));
+                    if (responseJson.error == 0) {
+
+                        this.setState({ ContestData: responseJson.data.private_contest_details })
+                        this.setState({ invitesArray: responseJson.data.invitesArray })
+                        this.setState({ acceptedArray: responseJson.data.acceptedArray })
+                        this.setState({ pendingArray: responseJson.data.pendingArray })
+                        this.setState({ declineArray: responseJson.data.declineArray })
+
+                        this.setState({ StandlingList: this.state.invitesArray })
+                    }
+                    if (responseJson.message == "Access Expired.") {
+                        // AlertUtil.show("Session Expired ! Please login again");
+                        console.log("Footer comp ---->"+responseJson.message);
+                        LogoutUtill.logoutButtonPressed(this.props);
+                       }
+                })
+                .catch(error => {
+                    this.setState({ loader: false });
+                    console.log(error);
+                })
+        });
+    }
+
+
+    // ----------------------------------------------------- Methods -----------------------------------------------
+
+    iconDidTapped() {
+        this.props.navigation!.navigate(AppScreens.G_Settings_2_View);
+    }
+
+    LogoiconDidTapped() {
+        //RouterBuilder.replaceRouteTo(AppScreens.G_DashboardView, this.props)
+		RouterBuilder.resetRouteTo(AppScreens.Gambling_ApplicationStack, this.props)
+    }
+
+    accountNameTapped() {
+        RouterBuilder.replaceRouteTo(AppScreens.G_ProfileView, this.props)
+    }
+
+    openPlaysTapped() {
+        RouterBuilder.replaceRouteTo(AppScreens.G_UddaContests, this.props)
+    }
+
+    coveredPlaysTapped() {
+        RouterBuilder.replaceRouteTo(AppScreens.G_GamingBetView, this.props)
+    }
+
+    availableBalanceTapped() {
+    }
+
+
+    gotoYourprivatelist() {
+       // RouterBuilder.replaceRouteTo(AppScreens.G_YourPrivateContest, this.props)
+       this.props.navigation!.replace(AppScreens.G_UddaContests,{params:{bet_id:'ashish'}});
+    }
+    logoutButtonPressed() {
+        Application.sharedApplication().logout()
+        RouterBuilder.resetRouteTo(AppScreens.OnboardingStack, this.props)
+    }
+
+    IsSelectedMore(item: any, index: any) {
+        for (let i = 0; i < this.state.StandlingList.length; i++) {
+            if (i == index) {
+                this.state.StandlingList[i].IsSelected = !this.state.StandlingList[i].IsSelected
+            }
+            else {
+                this.state.StandlingList[i].IsSelected = false
+
+            }
+        }
+        this.setState({ IsSelected: item })
+    }
+
+    headerclicked(flag: any) {
+        this.setState({ selectedheader: flag });
+        if (flag == 'D') {
+            this.setState({ StandlingList: this.state.declineArray });
+        }
+        else if (flag == 'P') {
+            this.setState({ StandlingList: this.state.pendingArray });
+
+        }
+        else if (flag == 'A') {
+            this.setState({ StandlingList: this.state.acceptedArray });
+
+        }
+        else if (flag == 'I') {
+            this.setState({ StandlingList: this.state.invitesArray });
+
+        }
+    }
+
+
+
+    async SharePrivateContest(item: any) {
+
+        if (item.creator != this.Username && item.is_share == "1") {
+            AlertUtil.show("You have not permitted to use this features");
+        } else {
+
+            var MessageString: any;
+            var ShowString: any;
+            var url: any;
+            var referStr: any;
+
+            url = "http://bet.udda.com/index.php?t=contestbetnew&i=" + this.state.ContestData.encryptor_private_contest_id;
+            url = await this.referralservice.getReferralUrl(url, this.my_referral_code, "U"); // Getting Dynamic Share Link From Firebase
+            referStr = "\n Use Referral Code " + this.my_referral_code + " to sign up. ";
+
+            MessageString = "You have been invited to a private contest through UDDA by " + this.state.ContestData.creator + "." + referStr +" Open Link : " + url;
+
+
+            ShowString = <Text style={{ fontFamily: 'Montserrat-Regular', fontSize: hp(1.4), }}>
+                You have been invited to a private contest through UDDA by <Text style={{ fontFamily: 'Montserrat-SemiBold' }}> {this.state.ContestData.creator} . </Text>{referStr}
+            </Text>
+
+            this.setState({ MessageString: MessageString });
+            this.setState({ Share_Show_Msg: ShowString });
+            this.setState({ MessageUrl: url });
+            console.log("Private Contest " + JSON.stringify(MessageString));
+            this.setState({ shareDialog: true });
+
+        }
+    }
+
+
+
+    shareNow() {
+        var Message = this.state.MessageString;
+        Share.share({
+            message: Message
+        }).then((result: any) => {
+            this.setState({ shareDialog: false })
+            console.log('share result' + JSON.stringify(result));
+        }).catch((errorMsg: any) => {
+            this.setState({ shareDialog: false })
+            console.log('share error ' + JSON.stringify(errorMsg));
+        });
+    }
+
+
+    //garima profile image issue
+    // ----------------------------------------------------- Design -----------------------------------------------
+    render() {
+        return (
+            <Container title={ProfilePageContent.page_title}
+                isHeader={true}
+                isSubHeader={true}
+                isTitle={false}
+                showIndicator={this.serviceRequestInProgress}
+                menuIconListener={this}
+                LogoIconListener={this}
+                accountNameListener={this}
+                availableBalanceListener={this}
+                openPlaysListener={this}
+                coveredPlaysListener={this}
+                isSetting={false}>
+
+                <ProgressLoader
+                    visible={this.state.loader}
+                    isModal={true} isHUD={true}
+                    hudColor={"#68bcbc"}
+                    color={"#FFFFFF"} />
+
+                {/* -------------------------------- Share Dialogue --------------------------------*/}
+                <Dialog
+                    visible={this.state.shareDialog}
+                    title=""
+                    onTouchOutside={() => this.setState({ shareDialog: false })} >
+
+                    <View style={{ backgroundColor: "white" }}>
+
+                        <View style={{ justifyContent: "center" }} >
+
+                            <View style={{ flexDirection: 'row' }}>
+                                <View style={{ width: '85%', paddingLeft: '15%' }}>
+                                    <Image source={require('../../../../images/udda_logo_white.png')} style={{ width: wp(30), height: wp(7), margin: 10, alignSelf: 'center' }} resizeMode='contain' />
+                                </View>
+                                <View style={{ width: '15%' }}>
+                                    <TouchableWithoutFeedback onPress={() => { this.setState({ shareDialog: false }) }}>
+                                        <View>
+                                            <Image source={require('../../../../images/close.png')} style={{ height: 13, width: 13, alignSelf: 'flex-end', marginRight: 8, marginTop: 10 }}></Image>
+                                        </View>
+                                    </TouchableWithoutFeedback>
+                                </View>
+                            </View>
+
+
+                            <View style={{ width: '100%', backgroundColor: '#cccccc', height: 1, marginTop: 1, padding: 0 }}></View>
+
+                            <View style={{ justifyContent: "center", padding: 10 }}>
+
+                                <Text style={{ padding: 1, fontFamily: 'Montserrat-SemiBold', fontSize: hp(1.7), marginTop: 3, color: 'black' }}>Messege</Text>
+
+                                <View style={{ padding: 1, borderColor: '#cccccc', borderWidth: 1, marginTop: 5, }}>
+                                    <Text style={{ padding: 8, width: '100%', height: 'auto' }}>{this.state.Share_Show_Msg}</Text>
+
+                                </View>
+                                <Text style={{ padding: 1, fontFamily: 'Montserrat-Regular', fontSize: hp(1.5), marginTop: 5, color: 'black' }}>
+                                    {this.state.MessageUrl}
+                                </Text>
+                                <BigButton title="Share Now" style={styles.verify_button} textStyle={styles.verify_button_text_style}
+                                    listener={() => { this.shareNow() }} />
+                            </View>
+                        </View>
+                    </View>
+                </Dialog>
+
+
+
+                <View style={styles.mainContent}>
+                    <View style={{ padding: hp(1.5), justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={styles.Current_Text_Style}>{this.state.ContestData.contest_name} </Text>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', width: '95%', justifyContent: 'center', marginTop: 10 }}>
+                        <TouchableWithoutFeedback onPress={() => { this.SharePrivateContest(this.state.ContestData) }}>
+                            <View style={styles.header_part}>
+                                <Text style={{ color: 'white', fontFamily: 'Montserrat-SemiBold', fontSize: hp(1.7), textDecorationLine: 'underline' }}>Invite</Text>
+                                <Text style={{ color: 'white', fontFamily: 'Montserrat-SemiBold', fontSize: hp(1.7), textDecorationLine: 'underline' }}>More Friends</Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                        <View style={styles.header_part}>
+                            <Text style={{ color: 'white', fontFamily: 'Montserrat-SemiBold', fontSize: hp(1.2), }}>Closing Date</Text>
+                            <Text style={{ color: 'white', fontFamily: 'Montserrat-SemiBold', fontSize: hp(2.0) }}>{this.state.ContestData.contest_end_date}</Text>
+
+                        </View>
+                        <View style={styles.header_part}>
+                            <Text style={{ color: 'white', fontFamily: 'Montserrat-SemiBold', fontSize: hp(1.2), }}>Joining Fee</Text>
+                            <View style={{ flexDirection: 'row' }}>
+
+                                <Image source={require('../../../../images/White_Bucks.png')} style={{ height: 10, width: 10, marginRight: 3, marginTop: 5 }} />
+                                <Text style={{ color: 'white', fontFamily: 'Montserrat-SemiBold', fontSize: hp(2.0) }}>{this.state.ContestData.join_fee}.</Text>
+                                <Text style={{ color: 'white', fontFamily: 'Montserrat-SemiBold', fontSize: hp(1.3), marginTop: 3 }}>00</Text>
+                            </View>
+                        </View>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', width: '95%', justifyContent: 'center', marginTop: 8 }}>
+                        <TouchableWithoutFeedback onPress={() => { this.headerclicked('I') }}>
+                            <View style={styles.header_part_2}>
+                                <Text style={styles.font_lbl_header}>Invitees
+                                    <Text style={{ color: '#dddddd' }}>({this.state.invitesArray.length})</Text>
+                                </Text>
+                                {this.state.selectedheader == 'I' ?
+                                    <View style={styles.border_bottom}></View>
+                                    : null}
+                            </View>
+                        </TouchableWithoutFeedback>
+
+                        <TouchableWithoutFeedback onPress={() => { this.headerclicked('A') }}>
+                            <View style={styles.header_part_2}>
+                                <Text style={styles.font_lbl_header}>Accepted
+                                     <Text style={{ color: '#68bcbc' }}>({this.state.acceptedArray.length})</Text>
+                                </Text>
+                                {this.state.selectedheader == 'A' ?
+                                    <View style={styles.border_bottom}></View>
+                                    : null}
+                            </View>
+                        </TouchableWithoutFeedback>
+
+                        <TouchableWithoutFeedback onPress={() => { this.headerclicked('P') }}>
+                            <View style={styles.header_part_2}>
+                                <Text style={styles.font_lbl_header}>Pending
+                                    <Text style={{ color: 'orange' }}>({this.state.pendingArray.length})</Text>
+                                </Text>
+                                {this.state.selectedheader == 'P' ?
+                                    <View style={styles.border_bottom}></View>
+                                    : null}
+                            </View>
+                        </TouchableWithoutFeedback>
+
+                        <TouchableWithoutFeedback onPress={() => { this.headerclicked('D') }}>
+                            <View style={styles.header_part_2}>
+                                <Text style={styles.font_lbl_header}>Declines
+                                    <Text style={{ color: '#e2211c' }}>({this.state.declineArray.length})</Text>
+                                </Text>
+                                {this.state.selectedheader == 'D' ?
+                                    <View style={styles.border_bottom}></View>
+                                    : null}
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </View>
+
+
+
+                    {this.state.StandlingList.length > 0 ?
+                        <View style={{ flex: 1 }}>
+                            <View style={styles.Flatlist_Style}>
+                                <FlatList
+                                    bounces={false}
+                                    data={this.state.StandlingList}
+                                    extraData={this.state}
+                                    keyExtractor={(item: any, index: any) => index.toString()}
+                                    renderItem={({ item, index }: any) => {
+                                        var subindex = index;
+                                        return (
+                                            <View>
+                                                <View style={styles.Flatlist_Main_Container}>
+                                                    <View style={[styles.Detail_Container, { backgroundColor: item.IsSelected == true ? '#f0f0f0' : 'white', }]}>
+                                                        <View style={{justifyContent:'center',alignItems:'center'   }}>
+                                                         
+                                                            <CircleImage width={wp(10)} imageFilePath={item.ClientImage} />
+                                                            
+                                                       
+                                                        </View>
+                                                    </View>
+                                                    <View style={[styles.Name_Container, { backgroundColor: item.IsSelected == true ? '#f0f0f0' : 'white' }]}>
+                                                        <Text style={styles.Count_Style}>{index + 1}. <Text style={styles.Name_Style}> {item.ClientName}</Text>
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                            </View>
+                                        )
+                                    }} />
+                            </View>
+                            <View style={{ alignItems: 'center', backgroundColor: 'white', padding: 10, }}>
+                                <TouchableWithoutFeedback onPress={() => { this.gotoYourprivatelist() }}>
+                                    <Text style={{ color: '#68bcbc', fontFamily: 'Montserrat-SemiBold', fontSize: hp(2.0), textDecorationLine: 'underline' }}>
+                                        Back
+                                </Text>
+                                </TouchableWithoutFeedback>
+                            </View>
+                        </View>
+                        :
+                        <View style={[styles.Flatlist_Style, { width: '100%' }]}>
+                            <View style={{ height: '100%',justifyContent:'center',alignItems:'center' }}>
+                                <Text style={[styles.Current_Text_Style, { textAlign: 'center' }]}>No Data Found</Text>
+                            </View>
+                        </View>}
+
+                </View>
+
+            </Container >
+        );
+    }
+
+}
+
+const mapStateToProps = (state: GlobalAppState) => ({
+    requestStatus: state.serviceReducer.requestStatus,
+    error: state.serviceReducer.error,
+    updateProfileRequestStatus: state.serviceReducer.requestStatus,
+    updateProfileResponse: state.serviceReducer.response,
+    updateProfileError: state.serviceReducer.error,
+    getProfileRequestStatus: state.serviceReducer.requestStatus,
+    getProfileResponse: state.serviceReducer.response,
+    getProfileError: state.serviceReducer.error,
+    serviceKey: state.serviceReducer.serviceKey,
+    listeners: state.serviceReducer.listeners
+})
+
+export default connect(mapStateToProps)(G_PrivateContestUserView);
