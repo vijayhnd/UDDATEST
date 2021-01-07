@@ -1,0 +1,807 @@
+import React from "react";
+import AppValidationComponent, { AppValidationComponentState, AppValidationComponentProps } from "../../../../Util/AppValidationComponent";
+import { View, Text, TouchableWithoutFeedback, TouchableOpacity, Share, Image, TextInput, ScrollView,Animated, UIManager,Keyboard, Dimensions } from "react-native";
+import styles from './styles';
+import Container from '../../../../Components/Container';
+import BigButton from '../../../../Components/Button/BigButton';
+import UpdateProfileResponse from "../../../../Services/Profile/UpdateProfileResponse";
+import AlertUtil from "../../../../Util/AlertUtil";
+import Application from "../../../../Entities/Application";
+import RouterBuilder from "../../../../Router";
+import AppScreens from "../../../../Util/AppScreens";
+import { connect } from 'react-redux';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { ISubheaderListener } from "../../../../Components/CustomComponents/SubHeader/SubHeader";
+import { MenuIconListener } from "../../../../Components/Icons/MenuIcon/MenuIcon";
+import { ServiceRequestStatus } from "../../../../ReduxStore/ServiceState";
+import { GlobalAppState } from "../../../../ReduxStore";
+import { UDDAError } from "../../../../Entities";
+import GetProfileResponse from "../../../../Services/Profile/GetProfileResponse";
+import { Dialog } from 'react-native-simple-dialogs';
+import { Dropdown } from "react-native-material-dropdown"
+import DateTimePicker from "react-native-modal-datetime-picker";
+import moment from 'moment';
+import ServiceAction from "../../../../ReduxStore/Generic/GenericeServiceAction";
+import ServiceKeys from "../../../../Services/Core/ServiceKeys";
+import CreateContestResponseParser from "../../../../Services/Contest/CreateContestResponseParser";
+import { ServiceType } from "../../../../Services/Core/ServiceFactory";
+import CreateContestRequest from "../../../../Services/Contest/CreateContestRequest";
+import CreateContestResponse from "../../../../Services/Contest/CreateContestResponse";
+import UrlService from '../../../../Services/Core/ServiceURI'
+import ReferralService from "../../../../Services/Referral/ReferralService";
+import * as RNLocalize from "react-native-localize";
+const deviceTimeZone = RNLocalize.getTimeZone();
+const { State: TextInputState } = TextInput;
+
+interface G_PrivateContestProps extends AppValidationComponentProps {
+    createContestRequestStatus?: ServiceRequestStatus
+    CreateContestResponse?: CreateContestResponse
+    createContestError?: UDDAError
+
+    getProfileRequestStatus?: ServiceRequestStatus
+    getProfileResponse?: GetProfileResponse
+    getProfileError?: UDDAError
+
+    serviceKey?: string
+    listeners?: any
+}
+
+interface ProflieViewState extends AppValidationComponentState {
+    contentInsetBottom?: any
+    BucksAmount: any;
+    isDateTimePickerVisible: any;
+    isEndDateTimePickerVisible: any;
+    date: any;
+    chosenDate: any;
+    privateSwitchAccepted: any;
+    ContestType: any;
+    SelectedLeague: any;
+    ContstName: any;
+    shareDialog: any;
+    Share_Show_Msg: any;
+    MessageUrl: any;
+    MessageString: any;
+    AllSports: any;
+    MinBetAmount: any;
+    prize_type: any;
+    MaxBetAmount: any;
+    endminimumDate: any;
+    shift: any;
+
+
+}
+
+
+const bottom_initial = 0;
+
+export class G_PrivateContest extends AppValidationComponent<G_PrivateContestProps, ProflieViewState>
+    implements MenuIconListener, ISubheaderListener {
+
+    private serviceRequestInProgress = false;
+    private End_formated_time = moment().format('L');
+    private start_formated_time = moment().format('L');
+    private RegistrationEndDate = moment().format('L');
+    private authorisationToken = Application.sharedApplication().user!.authenticationToken;
+    private Username =Application.sharedApplication().user!.profile.firstName == null?Application.sharedApplication().user!.profile.displayName: Application.sharedApplication().user!.profile.firstName + " " + Application.sharedApplication().user!.profile.lastName;
+    public minimumDate = new Date();
+    private my_referral_code = Application.sharedApplication().user!.profile.my_referral_code;
+    private referralservice = new ReferralService();
+    public keyboardDidShowSub: any;
+    public keyboardDidHideSub: any;
+    constructor(props: G_PrivateContestProps) {
+        super(props);
+        this.state = {
+            contentInsetBottom: bottom_initial,
+            BucksAmount: '',
+            isDateTimePickerVisible: false,
+            isEndDateTimePickerVisible: false,
+            date: '',
+            chosenDate: new Date(),
+            privateSwitchAccepted: false,
+            ContestType: '',
+            SelectedLeague: '',
+            ContstName: '',
+            shareDialog: false,
+            Share_Show_Msg: '',
+            MessageUrl: '',
+            MessageString: '',
+            AllSports: [],
+            MinBetAmount: '',
+            prize_type: '',
+            MaxBetAmount: '',
+            endminimumDate : new Date(),
+            shift: new Animated.Value(0),
+        }
+        this.setDate = this.setDate.bind(this);
+
+    }
+
+
+
+    componentDidMount() {
+        console.log('deviceTimeZone',deviceTimeZone);
+        this.callSports();
+    }
+
+    // ---------------------------------------------------- API Call ----------------------------------------------------
+
+    callSports() {
+        fetch(UrlService.CONSTURI +'index.php/'+ UrlService.APIVERSION3 +'/apiGaming/get_leagues', {
+            method: 'GET',
+            headers: {
+                'authorisation': this.authorisationToken
+            },
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log('Success Sports league' + JSON.stringify(responseJson));
+                var topSports = responseJson.data.topSports;
+                var normalSports = responseJson.data.normalSports;
+                var AllSports = topSports.concat(normalSports);
+                this.setState({
+                    AllSports: AllSports.map((x: any) => ({
+                        title: x.title,
+                        type: x.type,
+                        color: x.color,
+                        league_id: x.league_id,
+                        league_name: x.league_name,
+                        value: x.title,
+                    }))
+                });
+                console.log('AllSports ' + JSON.stringify(this.state.AllSports));
+
+            })
+            .catch(error => console.log(error))
+    }
+
+
+
+    componentWillUnmount() {
+    
+        this.keyboardDidShowSub.remove();
+        this.keyboardDidHideSub.remove();
+       
+    
+      }
+      componentWillMount() {
+       
+        console.log("componentwillmount");
+        this.keyboardDidShowSub = Keyboard.addListener('keyboardDidShow', this.handleKeyboardDidShow);
+        this.keyboardDidHideSub = Keyboard.addListener('keyboardDidHide', this.handleKeyboardDidHide);
+        
+      }
+    
+    
+      handleKeyboardDidShow = (event: any) => {
+        const { height: windowHeight } = Dimensions.get('window');
+        const keyboardHeight = event.endCoordinates.height;
+        const currentlyFocusedField = TextInputState.currentlyFocusedField() || 0;
+        console.log(currentlyFocusedField);
+        UIManager.measure(currentlyFocusedField, (originX, originY, width, height, pageX, pageY) => {
+          
+          const fieldHeight = height;
+          const fieldTop = pageY;
+          const gap =  (windowHeight - keyboardHeight) - (fieldTop + fieldHeight + fieldHeight ) || 0;
+          console.log(gap)
+          if (gap >= 0) {
+            return;
+          }
+          Animated.timing(
+            this.state.shift,
+            {
+              toValue: gap,
+              duration: 300,
+              useNativeDriver: true,
+            }
+          ).start();
+        });
+      }
+    
+      handleKeyboardDidHide = () => {
+        Animated.timing(
+          this.state.shift,
+          {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: true,
+          }
+        ).start();
+      }
+    createprivateBet() {
+
+        var isshare: any;
+        if (this.state.privateSwitchAccepted == false) {
+            isshare = 0;
+        }
+        else {
+            isshare = 1;
+        }
+
+        var maxBetAmt = parseInt(this.state.MaxBetAmount);
+        var minBetAmt = parseInt(this.state.MinBetAmount);
+         if (this.state.SelectedLeague == '' || this.state.SelectedLeague == null ||
+            this.state.ContstName == '' || this.state.ContstName == null ||
+            this.state.BucksAmount == '' || this.state.BucksAmount == null ||
+            this.state.ContestType == '' || this.state.ContestType == null ||
+            this.state.MinBetAmount == '' || this.state.MinBetAmount == null ||
+           
+            this.RegistrationEndDate == '' || this.RegistrationEndDate == null ||
+            this.start_formated_time == '' || this.start_formated_time == null ||
+            this.End_formated_time == '' || this.End_formated_time == null ||
+            this.state.prize_type == '' || this.state.prize_type == null) {
+            AlertUtil.show("Please enter valid all details");
+        }
+        
+        else  if (this.state.BucksAmount < 1000 || this.state.BucksAmount < '1000')
+        {
+            AlertUtil.show("Joining fee must be 1000 or above.");
+        }
+        else if ((this.state.MaxBetAmount > 0 || this.state.MaxBetAmount > '0') && (maxBetAmt < minBetAmt)){
+                console.log('alert');
+                AlertUtil.show("Maximum bet amount must be greater than minimum bet amount.");
+        } else {
+           //console.log('ok'); return;
+            var RegistrationEndDate = moment(this.RegistrationEndDate).format('YYYY-MM-DD');
+            var start_formated_time = moment(this.start_formated_time).format('YYYY-MM-DD');
+            var End_formated_time = moment(this.End_formated_time).format('YYYY-MM-DD');
+
+
+            var createContestRequset = new CreateContestRequest(
+                this.state.SelectedLeague,
+                this.state.ContstName,
+                this.state.BucksAmount,
+                this.state.ContestType,
+                RegistrationEndDate,
+                start_formated_time,
+                End_formated_time,
+                isshare,
+                this.state.MinBetAmount,
+                this.state.MaxBetAmount,
+                this.state.prize_type, 
+                deviceTimeZone,
+            )
+            var serviceAction = new ServiceAction()
+            var responseParser = new CreateContestResponseParser()
+            this.props.dispatch!(serviceAction.request(ServiceType.Contest,
+                ServiceKeys.CreateContestServiceName,
+                createContestRequset,
+                [this.constructor.name],
+                responseParser))
+        }
+    }
+
+
+    componentWillReceiveProps(nextProps: G_PrivateContestProps) {
+        if (nextProps.listeners!.includes(this.constructor.name)) {
+            if (nextProps.serviceKey === ServiceKeys.CreateContestServiceName) {
+                switch (nextProps.requestStatus) {
+                    case ServiceRequestStatus.FinishedWithSuccess:
+                        this.serviceRequestInProgress = false;
+                        console.log("custom bet success " + JSON.stringify(nextProps.CreateContestResponse));
+                        var response = nextProps.CreateContestResponse!.response;
+                        if(response.data.length != 0){ //garima
+                        this.SharePrivateContest(response.data.encryptor_private_contest_id);
+                        }
+                        else{
+                            AlertUtil.show(response.message);
+                        }
+                        var serviceAction = new ServiceAction()
+                        nextProps.dispatch!(serviceAction.reset())
+                        break
+                    case ServiceRequestStatus.FinishedWithError:
+                        this.serviceRequestInProgress = false
+                        var errorMessage = nextProps.error!.message
+                        AlertUtil.show(errorMessage)
+                        var serviceAction = new ServiceAction()
+                        nextProps.dispatch!(serviceAction.reset())
+                        break
+                    case ServiceRequestStatus.Started:
+                    case ServiceRequestStatus.InProgress:
+                        this.serviceRequestInProgress = true
+                        break
+                }
+
+            }
+        }
+    }
+
+    // ---------------------------------------------------- Method ----------------------------------------------------
+
+    iconDidTapped() {
+        this.props.navigation!.navigate(AppScreens.G_Settings_2_View);
+    }
+
+    LogoiconDidTapped() {
+        RouterBuilder.replaceRouteTo(AppScreens.G_DashboardView, this.props)
+    }
+
+    accountNameTapped() {
+        RouterBuilder.replaceRouteTo(AppScreens.G_ProfileView, this.props)
+    }
+
+    availableBalanceTapped() {
+    }
+
+    openPlaysTapped() {
+        RouterBuilder.replaceRouteTo(AppScreens.G_UddaContests, this.props);
+
+    }
+
+    coveredPlaysTapped() {
+        RouterBuilder.replaceRouteTo(AppScreens.G_GamingBetView, this.props);
+
+    }
+
+    logoutButtonPressed() {
+        Application.sharedApplication().logout()
+        RouterBuilder.resetRouteTo(AppScreens.OnboardingStack, this.props)
+    }
+
+    showDateTimePicker = () => {
+        this.setState({ isDateTimePickerVisible: true });
+    };
+
+    hideDateTimePicker = () => {
+        this.setState({ isDateTimePickerVisible: false });
+    };
+
+    showDateTimeEndPicker = () => {
+        this.setState({ isEndDateTimePickerVisible: true });
+    };
+
+    hideDateTimEndPicker = () => {
+        this.setState({ isEndDateTimePickerVisible: false });
+    };
+
+    handleEndDatePicked = (date: any) => {
+        var formated_date = moment(date).format('L');
+        this.End_formated_time = formated_date;
+        this.hideDateTimEndPicker();
+    }
+
+    handleStartDatePicked = (date: any) => {
+        this.setState({endminimumDate:date})
+        var formated_date = moment(date).format('L');
+        this.start_formated_time = formated_date;
+        this.hideDateTimePicker();
+    }
+
+
+    handleDatePicked = (date: any) => {
+        this.setState({ chosenDate: date });
+        var formated_date = moment(date).format('L');
+        this.start_formated_time = formated_date;
+        if (this.state.ContestType == 'Daily') {
+            this.End_formated_time = moment(date).format('L');;
+        }
+        else if (this.state.ContestType == 'Weekly') {
+            this.End_formated_time = moment(date).add(7, 'days').format('L');
+        }
+        else if (this.state.ContestType == 'Monthly') {
+            this.End_formated_time = moment(date).add(1, 'months').format('L');
+        }
+        else {
+
+        }
+        this.hideDateTimePicker();
+
+    };
+
+    setDate(newDate: any) {
+        this.setState({ chosenDate: newDate });
+    }
+
+    privateSwitchValueChanged() {
+        if (this.state.privateSwitchAccepted === true) {
+            this.setState({ privateSwitchAccepted: false });
+        }
+        else {
+            this.setState({ privateSwitchAccepted: true });
+        }
+    }
+
+    onChangeFilter(value: any) {
+        this.setState({ ContestType: value });
+        this.handleDatePicked(this.state.chosenDate);
+    }
+
+    onChangeLegue(value: any) {
+
+        for (let i = 0; i < this.state.AllSports.length; i++) {
+            if (this.state.AllSports[i].title == value) {
+                this.setState({ SelectedLeague: this.state.AllSports[i].league_id });
+            }
+        }
+        console.log('SelectedLeague ' + JSON.stringify(this.state.SelectedLeague));
+
+    }
+
+    async SharePrivateContest(encryptedID: any) {
+        var MessageString: any;
+        var ShowString: any;
+        var url: any;
+        var referStr: any;
+
+        url = "http://bet.udda.com/index.php?t=contestbet&i=" + encryptedID;
+        url = await this.referralservice.getReferralUrl(url, this.my_referral_code, "U"); // Getting Dynamic Share Link From Firebase
+        referStr = "\n Use Referral Code " + this.my_referral_code + " to sign up. ";
+        MessageString = "You have been invited to a private contest through UDDA by " + this.Username + "." + referStr+" Open Link : " + url;
+
+
+        ShowString = <Text style={{ fontFamily: 'Montserrat-Regular', fontSize: hp(1.4), }}>
+            You have been invited to a private contest through UDDA by <Text style={{ fontFamily: 'Montserrat-SemiBold' }}> {this.Username}</Text>{referStr}
+        </Text>
+
+
+        this.setState({ MessageString: MessageString });
+        this.setState({ Share_Show_Msg: ShowString });
+        this.setState({ MessageUrl: url });
+        console.log("Private Contest " + JSON.stringify(MessageString));
+        this.setState({ shareDialog: true });
+    }
+
+
+
+    shareNow() {
+        var Message = this.state.MessageString;
+        Share.share({
+            message: Message
+        }).then((result: any) => {
+            this.setState({ shareDialog: false })
+            console.log('share result' + JSON.stringify(result));
+            this.props.navigation!.replace(AppScreens.G_UddaContests,{params:{bet_id:'ashish'}});
+        }).catch((errorMsg: any) => {
+            this.setState({ shareDialog: false })
+            AlertUtil.show('share error ' + JSON.stringify(errorMsg));
+        });
+    }
+
+    onChange_price_type(value: any) {
+        this.setState({ prize_type: value });
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ---------------------------------------------------- Design ----------------------------------------------------
+    render() {
+
+
+        let data3 = [{
+            value: 'Daily Pick',
+        }, {
+            value: 'Pick 6 Weekly',
+        }];
+
+        let data1 = [{
+            value: 'Winner Takes All',
+        }, {
+            value: 'See Prize Chart',
+        }];
+
+        return (
+            <Container title={'private contest'}
+                isHeader={true}
+                isSubHeader={true}
+                isTitle={false}
+                showIndicator={this.serviceRequestInProgress}
+                menuIconListener={this}
+                LogoIconListener={this}
+                availableBalanceListener={this}
+                openPlaysListener={this}
+                coveredPlaysListener={this}
+                accountNameListener={this}
+                isSetting={false}
+            >
+
+
+                {/* -------------------------------- Share Dialogue --------------------------------*/}
+                <Dialog
+                    visible={this.state.shareDialog}
+                    title=""
+                    onTouchOutside={() => this.setState({ shareDialog: false })} >
+
+                    <View style={{ backgroundColor: "white" }}>
+
+                        <View style={{ justifyContent: "center" }} >
+
+                            <View style={{ flexDirection: 'row' }}>
+                                <View style={{ width: '85%', paddingLeft: '15%' }}>
+                                    <Image source={require('../../../../images/udda_logo_white.png')} style={{ width: wp(30), height: wp(7), margin: 10, alignSelf: 'center' }} resizeMode='contain' />
+                                </View>
+                                <View style={{ width: '15%' }}>
+                                    <TouchableWithoutFeedback onPress={() => { this.setState({ shareDialog: false }); this.props.navigation!.replace(AppScreens.G_UddaContests,{params:{bet_id:'ashish'}}); }}>
+                                        <View>
+                                            <Image source={require('../../../../images/close.png')} style={{ height: 13, width: 13, alignSelf: 'flex-end', marginRight: 8, marginTop: 10 }}></Image>
+                                        </View>
+                                    </TouchableWithoutFeedback>
+                                </View>
+                            </View>
+
+
+                            <View style={{ width: '100%', backgroundColor: '#cccccc', height: 1, marginTop: 1, padding: 0 }}></View>
+
+                            <View style={{ justifyContent: "center", padding: 10 }}>
+
+                                <Text style={{ padding: 1, fontFamily: 'Montserrat-SemiBold', fontSize: hp(1.7), marginTop: 3, color: 'black' }}>Messege</Text>
+
+                                <View style={{ padding: 1, borderColor: '#cccccc', borderWidth: 1, marginTop: 5, }}>
+                                    <Text style={{ padding: 8, width: '100%', height: 'auto' }}>{this.state.Share_Show_Msg}</Text>
+
+                                </View>
+                                <Text style={{ padding: 1, fontFamily: 'Montserrat-Regular', fontSize: hp(1.5), marginTop: 5, color: 'black' }}>
+                                    {this.state.MessageUrl}
+                                </Text>
+                                <BigButton title="Share Now" style={styles.verify_button} textStyle={styles.verify_button_text_style}
+                                    listener={() => { this.shareNow() }} />
+                            </View>
+                        </View>
+                    </View>
+                </Dialog>
+
+                <Animated.View style={[{ flex: 1 }, { transform: [{ translateY: this.state.shift }] }]}>
+                <View style={styles.mainContent}>
+                    <View style={styles.Text_Container}>
+                        <Text style={styles.TextStyle}>CREATE CONTEST</Text>
+                    </View>
+
+
+                    <View style={{ flex: 1 }}>
+                        <View style={{ height: '90%', backgroundColor: '#eeeeee' }}>
+                            <ScrollView>
+                                <View style={styles.Second_Container}>
+                                    <View style={styles.ThirdContainer}>
+                                        <Text style={styles.Text_Style}>Select a League</Text>
+                                        <View style={[styles.Input_Container, { alignContent: 'center', padding: 5 }]}>
+                                            <Dropdown
+                                                dropdownOffset={{ top: 0, left: 0 }}
+                                                dropdownMargins={{ min: 0, max: 0 }}
+                                                dropdownPosition={-5.2}
+                                                itemTextStyle={[styles.Input_TextStyle, { padding: 5, fontFamily: 'Montserrat-Bold', fontSize: hp(1.2), color: '#333333', margin: 0, paddingBottom: 0, width: '100%' }]}
+                                                data={this.state.AllSports}
+                                                onChangeText={value => this.onChangeLegue(value)}
+                                                fontSize={hp(1.6)}
+                                                value={''}
+                                            />
+
+                                        </View>
+                                    </View>
+
+                                    <View style={styles.ThirdContainer}>
+                                        <Text style={styles.Text_Style}>Contest Name</Text>
+                                        <View style={styles.Input_Container}>
+                                            <TextInput
+                                                onChangeText={(text) => this.setState({ ContstName: text })}
+                                                clearTextOnFocus={true}
+                                                returnKeyType='done'
+                                                style={styles.Input_TextStyle}
+
+                                            />
+                                        </View>
+                                    </View>
+
+                                    <View style={styles.ThirdContainer}>
+                                        <Text style={styles.Text_Style}>Contest Fee</Text>
+                                        <View style={[styles.Input_Container, { flexDirection: 'row', }]}>
+                                            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                                <Image source={require('../../../../images/bucks.png')} style={{ height: 12, width: 12, marginLeft: 3 }} />
+                                            </View>
+                                            <TextInput
+                                                onChangeText={(text) => this.setState({ BucksAmount: text })}
+                                                clearTextOnFocus={true}
+                                                returnKeyType='done'
+                                                style={[styles.Input_TextStyle, { width: '95%' }]}
+                                            />
+                                        </View>
+                                    </View>
+
+                                    <View style={styles.ThirdContainer}>
+                                        <Text style={styles.Text_Style}>Contest Type</Text>
+                                        <View style={[styles.Input_Container, { alignContent: 'center', padding: 5 }]}>
+                                            <Dropdown
+                                                dropdownOffset={{ top: 0, left: 0 }}
+                                                dropdownMargins={{ min: 0, max: 0 }}
+                                                dropdownPosition={-3.2}
+                                                itemTextStyle={[styles.Input_TextStyle, { padding: 5, fontFamily: 'Montserrat-Bold', fontSize: hp(1.2), color: '#333333', margin: 0, paddingBottom: 0, width: '100%' }]}
+                                                data={data3}
+                                                onChangeText={value => this.onChangeFilter(value)}
+                                                fontSize={hp(1.6)}
+                                                value={''}
+                                            />
+
+                                        </View>
+                                    </View>
+
+
+
+
+                                    <View style={{ flexDirection: 'row', width: '90%' }}>
+
+                                        <View style={[styles.ThirdContainer, { width: '49%', marginRight: '1%' }]}>
+                                            <Text style={styles.Text_Style}>Start Date</Text>
+                                            <View style={[styles.Input_Container, { flexDirection: 'row', }]}>
+
+                                                <View style={{ width: '80%' }}>
+                                                    <Text style={{ color: 'black', fontFamily: 'Montserrat-SemiBold', padding: 10 }}>{this.start_formated_time}</Text>
+                                                </View>
+                                                <View style={{ width: '20%', justifyContent: 'center', alignItems: 'flex-end' }}>
+                                                    <TouchableOpacity onPress={this.showDateTimePicker}>
+                                                        <Image source={require('../../../../images/calendar.png')}
+                                                            style={{ height: 20, width: 20, marginRight: 10 }}
+                                                            resizeMode="contain"  />
+                                                    </TouchableOpacity>
+                                                </View>
+
+
+                                                <DateTimePicker
+                                                    onDateChange={this.setDate}
+                                                    isVisible={this.state.isDateTimePickerVisible}
+                                                    onConfirm={this.handleStartDatePicked}
+                                                    onCancel={this.hideDateTimePicker}
+                                                    minimumDate={this.minimumDate}
+                                                />
+                                            </View>
+                                        </View>
+
+                                        <View style={[styles.ThirdContainer, { width: '49%', marginLeft: '1%' }]}>
+                                            <Text style={styles.Text_Style}>End Date</Text>
+                                            <View style={[styles.Input_Container, { flexDirection: 'row', }]}>
+
+                                                <View style={{ width: '80%' }}>
+                                                    <Text style={{ color: 'black', fontFamily: 'Montserrat-SemiBold', padding: 10 }}>{this.End_formated_time}</Text>
+                                                </View>
+                                                <View style={{ width: '20%', justifyContent: 'center', alignItems: 'flex-end' }}>
+                                                    <TouchableOpacity onPress={this.showDateTimeEndPicker}>
+                                                        <Image source={require('../../../../images/calendar.png')}
+                                                            style={{ height: 20, width: 20, marginRight: 10 }}
+                                                            resizeMode="contain" />
+                                                    </TouchableOpacity>
+                                                </View>
+
+                                                <DateTimePicker
+                                                    onDateChange={this.setDate}
+                                                    isVisible={this.state.isEndDateTimePickerVisible}
+                                                    onConfirm={this.handleEndDatePicked}
+                                                    onCancel={this.hideDateTimEndPicker}
+                                                    minimumDate={this.state.endminimumDate}
+                                                    // minimumDate={this.minimumDate}
+                                                />
+
+                                            </View>
+                                        </View>
+
+                                    </View>
+
+
+                                    <View style={{ flexDirection: 'row', width: '90%', justifyContent: 'center', alignItems: 'center' }}>
+                                        <View style={[styles.ThirdContainer, { width: '49%', marginRight: '1%' }]}>
+                                            <View style={[styles.ThirdContainer, { width: '98%' }]}>
+                                                <Text style={styles.Text_Style}>Minimum Bet Amount</Text>
+                                                <View style={[styles.Input_Container, { flexDirection: 'row', }]}>
+                                                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                                        <Image source={require('../../../../images/bucks.png')} style={{ height: 12, width: 12, marginLeft: 3 }} />
+                                                    </View>
+                                                    <TextInput
+                                                        onChangeText={(text) => this.setState({ MinBetAmount: text })}
+                                                        clearTextOnFocus={true}
+                                                        returnKeyType='done'
+                                                        style={[styles.Input_TextStyle, { width: '100%' }]}
+                                                    />
+                                                </View>
+                                            </View>
+
+
+
+                                        </View>
+                                        <View style={[styles.ThirdContainer, { width: '50%' }]}>
+                                            <View style={[styles.ThirdContainer, { width: '100%' }]}>
+                                                <Text style={styles.Text_Style}>Maximum Bet Amount</Text>
+                                                <View style={[styles.Input_Container, { flexDirection: 'row', }]}>
+                                                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                                        <Image source={require('../../../../images/bucks.png')} style={{ height: 12, width: 12, marginLeft: 3 }} />
+                                                    </View>
+                                                    <TextInput
+                                                        onChangeText={(text) => this.setState({ MaxBetAmount: text })}
+                                                        clearTextOnFocus={true}
+                                                        returnKeyType='done'
+                                                        style={[styles.Input_TextStyle, { width: '95%' }]}
+                                                    />
+                                                </View>
+                                            </View>
+
+
+                                        </View>
+                                       
+                                    </View>
+
+                                    <View style={styles.ThirdContainer}>
+                                        <Text style={styles.Text_Style}>Prize Type</Text>
+                                        <View style={[styles.Input_Container, { alignContent: 'center', padding: 5 }]}>
+                                            <Dropdown
+                                                dropdownOffset={{ top: 0, left: 0 }}
+                                                dropdownMargins={{ min: 0, max: 0 }}
+                                                dropdownPosition={-3.2}
+                                                itemTextStyle={[styles.Input_TextStyle, { padding: 5, fontFamily: 'Montserrat-Bold', fontSize: hp(1.2), color: '#333333', margin: 0, paddingBottom: 0, width: '100%' }]}
+                                                data={data1}
+                                                onChangeText={value => this.onChange_price_type(value)}
+                                                fontSize={hp(1.6)}
+                                                value={''}
+                                            />
+
+                                        </View>
+                                    </View>
+                                   
+
+
+                                    <View style={styles.ThirdContainer}>
+                                        <View style={{ flexDirection: 'row', marginTop: 10, justifyContent: "center", alignItems: 'center' }}>
+
+                                            <View style={{ width: '45%' }}>
+                                                <Text style={[styles.Text_Style, { color: this.state.privateSwitchAccepted == true ? '#888888' : 'black' }]}>Invitees can invite friends</Text>
+                                            </View>
+                                            <View style={{ width: '10%', justifyContent: 'center', alignItems: 'center' }}>
+                                                <TouchableWithoutFeedback onPress={() => { this.privateSwitchValueChanged() }}>
+                                                    <Image source={this.state.privateSwitchAccepted == true ? require('../../../../images/toggle_on_G.png') : require('../../../../images/toggle_off.png')}
+                                                        style={{ height: 20, width: 40 }}
+                                                        resizeMode="contain"></Image>
+                                                </TouchableWithoutFeedback>
+                                            </View>
+                                            <View style={{ width: '45%' }}>
+                                                <Text style={[styles.Text_Style, { color: this.state.privateSwitchAccepted == true ? 'black' : '#888888', alignSelf: 'flex-end' }]}>Only Creator can invite</Text>
+                                            </View>
+                                        </View>
+                                    </View>
+
+                                </View>
+                            </ScrollView>
+
+                            <View style={{ backgroundColor: '#68bcbc', height: '10%', justifyContent: 'center', alignItems: 'center', paddingTop: 20 }}>
+                                <View style={{ marginTop: 20, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                                    <TouchableWithoutFeedback onPress={() => { this.createprivateBet() }}>
+                                        <View style={{ borderWidth: 2, borderRadius: 50, borderColor: 'white', width: '90%', height: 40, justifyContent: 'center', alignItems: 'center' }}>
+                                            <Text style={{ color: 'white', fontFamily: 'Montserrat-Bold', fontSize: 14, textAlign: 'center' }}>DONE</Text>
+                                        </View>
+                                    </TouchableWithoutFeedback>
+                                    {/* <Text style={{ color: 'white', fontFamily: 'Montserrat-SemiBold', fontSize: 12, marginTop: 10 }}>Create this Contest and Invite Friends</Text> */}
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+                </Animated.View>
+
+
+            </Container>
+        );
+    }
+
+}
+
+const mapStateToProps = (state: GlobalAppState) => ({
+    requestStatus: state.serviceReducer.requestStatus,
+    error: state.serviceReducer.error,
+    serviceKey: state.serviceReducer.serviceKey,
+    listeners: state.serviceReducer.listeners,
+
+    getProfileRequestStatus: state.serviceReducer.requestStatus,
+    getProfileResponse: state.serviceReducer.response,
+    getProfileError: state.serviceReducer.error,
+
+    createContestRequestStatus: state.serviceReducer.requestStatus,
+    CreateContestResponse: state.serviceReducer.response as CreateContestResponse,
+    createContestError: state.serviceReducer.error,
+
+
+})
+
+export default connect(mapStateToProps)(G_PrivateContest);
