@@ -1,6 +1,6 @@
 import React from "react";
 import { Linking, View, Text, FlatList, TextInput, Platform, Alert, TouchableOpacity, ScrollView, AsyncStorage, Animated, UIManager,TouchableHighlight, TouchableWithoutFeedback, AppState, Share, BackHandler, Keyboard, Dimensions, KeyboardAvoidingView,ImageBackground,Modal, PermissionsAndroid } from "react-native";
-import styles from './styles';
+import styles from './styles'; 
 import Modals from 'react-native-modal';
 import { SafeAreaView } from 'react-navigation';
 import Container from '../../../../Components/Container';

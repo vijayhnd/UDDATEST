@@ -1,6 +1,5 @@
 import React, { createRef, useState } from 'react';
 import { View, Text, Image,StyleSheet,Button, FlatList,ImageBackground,Alert, Platform,TouchableWithoutFeedback, TouchableOpacity, AsyncStorage, TextInput, TouchableHighlight, Animated, Keyboard, Dimensions, UIManager, Share, Modal } from "react-native";
-
 // import styles from './settlepoolinfostyles';
 import Container from '../../../../Components/Container';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';

@@ -7,7 +7,7 @@ import { GlobalAppState } from "../../../../ReduxStore";
 import { connect } from 'react-redux';
 import Container from '../../../../Components/Container';
 import AlertUtil from "../../../../Util/AlertUtil";
-import Application from '../../../../Entities/Application';
+import Application from '../../../../Entities/Application'; 
 import VerifyOTPRequest from "../../../../Services/OTP/VerifyOTPRequest";
 import ServiceAction from "../../../../ReduxStore/Generic/GenericeServiceAction";
 import { ServiceType } from "../../../../Services/Core/ServiceFactory";
