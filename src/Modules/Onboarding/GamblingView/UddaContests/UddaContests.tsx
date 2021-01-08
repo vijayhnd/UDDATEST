@@ -570,7 +570,7 @@ var that = this;
                     console.log("Footer comp ---->" + responseJson.message);
                     LogoutUtill.logoutButtonPressed(this.props);
                 } else {
-                  console.log('Udda Contest Data ' + JSON.stringify(responseJson));
+                  //  console.log('Udda Contest Data ' + JSON.stringify(responseJson));
                     if (responseJson.data != []) {
                         // responseJson.data.UddaContests.map((item)=>{
                         //     if(item.ContestType=='Free 2 Play')
@@ -599,8 +599,7 @@ var that = this;
                             //     }))
                             //   });
                            
-                        //var subscribeOrLiveContest = responseJson.data.UddaContests.concat(responseJson.data.Subscribed);
-                        //console.log('subscribeOrLiveContest',subscribeOrLiveContest);
+                        
                         this.setState({ UddaContests: responseJson.data.UddaContests });
                         this.setState({ SubscribedContests: responseJson.data.Subscribed });
                         this.setState({ availabeldata: responseJson.data.AvailableContests });
@@ -1544,7 +1543,7 @@ gotostandinglist(selected_item:any,value:any) {
                         </View>
                     </View>}
                     
-                   {this.state.OpenPlaySwitchAccepted?<View style={[styles.mainContent]}>
+                   {this.state.OpenPlaySwitchAccepted?<View >
                         <View style={{ width: '100%' }}>
                             <View style={{ width: '100%' ,justifyContent:'center',alignItems:'center'}}>
 
@@ -1743,7 +1742,7 @@ gotostandinglist(selected_item:any,value:any) {
 
 
                                 {this.state.private_history_show?null:this.state.CreatedContest == 'A' ?
-                                    <View style={{ width: '95%',height:'87%' }}>
+                                    <View style={{ width: '95%',height:'86%' }}>
                                         {this.state.AcceptedContests.length > 0 ?
                                             <View>
                                                 <FlatList
@@ -1766,15 +1765,15 @@ gotostandinglist(selected_item:any,value:any) {
                                                             <View style={{ width: '100%',padding:10 }}>
                                                                 <ImageBackground source={require('../../../../images/UddaContestsYellow.png')}
                                                                     resizeMode="stretch"
-                                                                    style={{ width: '100%', height: item.ttype == 'contest'?item.is_live_contest == '1' ? 75 :60:60, marginTop: 10 }}>
+                                                                    style={{ width: '100%', height: item.ttype == 'contest'?item.is_live_contest == '1' ? 84 :66:66, marginTop: 10 }}>
                                                                         <View style={{ width: '100%'}}>
                                                                         {item.ttype == 'contest'?item.is_live_contest == '1' && <Text style={[{fontSize: hp(1.5),fontFamily: 'Montserrat-Bold',color:'#f26522',textAlign:'center',padding:0}]}>Live</Text>:null}
                                                                     <View style={{ width: '100%', flexDirection: 'row' }}>
                                                                         <TouchableWithoutFeedback onPress={() => { item.version_number > 2.7 ?this.openDetailmodel(item,'P'):(item.ttype == 'square' || item.ttype == 'pool' || item.ttype == 'bingo')? null:this.gotDetailsScreen(item) }  }>
                                                                             <View style={{ width: '60%', height: 60, justifyContent: 'center', paddingLeft: 10, }}>
-                                                                            <View style={{width:'100%',flexDirection:'row',alignContent:'center'}}>
+                                                                            <View style={{maxWidth:'90%',flexDirection:'row',alignContent:'center'}}>
                                                                                 
-                                                                                <Text style={styles.Challenge_Name_Text}>
+                                                                                <Text style={styles.Challenge_Name_Text} numberOfLines={2} ellipsizeMode={'tail'}>
                                                                                 {item.ttype == 'square' ? item.game_name+' ' : item.ttype == 'pool' ? item.pool_name+' ':item.contest_name+' '}
                                                                                 </Text>
                                                                                 
@@ -1792,13 +1791,13 @@ gotostandinglist(selected_item:any,value:any) {
                                                                                     by {item.creator}
                                                                                 </Text>
                                                                                 {/*garima */}
-                                                                                {item.ttype=='square'?<Text style={styles.Registration_Text}>
+                                                                                {item.ttype=='square'?<Text style={[styles.Registration_Text,{fontSize:hp(1.5)}]}>
                                                                                { moment(item.game_start_timestamp * 1000).format('LT') +' '+ new Date(item.game_start_timestamp * 1000).toString().split(' ')[6].toString().substr(1, new Date(item.game_start_timestamp * 1000).toString().split(' ')[6].length - 2) +' '+ moment(item.game_start_timestamp * 1000).format('LL')}
-                                                                                </Text> : item.ttype == 'pool' ? <Text style={styles.Registration_Text}>
+                                                                                </Text> : item.ttype == 'pool' ? <Text style={[styles.Registration_Text,{fontSize:hp(1.5)}]}>
                                                                                         {moment(item.expired_timestamp * 1000).format('LT') + ' ' + new Date(item.expired_timestamp * 1000).toString().split(' ')[6].toString().substr(1, new Date(item.expired_timestamp * 1000).toString().split(' ')[6].length - 2) + ' ' + moment(item.expired_timestamp * 1000).format('LL')}
-                                                                                </Text>:item.ttype == 'bingo' ? <Text style={styles.Registration_Text}>
+                                                                                </Text>:item.ttype == 'bingo' ? <Text style={[styles.Registration_Text,{fontSize:hp(1.5)}]}>
                                                                                         {moment(item.bingo_expired_timestamp * 1000).format('LT') + ' ' + new Date(item.bingo_expired_timestamp * 1000).toString().split(' ')[6].toString().substr(1, new Date(item.bingo_expired_timestamp * 1000).toString().split(' ')[6].length - 2) + ' ' + moment(item.bingo_expired_timestamp * 1000).format('LL')}
-                                                                                </Text>:<Text style={styles.Registration_Text}>
+                                                                                </Text>:<Text style={[styles.Registration_Text,{fontSize:hp(1.5)}]}>
                                                                                 Registration closes on {item.contest_end_date}
                                                                             </Text>}
                                                                             </View>
@@ -1867,7 +1866,7 @@ gotostandinglist(selected_item:any,value:any) {
 
 
                                 {this.state.private_history_show?null: this.state.CreatedContest == 'C' ?
-                                    <View style={{ width: '95%',height:'87%'}}>
+                                    <View style={{ width: '95%',height:'86%'}}>
 
                                         {this.state.private_contest_array.length > 0 ?
 
@@ -1891,17 +1890,18 @@ gotostandinglist(selected_item:any,value:any) {
 
                                                             <ImageBackground source={require('../../../../images/UddaContestsGreen.png')}
                                                                 resizeMode="stretch"
-                                                                style={{ width: '100%', height:item.ttype == 'contest'?item.is_live_contest == '1' ? 75 :60:60}}>
+                                                                style={{ width: '100%', height:item.ttype == 'contest'?item.is_live_contest == '1' ? 84 :66:66}}>
                                                                     <View style={{ width: '100%'}}>
-                                                                        {item.ttype == 'contest'?item.is_live_contest == '1' && <Text style={[{fontSize: hp(1.5),fontFamily: 'Montserrat-Bold',color:'#f26522',textAlign:'center',padding:0}]}>Live</Text>:null}
+                                                                        {item.ttype == 'contest'?item.is_live_contest == '1' && <Text style={[{fontSize: hp(2.0),fontFamily: 'Montserrat-Bold',color:'#f26522',textAlign:'center',marginTop:3}]}>Live</Text>:null}
                                                                 <View style={{ width: '100%', flexDirection: 'row' }}>
                                                                     <TouchableWithoutFeedback onPress={() => {item.version_number > 2.7 ?this.openDetailmodel(item,'P'): item.ttype == 'contest' && this.gotDetailsScreen(item) }}>
                                                                         <View style={{ width: '60%', height: 60, justifyContent: 'center', paddingLeft: 10, }}>
-                                                                        <View style={{width:'100%',flexDirection:'row',alignContent:'center'}}>
+                                                                        <View style={{maxWidth:'90%',flexDirection:'row',alignContent:'center'}}>
                                                                                 
-                                                                                <Text style={styles.Challenge_Name_Text}>
+                                                                                <Text style={styles.Challenge_Name_Text} numberOfLines={2} ellipsizeMode={'tail'}>
                                                                                 {item.ttype == 'square' ? item.game_name+' ' : item.ttype == 'pool' ? item.pool_name+' ' : item.contest_name+' '}
                                                                                 </Text>
+                                                                               
                                                                                 
                                                                                 {item.version_number > 2.7 ?<TouchableOpacity style={{marginTop:2}} onPress={()=>{item.version_number > 2.7 ? this.openDetailmodel(item,'P'):null}}>
                                                                                 <View   style={[styles.table_title_info_container ]} >
@@ -1915,13 +1915,13 @@ gotostandinglist(selected_item:any,value:any) {
 
                                                                             </Text> */}
                                                                             {/*garima*/}
-                                                                            {item.ttype=='square'?<Text style={styles.Registration_Text}>
+                                                                            {item.ttype=='square'?<Text style={[styles.Registration_Text,{fontSize:hp(1.5)}]}>
                                                                                { moment(item.game_start_timestamp * 1000).format('LT') +' '+ new Date(item.game_start_timestamp * 1000).toString().split(' ')[6].toString().substr(1, new Date(item.game_start_timestamp * 1000).toString().split(' ')[6].length - 2) +' '+ moment(item.game_start_timestamp * 1000).format('LL')}
-                                                                            </Text> : item.ttype == 'pool' ? <Text style={styles.Registration_Text}>
+                                                                            </Text> : item.ttype == 'pool' ? <Text style={[styles.Registration_Text,{fontSize:hp(1.5)}]}>
                                                                                 {moment(item.expired_timestamp * 1000).format('LT') + ' ' + new Date(item.expired_timestamp * 1000).toString().split(' ')[6].toString().substr(1, new Date(item.expired_timestamp * 1000).toString().split(' ')[6].length - 2) + ' ' + moment(item.expired_timestamp * 1000).format('LL')}
-                                                                            </Text>:item.ttype == 'bingo' ? <Text style={styles.Registration_Text}>
+                                                                            </Text>:item.ttype == 'bingo' ? <Text style={[styles.Registration_Text,{fontSize:hp(1.5)}]}>
                                                                                 {moment(item.bingo_expired_timestamp * 1000).format('LT') + ' ' + new Date(item.bingo_expired_timestamp * 1000).toString().split(' ')[6].toString().substr(1, new Date(item.bingo_expired_timestamp * 1000).toString().split(' ')[6].length - 2) + ' ' + moment(item.bingo_expired_timestamp * 1000).format('LL')}
-                                                                            </Text>:<Text style={styles.Registration_Text}>
+                                                                            </Text>:<Text style={[styles.Registration_Text,{fontSize:hp(1.5)}]}>
                                                                                 Registration closes on {item.contest_end_date}
                                                                             </Text>}
                                                                         </View>
@@ -1988,11 +1988,6 @@ gotostandinglist(selected_item:any,value:any) {
                                     </View>
                                     : null}
 
-{this.state.private_history_show?null:<View style={{padding:10,justifyContent:'center',alignContent:'center',alignItems:'center',backgroundColor:'white',width:'100%'}}>
-<TouchableOpacity onPress={()=>{this.setState({private_history_show:true})}}>
-                    <Text style={{ color: '#f26522', fontSize: hp(1.9), fontFamily: 'Montserrat-Bold', textAlign: 'center', textDecorationLine: 'underline' }}>{'CONTEST HISTORY'}</Text>
-                    </TouchableOpacity>
-</View>}
                             </View>
                         </View>
                     </View>:this.state.contest_history?
@@ -2098,9 +2093,9 @@ gotostandinglist(selected_item:any,value:any) {
                                                 style={{ width: '100%', height: 60, marginTop: 10, }}>
                                                 <View style={{ width: '100%', flexDirection: 'row' }}>
                                                     <TouchableOpacity style={{width:'65%'}} onPress={()=>{this.openDetailmodel(item,'')}}>
-                                                    <View style={{ width: '100%', height: 60, justifyContent: 'center', paddingLeft: 5,flexDirection:'row'}}>
-                                                        <View style={{width:'90%'}}>
-                                                       <View style={{width:'100%',flexDirection:'row',alignContent:'center'}}>
+                                                    <View style={{ width: '100%', height: 60, justifyContent: 'center', paddingLeft: 5}}>
+                                                       
+                                                       <View style={{maxWidth:'90%',flexDirection:'row',alignContent:'center'}}>
                                                            
                                                            <Text style={styles.Challenge_Name_Text}>
                                                             {item.ChallengeName+' '}
@@ -2116,7 +2111,7 @@ gotostandinglist(selected_item:any,value:any) {
                                                         <Text style={[styles.Registration_Date,{fontSize:13}]}>
                                                             Registration closes on {new_ContestStartDate}
                                                         </Text>
-                                                        </View>
+                                                        
                                                        
                                                     </View>
                                                     </TouchableOpacity>
@@ -2166,7 +2161,7 @@ gotostandinglist(selected_item:any,value:any) {
                             </View>}
                     </View>: <View style={{ height: '75%', width: '95%', marginTop: 20, paddingBottom: 10, }}>
                         {<View style={{ height: '10%', width: '100%',flexDirection:'row'}}>
-                        <TouchableOpacity onPress={()=>{this.setState({callcontestswitch:'A'})}} style={{width:'50%'}}>
+                        <TouchableOpacity onPress={()=>{this.setState({callcontestswitch:'A'})}} style={{width:'32%'}}>
                         <View style={{justifyContent:'center',alignContent:'center',alignItems:'center',width:'100%',borderBottomColor:'white',borderBottomWidth:this.state.callcontestswitch=='A' ? 2:0}}>
                         <Text onPress={()=>{this.setState({callcontestswitch:'A'})}} style={[styles.Udda_Text,{color:this.state.callcontestswitch=='A' ?'white':'#abe8e6'}]}>Available</Text>
                         </View>
@@ -2485,6 +2480,11 @@ gotostandinglist(selected_item:any,value:any) {
                     
 
                 </View>
+                {this.state.OpenPlaySwitchAccepted ? this.state.private_history_show?null:<View style={{justifyContent:'center',alignContent:'center',alignItems:'center',backgroundColor:'white',width:'100%'}}>
+<TouchableOpacity onPress={()=>{this.setState({private_history_show:true})}}>
+                    <Text style={{ color: '#f26522', fontSize: hp(1.9), fontFamily: 'Montserrat-Bold', textAlign: 'center', textDecorationLine: 'underline' }}>{'CONTEST HISTORY'}</Text>
+                    </TouchableOpacity>
+</View>:null}
                 {this.state.OpenPlaySwitchAccepted==false?this.state.contest_history?null:<View style={{justifyContent:'center',alignContent:'center',alignItems:'center',padding:5,height:this.state.freetoplay?'10%':'5%'}}>
                     <TouchableOpacity onPress={()=>{this.setState({contest_history:true})}}>
                     <Text style={{ color: '#f26522', fontSize: hp(1.9), fontFamily: 'Montserrat-Bold', textAlign: 'center', textDecorationLine: 'underline' }}>{'CONTEST HISTORY'}</Text>

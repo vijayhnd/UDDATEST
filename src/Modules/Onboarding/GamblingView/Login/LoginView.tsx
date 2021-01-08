@@ -57,6 +57,7 @@ import Otpdialog from "../../../../Components/CustomComponents/OtpDialog/Otp";
 import LongButton from '../../../../Components/Button/LongButton';
 import CustomToggleButton from "../../../../Components/CustomToggleButton";
 const CleverTap = require('clevertap-react-native');
+import appsFlyer from 'react-native-appsflyer';
 const { RNTwitterSignIn } = NativeModules
 const Constants = {
   ///Dev Parse keys
@@ -216,6 +217,7 @@ class G_LoginView extends AppValidationComponent<G_LoginViewProps, G_LoginViewSt
   }
 
   async componentDidMount() {
+    //appsFlyer.logEvent('sign_up',{})
     console.log('ashish login props', this.props.phoneSignUpRequestStatus)
     this.closecurrent()
     //console.log('vijaytest1');
@@ -897,6 +899,7 @@ class G_LoginView extends AppValidationComponent<G_LoginViewProps, G_LoginViewSt
 
                 that.referralservice.logEvent('sign_up', {});
                 CleverTap.recordEvent('sign_up');
+                appsFlyer.logEvent('sign_up',{})
                 //AppEventsLogger.logEvent('sign_up');
 
                 AppEventsLogger.logEvent('fb_mobile_complete_registration','','USD');
@@ -957,6 +960,7 @@ class G_LoginView extends AppValidationComponent<G_LoginViewProps, G_LoginViewSt
         that.referralservice.logEvent('sign_up', {});
         AppEventsLogger.logEvent('fb_mobile_complete_registration','','USD');
         CleverTap.recordEvent('sign_up');
+        appsFlyer.logEvent('sign_up',{})
         
       }, 2000);
     } else {

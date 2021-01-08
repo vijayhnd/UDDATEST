@@ -278,7 +278,7 @@ class G_ContestBingoView
 
               //  this.shareOption(response, 'CUSTOMSQUARE');
             } else {
-              AlertUtil.show("Unsuccesfull :" + response.message);
+              AlertUtil.show("Unsuccesful :" + response.message);
             }
 
             var serviceAction = new ServiceAction();

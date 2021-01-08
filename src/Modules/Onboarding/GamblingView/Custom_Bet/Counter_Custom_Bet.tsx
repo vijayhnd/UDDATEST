@@ -1314,7 +1314,7 @@ class G_CounterCustomBet extends AppValidationComponent<G_CounterCustomBetViewPr
               this.setState({ valueofMoneylineDialogShow: '0.00' });
             }
             else {
-              AlertUtil.show('Unsuccesfull :' + response.message);
+              AlertUtil.show('Unsuccesful :' + response.message);
               this.setState({ customBetTest: '' });
               this.setState({ customBetQTest1: '' });
               this.setState({ customBetQTest2: '' });

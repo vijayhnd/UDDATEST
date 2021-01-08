@@ -1162,7 +1162,7 @@ class AcceptSquare
                 this.props
               );
             } else {
-              AlertUtil.show("Unsuccesfull :" + response.message);
+              AlertUtil.show("Unsuccesful :" + response.message);
             }
             this.getProfile();
             var serviceAction = new ServiceAction();

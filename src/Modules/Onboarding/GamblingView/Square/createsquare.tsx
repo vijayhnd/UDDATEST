@@ -510,7 +510,7 @@ class G_CreateSquareView
 
               this.shareOption(response, "CUSTOMSQUARE");
             } else {
-              AlertUtil.show("Unsuccesfull :" + response.message);
+              AlertUtil.show("Unsuccesful :" + response.message);
             }
 
             this.setState({ square_limit_per_player: "" });

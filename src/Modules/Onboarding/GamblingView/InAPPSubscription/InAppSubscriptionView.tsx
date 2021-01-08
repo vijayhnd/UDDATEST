@@ -267,7 +267,11 @@ class G_InAPPSubscriptionView extends AppValidationComponent<G_InAPPSubscription
                                           this.getProfile();
                                     }
                                     else {
+<<<<<<< HEAD
                                           AlertUtil.show('Unsuccesfull ' + response.message);
+=======
+                                          AlertUtil.show('Unsuccesful ' + response.message);
+>>>>>>> main
 
                                     }
 

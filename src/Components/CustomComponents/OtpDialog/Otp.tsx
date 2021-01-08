@@ -36,7 +36,9 @@ import {
 } from "react-native-responsive-screen";
 import LoginResponse from "../../../Services/Onboarding/LoginResponse";
 import LoginServiceParser from "../../../Services/Onboarding/LoginServiceParser";
+
 import ProgressLoader from 'rn-progress-loader';
+
 const { State: TextInputState } = TextInput;
 
 const G_VerifyOTPViewContent = {

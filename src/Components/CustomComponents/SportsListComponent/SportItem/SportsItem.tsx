@@ -111,7 +111,8 @@ export default class SportsItemView extends Component<SportsItemProp> {
                     src = require('../../../../images/slice_icon/custom_bet.png');
                     break;
                     case 'bingo':
-                    src = require('../../../../images/slice_icon/bingo_default.png');
+                    src = require('../../../../images/bingo_new.png');
+                    // src = require('../../../../images/slice_icon/bingo_default.png');
                     break;
                 case 'Tennis':
                     src= require('../../../../images/slice_icon/pro_tennis.png');

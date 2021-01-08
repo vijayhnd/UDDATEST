@@ -418,7 +418,7 @@ class G_CreateBingoView
 
               //  this.shareOption(response, 'CUSTOMSQUARE');
             } else {
-              AlertUtil.show("Unsuccesfull :" + response.message);
+              AlertUtil.show("Unsuccesful :" + response.message);
             }
 
             var serviceAction = new ServiceAction();

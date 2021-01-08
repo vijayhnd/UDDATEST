@@ -523,7 +523,7 @@ export class G_InvitationToJoin extends AppValidationComponent<G_InvitationToJoi
                       <Text style={styles.Text_Allan}>{this.state.ContestData.join_fee}.<Text style={{ fontSize: 10 }}>00</Text></Text>
                     </View>
                     <View style={styles.Line1}></View>
-                    <Text style={styles.Text_ContestName}>CONTEST FEE</Text>
+                   {this.state.ContestData.version_number > 2.7 ? <Text style={styles.Text_ContestName}>ENTRY FEE</Text>:<Text style={styles.Text_ContestName}>CONTEST FEE</Text>}
                   </View>
                 </View>
 
@@ -541,7 +541,7 @@ export class G_InvitationToJoin extends AppValidationComponent<G_InvitationToJoi
                   <View style={{ width: '49%', justifyContent: 'center', alignItems: 'center', marginLeft: '0.5%' }}>
                     <Text style={styles.Text_Allan}>{this.state.ContestData.ContestType}</Text>
                     <View style={styles.Line1}></View>
-                    <Text style={styles.Text_ContestName}>CONTEST TYPE</Text>
+                    {this.state.ContestData.version_number > 2.7 ?<Text style={styles.Text_ContestName}>MINIMUM PICKS PER</Text>:<Text style={styles.Text_ContestName}>CONTEST TYPE</Text>}
                   </View>
                 </View>
 
@@ -606,12 +606,12 @@ export class G_InvitationToJoin extends AppValidationComponent<G_InvitationToJoi
                       <Text style={[styles.Text_Allan, { color: this.state.ContestData.price_type == 'See Prize Chart' ? '#68bcbc' : 'black', textDecorationLine: this.state.ContestData.price_type == 'See Prize Chart' ? 'none' : 'none' }]}>{this.state.ContestData.price_type}</Text>
                     </TouchableWithoutFeedback>
                     <View style={styles.Line1}></View>
-                    <Text style={styles.Text_ContestName}>PRIZE TYPE</Text>
+                    {this.state.ContestData.version_number > 2.7 ?<Text style={styles.Text_ContestName}>Prize Payout(s)</Text>:<Text style={styles.Text_ContestName}>PRIZE TYPE</Text>}
                   </View>
 
                 </View>
 
-               {this.state.ContestData.version_number =='2.8' && <View style={{justifyContent:'center',alignContent:'center',alignItems:'center',backgroundColor: '#eeeeee',padding:5,paddingBottom:10}}>
+               {this.state.ContestData.version_number > 2.7 && <View style={{justifyContent:'center',alignContent:'center',alignItems:'center',backgroundColor: '#eeeeee',padding:5,paddingBottom:10}}>
                    <TouchableOpacity onPress={()=>{this.openDetailmodel()}}>
                     <Text style={{ color: '#f26522', fontSize: hp(1.9), fontFamily: 'Montserrat-Bold', textAlign: 'center', textDecorationLine: 'underline' }}>{'View Contest Details'}</Text>
                     </TouchableOpacity>
@@ -638,14 +638,34 @@ export class G_InvitationToJoin extends AppValidationComponent<G_InvitationToJoi
               </View>
 
               </View>
+              {this.state.ContestData.is_share == '0' ?<View style={{ width: '100%' }}>
+                <View style={styles.LineImageContainer}>
+                  <Image
+                    resizeMode="contain"
+                    source={require('../../../../images/DotedLine.png')}
+                    style={{ height: 2, width: '100%', marginTop: 10 }}>
+                  </Image>
+                </View>
 
+                <View style={{ padding: 10, width: '100%' }}>
+                  <TouchableWithoutFeedback onPress={() => { this.SharePrivateContest(this.state.ContestData) }}>
+                    <View style={styles.BorderContainer}>
+                      <Image
+                        resizeMode="contain"
+                        style={{ height: hp(2.5), width: hp(2.5), marginRight: 1 }}
+                        source={require('../../../../images/gaming_share.png')} />
+                      <Text style={styles.Text_ViewThisContest}>INVITE MORE FRIENDS</Text>
+                    </View>
+                  </TouchableWithoutFeedback>
+                </View>
+              </View>:null}
               
             </View>
 
 
+           
 
-
-            {this.state.ContestData.is_share == '0' ?
+            {/* {this.state.ContestData.is_share == '0' ?
               <View style={{ width: '100%' }}>
                 <View style={styles.LineImageContainer}>
                   <Image
@@ -687,7 +707,7 @@ export class G_InvitationToJoin extends AppValidationComponent<G_InvitationToJoi
                   </View>
                 </View>
               </View>
-            }
+            } */}
          
         </KeyboardAwareScrollView>
         

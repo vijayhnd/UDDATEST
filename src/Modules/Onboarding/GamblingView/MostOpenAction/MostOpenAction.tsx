@@ -365,7 +365,7 @@ class MostOpenActionView extends AppValidationComponent<G_MostOpenActionViewProp
                         this.setState({ valueofMoneylineDialog: '0.00' });
                     }
                     else {
-                        AlertUtil.show('Unsuccesfull :' + this.state.ErrorMessage);
+                        AlertUtil.show('Unsuccesful :' + this.state.ErrorMessage);
                         this.setState({ betammount: '' });
                         this.setState({ amounttowin: '' });
                         this.setState({ valueofMoneylineDialog: '0.00' });

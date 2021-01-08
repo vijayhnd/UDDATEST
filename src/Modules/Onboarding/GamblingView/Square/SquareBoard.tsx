@@ -471,7 +471,7 @@ class SquareBoard
 
               this.shareOption(response, "CUSTOMSQUARE");
             } else {
-              AlertUtil.show("Unsuccesfull :" + response.message);
+              AlertUtil.show("Unsuccesful :" + response.message);
             }
             this.getProfile();
             var serviceAction = new ServiceAction();

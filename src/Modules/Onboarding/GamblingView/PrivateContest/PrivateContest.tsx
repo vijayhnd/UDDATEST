@@ -122,7 +122,11 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
     private serviceRequestInProgress = false;
     private End_formated_time = moment().format('L');
     private start_formated_time = moment().format('L');
+<<<<<<< HEAD
     private RegistrationEndDate = moment().format('L'); 
+=======
+    private RegistrationEndDate = moment().format('L');
+>>>>>>> main
     private authorisationToken = Application.sharedApplication().user!.authenticationToken;
     private Username = Application.sharedApplication().user!.profile.firstName != null ? Application.sharedApplication().user!.profile.displayName : Application.sharedApplication().user!.profile.firstName + " " + Application.sharedApplication().user!.profile.lastName;
     public minimumDate = new Date();
@@ -150,12 +154,20 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
             MessageString: '',
             AllSports: [],
             MinBetAmount: '',
+<<<<<<< HEAD
             prize_type: '',
+=======
+            prize_type: 'Winner Takes All',
+>>>>>>> main
             MaxBetAmount: '',
             endminimumDate: new Date(),
             shift: new Animated.Value(0),
             Max_no_user: '',
+<<<<<<< HEAD
             Number_picks: [{ value: 'Daily Pick' }, { value: 'Pick Weekly' }, { value: 'Pick Monthly' }, { value: 'Pick Season' }],
+=======
+            Number_picks: [{ value: 'Daily Pick', label: 'Day' }, { value: 'Pick Weekly' , label: 'Week'}, { value: 'Pick Monthly', label: 'Month' }, { value: 'Pick Season' , label: 'Season'}],
+>>>>>>> main
             Number_picks_value: '',
             End_of_season: false,
             Last_date_Picker: false,
@@ -171,7 +183,11 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
             Minimum_picks: '',
             Maximum_picks: '',
             Wining_type: 'udda_bucks',
+<<<<<<< HEAD
             Wining_amount: '',
+=======
+            Wining_amount: '0',
+>>>>>>> main
             Rentry_value: 'yes',
             No_of_reentry: '',
             Threshold_amount: '',
@@ -181,7 +197,11 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
             Check_box1: false,
             Check_box2: false,
             Check_box3: false,
+<<<<<<< HEAD
             currency_type: '',
+=======
+            currency_type: 'UDDA Bucks',
+>>>>>>> main
             league_data: [],
             league_model: false,
             create_contest_btn: false,
@@ -194,7 +214,11 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
 
 
     componentDidMount() {
+<<<<<<< HEAD
         
+=======
+       
+>>>>>>> main
         this.callSports();
      
     }
@@ -523,14 +547,24 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
         this.handleDatePicked(this.state.chosenDate);
     }
     onChangeBankroll(value: any) {
+<<<<<<< HEAD
         
         if(value=='No'){
             this.setState({ Winner_declared: 'correct_pick' })
+=======
+       
+        if(value=='No'){
+            this.setState({ Winner_declared: 'most_wins' })
+>>>>>>> main
            
         }else{
             this.setState({ Winner_declared: 'highest_bankroll' })
         }
+<<<<<<< HEAD
         
+=======
+       
+>>>>>>> main
         this.setState({ Bankroll_value: value });
         //this.handleDatePicked(this.state.chosenDate);
     }
@@ -614,7 +648,11 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
         for (let i = 0; i < count; i++) {
             this.state.No_of_entry_boxes.push('')
         }
+<<<<<<< HEAD
         
+=======
+       
+>>>>>>> main
         this.setState({ No_of_entry_boxes: this.state.No_of_entry_boxes })
     }
 
@@ -661,7 +699,11 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
     }
 
     createprivate_contest() {
+<<<<<<< HEAD
   
+=======
+ 
+>>>>>>> main
 
         var line_permit = []
         if (this.state.Check_box1) {
@@ -680,10 +722,17 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
             || this.state.Number_picks_value == '' || this.state.BucksAmount.trim() == '' || this.state.Last_date_register == ''
             || this.state.Winner_declared == '' || this.state.Minimum_picks.trim() == '' || this.state.Maximum_picks.trim() == '' || this.state.Wining_amount.trim() == ''
             || this.state.prize_type == '' || line_permit.length == 0 ) {
+<<<<<<< HEAD
             AlertUtil.show('Please fill All details. !!')
         } else {
             // alert('false')
             this.setState({confirmPrivateBet:false});   
+=======
+            AlertUtil.show('Please fill all the details.')
+        } else {
+            // alert('false')
+            this.setState({confirmPrivateBet:false});  
+>>>>>>> main
 
 
             // return;
@@ -748,7 +797,11 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
             };
 
             console.log('create private :', params)
+<<<<<<< HEAD
             
+=======
+           
+>>>>>>> main
 
             this.setState({ create_contest_btn: true });
 
@@ -840,7 +893,11 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
 
                 } else {
                     if (responseJson.error == 1) {
+<<<<<<< HEAD
                         AlertUtil.showSingleActionMessage(responseJson.message, function () { 
+=======
+                        AlertUtil.showSingleActionMessage(responseJson.message, function () {
+>>>>>>> main
                             that.setState({ loader: false });
                             that.setState({ End_of_season: false })
                          })
@@ -901,7 +958,11 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
         console.log('reminder',index % 2)
         if(index % 2 ==0) {
          return {
+<<<<<<< HEAD
             width: "49%", 
+=======
+            width: "49%",
+>>>>>>> main
          }
         } else {
           return {
@@ -1134,7 +1195,11 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
                 <Dialog
                     visible={this.state.shareDialog}
                     title=""
+<<<<<<< HEAD
                 // onTouchOutside={() => this.setState({ shareDialog: false })} 
+=======
+                // onTouchOutside={() => this.setState({ shareDialog: false })}
+>>>>>>> main
                 >
 
                     <View style={{ backgroundColor: "white" }}>
@@ -1193,7 +1258,11 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
 
 
                         <View style={{ flex: 1 }}>
+<<<<<<< HEAD
                             <View style={{ height: '90%', backgroundColor: '#FFF' }}>
+=======
+                            <View style={{ height: '97%', backgroundColor: '#FFF' }}>
+>>>>>>> main
                                 <ScrollView>
                                     <View style={styles.content}>
                                         <View style={styles.ThirdContainers}>
@@ -1250,6 +1319,7 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
 
                                         <View style={[styles.ThirdContainers, { flex: 1, flexDirection: "row" }]}>
                                             <View style={{ width: "49%", marginRight: "2%" }}>
+<<<<<<< HEAD
                                                 <Text style={styles.Text_Style_Label}>Maximum Number of User</Text>
                                                 <View style={[styles.Input_Containers, styles.inputPadding, styles.textboxborder]}>
                                                     <TextInput
@@ -1353,6 +1423,8 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
 
                                         <View style={[styles.ThirdContainers, { flex: 1, flexDirection: "row" }]}>
                                             <View style={{ width: "49%", marginRight: "2%" }}>
+=======
+>>>>>>> main
                                                 <Text style={styles.Text_Style_Label}>First Game Date</Text>
                                                 <View style={[styles.Input_Containers, styles.inputPadding, styles.textboxborder, styles.heightCalender, { flexDirection: 'row' }]}>
 
@@ -1391,7 +1463,11 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
                                                                 style={{ height: 20, width: 20, marginRight: 10 }}
                                                                 resizeMode="contain" />
                                                         </TouchableOpacity>
+<<<<<<< HEAD
                                                     </View> 
+=======
+                                                    </View>
+>>>>>>> main
 
                                                     <DateTimePicker
                                                         onDateChange={this.setDate}
@@ -1410,6 +1486,27 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
 
 
                                         <View style={[styles.ThirdContainers, { flex: 1, flexDirection: "row" }]}>
+<<<<<<< HEAD
+=======
+                                           
+                                            <View style={{ width: "100%" }}>
+
+                                                <Text style={[styles.Text_Style_Label]}>End of season</Text>
+                                                <View style={[styles.Input_Containers, { flexDirection: 'row', backgroundColor: '', marginLeft: "15%" }]}>
+                                                    <TouchableOpacity onPress={() => { this.change_season() }}>
+                                                        <Image source={this.state.End_of_season ? require('../../../../images/toggle_on_G.png') : require('../../../../images/toggle_off.png')}
+                                                            style={{ height: 40, width: 60 }}
+                                                            resizeMode="contain"></Image>
+                                                    </TouchableOpacity>
+                                                </View>
+
+                                            </View>
+                                        </View>
+
+
+
+                                        <View style={[styles.ThirdContainers, { flex: 1, flexDirection: "row" }]}>
+>>>>>>> main
                                             <View style={{ width: "100%", marginRight: "2%" }}>
                                             <Text style={styles.Text_Style_Label}>Last Date to Register</Text>
                                                 <View style={[styles.Input_Containers, styles.inputPadding, styles.textboxborder, styles.heightCalender, { flexDirection: 'row', }]}>
@@ -1436,6 +1533,7 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
                                                     />
 
                                                 </View>
+<<<<<<< HEAD
                                                 {/* <Text style={styles.Text_Style_Label}>First Date to Register</Text>
                                                 <TouchableOpacity onPress={this.showPostDateTimeEndPicker}>
                                                     <View style={[styles.Input_Containers, styles.inputPadding, styles.textboxborder, styles.heightCalender, { flexDirection: 'row' }]}>
@@ -1507,24 +1605,157 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
                                                     style={[
                                                         styles.Input_Containers,
                                                         styles.inputPadding,
+=======
+                                               
+                                            </View>
+
+
+                                         
+
+
+
+                                        </View>
+
+
+                                        <View style={[styles.ThirdContainers, { flex: 1, flexDirection: "row" }]}>
+                                           
+
+
+                                            <View style={{ width: "100%", marginRight: "2%" }}>
+                                                <Text style={styles.Text_Style_Label}>Entry Fee</Text>
+                                                <View style={[styles.Input_Containers, styles.inputPadding, styles.textboxborder, { flexDirection: 'row', }]}>
+                                                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                                        <Image source={require('../../../../images/bucks.png')} style={{ height: 12, width: 12, marginLeft: 3 }} />
+                                                    </View>
+                                                    <TextInput
+                                                        placeholder=' Enter Entry Fee'
+                                                        placeholderTextColor={'#888888'}
+                                                        onChangeText={(text) => this.setState({ BucksAmount: text })}
+                                                        clearTextOnFocus={true}
+                                                        keyboardType={'numeric'}
+                                                        returnKeyType='done'
+                                                        style={[styles.Input_TextStyles, { width: '95%' }]}
+                                                    />
+                                                </View>
+                                            </View>
+
+
+
+                                        </View>
+
+
+
+                                        {/* <View style={[styles.ThirdContainers, { flex: 1, flexDirection: "row" }]}>
+                                            <View style={{ width: "100%", marginRight: "2%" }}>
+                                                <Text style={styles.Text_Style_Label}>Winners Receive</Text>
+                                                <View style={[styles.Input_Containers, { backgroundColor: '', alignContent: 'center', flexDirection: 'row', flexWrap: 'wrap' }]}>
+                                                    <RadioForm
+                                                        // radio_props={[{ label: 'Real Money' + '    ', value: 'Real Money' },{ label: 'UDDA Bucks' + '    ', value: 'UDDA Bucks' },{ label: 'Swag' + '    ', value: 'Swag' }]}
+                                                        radio_props={[{ label: 'UDDA Bucks' + '    ', value: 'udda_bucks' }]}
+                                                        initial={0}
+                                                        formHorizontal={false}
+                                                        labelHorizontal={true}
+                                                        buttonColor={'#ACACAC'}
+                                                        buttonSize={6}
+                                                        buttonOuterSize={19}
+                                                        selectedButtonColor={'#68bcbc'}
+                                                        buttonWrapStyle={{ marginBottom: 10 }}
+                                                        labelWrapStyle={{ marginBottom: 10 }}
+                                                        // buttonStyle={{marginTop:5,borderWidth:50}}
+                                                        labelStyle={{ opacity: 1, color: '#222', fontSize: hp(2.2), fontFamily: 'Montserrat-Semibold', flexWrap: 'wrap' }}
+                                                        animation={false}
+                                                        disabled={false}
+                                                        onPress={(value) => { this.setState({ Wining_type: value }) }}
+                                                    />
+                                                </View>
+                                            </View>
+                                            </View> */}
+
+
+
+                                        <View style={styles.ThirdContainers}>
+                                            <Text style={styles.Text_Style_Label}>Prize Payout(s)*</Text>
+                                            <Text style={styles.Text_Style_Label}>*Prize Pool Based on Number of Entries</Text>
+                                            <View
+                                                style={[
+                                                    styles.Input_Containers,
+                                                    styles.inputPadding,
+                                                    {
+                                                        justifyContent: "center",
+                                                        alignContent: "center",
+                                                        alignItems: "center",
+                                                        paddingBottom: 0,
+                                                        height: hp(8.1),
+                                                    },
+                                                ]}
+                                            >
+                                                <Dropdown
+                                                    dropdownOffset={{ top: 0, left: 0 }}
+                                                    dropdownMargins={{ min: 0, max: 0 }}
+                                                    dropdownPosition={-2.1}
+                                                    containerStyle={{
+                                                        backgroundColor: "#F4F4F4",
+                                                        borderBottomWidth: 0,
+                                                        justifyContent: "center",
+                                                        width: "100%",
+                                                    }}
+                                                    inputContainerStyle={{
+                                                        borderBottomColor: "transparent",
+                                                        marginLeft: "2%",
+                                                    }}
+                                                    itemTextStyle={[
+                                                        { fontFamily: "Montserrat-Bold", fontSize: hp(2.3) },
+                                                    ]}
+                                                    data={data1}
+                                                    onChangeText={value => this.onChange_price_type(value)}
+
+                                                    value={this.state.prize_type}
+                                                />
+
+                                            </View>
+                                        </View>
+
+
+
+                                        <View style={[styles.ThirdContainers, { flex: 1, flexDirection: "row" }]}>
+                                           
+                                            <View style={{ width: "100%" }}>
+                                                <Text style={[styles.Text_Style_Label,{width:'85%',flexWrap:'wrap'}]}>Minimum Picks Per</Text>
+                                                <View
+                                                    style={[
+                                                        styles.Input_Containers,
+
+>>>>>>> main
                                                         {
                                                             justifyContent: "center",
                                                             alignContent: "center",
                                                             alignItems: "center",
                                                             paddingBottom: 0,
                                                             height: hp(8.1),
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
                                                         },
                                                     ]}
                                                 >
                                                     <Dropdown
                                                         dropdownOffset={{ top: 0, left: 0 }}
                                                         dropdownMargins={{ min: 0, max: 0 }}
+<<<<<<< HEAD
                                                         dropdownPosition={-2.2}
+=======
+                                                        dropdownPosition={-4.2}
+>>>>>>> main
                                                         containerStyle={{
                                                             backgroundColor: "#F4F4F4",
                                                             borderBottomWidth: 0,
                                                             justifyContent: "center",
                                                             width: "100%",
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
                                                         }}
                                                         inputContainerStyle={{
                                                             borderBottomColor: "transparent",
@@ -1533,15 +1764,22 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
                                                         itemTextStyle={[
                                                             { fontFamily: "Montserrat-Bold", fontSize: hp(2.3) },
                                                         ]}
+<<<<<<< HEAD
                                                         data={this.state.Bankroll_data}
                                                         onChangeText={value => this.onChangeBankroll(value)}
                                                         fontSize={hp(2.3)}
                                                         value={this.state.Bankroll_value}
+=======
+                                                        data={this.state.Number_picks}
+                                                        onChangeText={value => this.onChangeNumber_picked(value)}
+                                                        fontSize={hp(2.3)}
+>>>>>>> main
                                                     />
                                                 </View>
 
 
                                             </View>
+<<<<<<< HEAD
                                             <View style={{ width: "58%" }}>
                                                 <Text style={styles.Text_Style_Label}>Winner Declared By</Text>
                                                 <View
@@ -1555,6 +1793,61 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
                                                             paddingBottom: 0,
                                                             height: hp(8.1),
                                                         },
+=======
+                                        </View>
+
+
+
+                                        <View style={[styles.ThirdContainers, { flex: 1, flexDirection: "row" }]}>
+                                            <View style={{ width: "49%", marginRight: "2%" }}>
+                                                <Text style={styles.Text_Style_Label}>Minimum Picks</Text>
+                                                <View style={[styles.Input_Containers, styles.inputPadding, styles.textboxborder]}>
+                                                    <TextInput
+                                                        placeholder='Minimum Picks'
+                                                        placeholderTextColor={'#888888'}
+                                                        onChangeText={(text) => this.setState({ Minimum_picks: text })}
+                                                        keyboardType={'numeric'}
+                                                        clearTextOnFocus={true}
+                                                        returnKeyType='done'
+                                                        style={styles.Input_TextStyles}
+
+                                                    />
+                                                </View>
+                                            </View>
+                                            <View style={{ width: "49%" }}>
+                                                <Text style={styles.Text_Style_Label}>Maximum Picks</Text>
+                                                <View style={[styles.Input_Containers, styles.inputPadding, styles.textboxborder]}>
+                                                    <TextInput
+                                                        placeholder='Maximum Picks'
+                                                        placeholderTextColor={'#888888'}
+                                                        keyboardType={'numeric'}
+                                                        onChangeText={(text) => this.setState({ Maximum_picks: text })}
+                                                        clearTextOnFocus={true}
+                                                        returnKeyType='done'
+                                                        style={styles.Input_TextStyles}
+
+                                                    />
+                                                </View>
+                                            </View>
+                                        </View>
+
+
+
+                                        <View style={[styles.ThirdContainers, { flex: 1, flexDirection: "row" }]}>
+                                            <View style={{ width: "100%", marginRight: "2%" }}>
+                                                <Text style={styles.Text_Style_Label}>Bankroll</Text>
+                                                <View
+                                                    style={[
+                                                        styles.Input_Containers,
+                                                        styles.inputPadding,
+                                                        {
+                                                            justifyContent: "center",
+                                                            alignContent: "center",
+                                                            alignItems: "center",
+                                                            paddingBottom: 0,
+                                                            height: hp(8.1),
+                                                        },
+>>>>>>> main
                                                     ]}
                                                 >
                                                     <Dropdown
@@ -1574,6 +1867,7 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
                                                         itemTextStyle={[
                                                             { fontFamily: "Montserrat-Bold", fontSize: hp(2.3) },
                                                         ]}
+<<<<<<< HEAD
                                                         data={this.state.Bankroll_value == 'No' ? [{ value: 'correct_pick', label: 'All Corect Pick' }, { value: 'most_wins', label: 'Most Wins' }] : [{ value: 'highest_bankroll', label: 'Highest Bankroll' }]}
                                                         onChangeText={value => this.setState({ Winner_declared: value })}
                                                         fontSize={hp(2.3)}
@@ -1668,6 +1962,71 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
                                         {this.state.Bankroll_value == 'Yes' && <View>
                                             <View style={[styles.ThirdContainers, { flex: 1, flexDirection: "row" }]}>
                                                 <View style={{ width: "49%", marginRight: "2%" }}>
+=======
+                                                        data={this.state.Bankroll_data}
+                                                        onChangeText={value => this.onChangeBankroll(value)}
+                                                        fontSize={hp(2.3)}
+                                                        value={this.state.Bankroll_value}
+                                                    />
+                                                </View>
+
+
+                                            </View>
+                                            </View>
+
+
+
+                                        <View style={[styles.ThirdContainers, { flex: 1, flexDirection: "row" }]}>
+                                           
+                                            <View style={{ width: "100%" }}>
+                                                <Text style={styles.Text_Style_Label}>Winner Declared By</Text>
+                                                <View
+                                                    style={[
+                                                        styles.Input_Containers,
+                                                        styles.inputPadding,
+                                                        {
+                                                            justifyContent: "center",
+                                                            alignContent: "center",
+                                                            alignItems: "center",
+                                                            paddingBottom: 0,
+                                                            height: hp(8.1),
+                                                        },
+                                                    ]}
+                                                >
+                                                    <Dropdown
+                                                        dropdownOffset={{ top: 0, left: 0 }}
+                                                        dropdownMargins={{ min: 0, max: 0 }}
+                                                        dropdownPosition={-2.2}
+                                                        containerStyle={{
+                                                            backgroundColor: "#F4F4F4",
+                                                            borderBottomWidth: 0,
+                                                            justifyContent: "center",
+                                                            width: "100%",
+                                                        }}
+                                                        inputContainerStyle={{
+                                                            borderBottomColor: "transparent",
+                                                            marginLeft: "2%",
+                                                        }}
+                                                        itemTextStyle={[
+                                                            { fontFamily: "Montserrat-Bold", fontSize: hp(2.3) },
+                                                        ]}
+                                                        data={this.state.Bankroll_value == 'No' ? [{ value: 'correct_pick', label: 'All Correct Picks' }, { value: 'most_wins', label: 'Most Wins' }] : [{ value: 'highest_bankroll', label: 'Highest Bankroll' }]}
+                                                        onChangeText={value => this.setState({ Winner_declared: value })}
+                                                        fontSize={hp(2.3)}
+                                                        value={this.state.Winner_declared}
+                                                    />
+                                                </View>
+
+                                            </View>
+                                        </View>
+
+
+
+
+                                        {this.state.Bankroll_value == 'Yes' && <View>
+                                        <View style={[styles.ThirdContainers, { flex: 1, flexDirection: "row" }]}>
+                                                <View style={{ width: "100%", marginRight: "2%" }}>
+>>>>>>> main
                                                     <Text style={styles.Text_Style_Label}>Bankroll Amount</Text>
                                                     <View style={[styles.Input_Containers, styles.inputPadding, styles.textboxborder]}>
                                                         <TextInput
@@ -1682,7 +2041,14 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
                                                         />
                                                     </View>
                                                 </View>
+<<<<<<< HEAD
                                                 <View style={{ width: "49%" }}>
+=======
+                                                </View>
+                                            <View style={[styles.ThirdContainers, { flex: 1, flexDirection: "row" }]}>
+                                               
+                                                <View style={{ width: "100%" }}>
+>>>>>>> main
                                                     <Text style={styles.Text_Style_Label}> Bet Entire Bankroll</Text>
                                                     <View style={[styles.Input_Container, { backgroundColor: '', alignContent: 'center', flexDirection: 'row' }]}>
                                                         <RadioForm
@@ -1755,6 +2121,28 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
                                         </View>}
 
 
+<<<<<<< HEAD
+=======
+                                       
+
+                                        <View style={[styles.ThirdContainers, { flex: 1, flexDirection: "row" }]}>
+                                            <View style={{ width: "100%", marginRight: "2%" }}>
+                                                <Text style={[styles.Text_Style_Label,{width:'85%',flexWrap:'wrap'}]}>Maximum Number of User</Text>
+                                                <View style={[styles.Input_Containers, styles.inputPadding, styles.textboxborder]}>
+                                                    <TextInput
+                                                        placeholder='Maximum Number of User'
+                                                        placeholderTextColor={'#888888'}
+                                                        onChangeText={(text) => this.setState({ Max_no_user: text })}
+                                                        clearTextOnFocus={true}
+                                                        keyboardType={'numeric'}
+                                                        returnKeyType='done'
+                                                        style={styles.Input_TextStyles}
+
+                                                    />
+                                                </View>
+                                            </View>
+                                           
+                                        </View>
 
 
 
@@ -1762,12 +2150,50 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
 
 
 
+                                        {/* <View style={[styles.ThirdContainers, { flex: 1, flexDirection: "row" }]}>
+                                            <View style={{ width: "100%", marginRight: "2%" }}>
+                                                <Text style={styles.Text_Style_Label}>Entry Fee</Text>
+                                                <View style={[styles.Input_Containers, styles.inputPadding, styles.textboxborder, { flexDirection: 'row', }]}>
+                                                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                                        <Image source={require('../../../../images/bucks.png')} style={{ height: 12, width: 12, marginLeft: 3 }} />
+                                                    </View>
+                                                    <TextInput
+                                                        placeholder=' Enter Entry Fee'
+                                                        placeholderTextColor={'#888888'}
+                                                        onChangeText={(text) => this.setState({ BucksAmount: text })}
+                                                        clearTextOnFocus={true}
+                                                        keyboardType={'numeric'}
+                                                        returnKeyType='done'
+                                                        style={[styles.Input_TextStyles, { width: '95%' }]}
+                                                    />
+                                                </View>
+                                            </View>
+                                        </View> */}
+
+
+>>>>>>> main
+
+
+
+
+<<<<<<< HEAD
+=======
+                               
+>>>>>>> main
+
+
+
+
+<<<<<<< HEAD
+=======
+                                       
+>>>>>>> main
 
 
 
 
 
-
+<<<<<<< HEAD
 
 
 
@@ -1799,6 +2225,118 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
                                                 </View>
                                             </View>
                                             {this.state.Wining_type == 'Swag' ? <View style={{ width: "49%" }}>
+=======
+                                       
+
+
+                                     
+
+
+                                        <View style={styles.ThirdContainers}>
+                                            <Text style={styles.Text_Style_Label}>Bets/Lines Permitted (Choose 1,2 or 3)</Text>
+                                            <View style={[styles.Input_Containers, { padding: 0, backgroundColor: '' }]}>
+                                                {this.state.Bankroll_value == 'Yes' ?
+                                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                                                        <View>
+                                                            <CheckBox
+                                                                center
+                                                                containerStyle={{ padding: 0, backgroundColor: '', margin: 0, marginLeft: 0, borderWidth: 0 }}
+                                                                title='Money Line'
+                                                                checked={this.state.Check_box1}
+                                                                onPress={() => { this.setState({ Check_box1: !this.state.Check_box1 }) }}
+                                                                checkedColor='#68bcbc'
+                                                                uncheckedColor='black'
+                                                                fontFamily={'Montserrat-SemiBold'}
+
+                                                                textStyle={{ fontFamily: 'Montserrat-SemiBold', fontSize: hp(2.3), }}
+                                                            />
+
+                                                        </View>
+                                                        <View >
+                                                            <CheckBox
+                                                                center
+                                                                containerStyle={{ padding: 0, backgroundColor: '', margin: 0, marginLeft: 0, borderWidth: 0 }}
+                                                                title='Total (Over/Under)'
+                                                                checked={this.state.Check_box2}
+                                                                onPress={() => { this.setState({ Check_box2: !this.state.Check_box2 }) }}
+                                                                checkedColor='#68bcbc'
+                                                                uncheckedColor='black'
+                                                                textStyle={{ fontFamily: 'Montserrat-SemiBold', fontSize: hp(2.3), }}
+                                                            />
+                                                        </View>
+                                                        <View >
+                                                            <CheckBox
+                                                                center
+                                                                containerStyle={{ padding: 0, backgroundColor: '', margin: 0, marginLeft: 0, borderWidth: 0 }}
+                                                                title='Point Spread'
+                                                                checked={this.state.Check_box3}
+                                                                onPress={() => { this.setState({ Check_box3: !this.state.Check_box3 }) }}
+                                                                checkedColor='#68bcbc'
+                                                                uncheckedColor='black'
+                                                                textStyle={{ fontFamily: 'Montserrat-SemiBold', fontSize: hp(2.3), }}
+                                                            />
+                                                        </View>
+
+                                                    </View> :
+                                                    <View style={{ flexDirection: 'row' , flexWrap: 'wrap'}}>
+                                                        <View >
+                                                            <CheckBox
+                                                                center
+                                                                containerStyle={{ padding: 0, backgroundColor: '', margin: 0, marginLeft: 0, borderWidth: 0 }}
+                                                                title='Total (Over/Under)'
+                                                                checked={this.state.Check_box2}
+                                                                onPress={() => { this.setState({ Check_box2: !this.state.Check_box2 }) }}
+                                                                checkedColor='#68bcbc'
+                                                                uncheckedColor='black'
+                                                                textStyle={{ fontFamily: 'Montserrat-SemiBold', fontSize: hp(2.3), }}
+                                                            />
+                                                        </View>
+                                                        <View >
+                                                            <CheckBox
+                                                                center
+                                                                containerStyle={{ padding: 0, backgroundColor: '', margin: 0, marginLeft: 0, borderWidth: 0 }}
+                                                                title='Point Spread'
+                                                                checked={this.state.Check_box3}
+                                                                onPress={() => { this.setState({ Check_box3: !this.state.Check_box3 }) }}
+                                                                checkedColor='#68bcbc'
+                                                                uncheckedColor='black'
+                                                                textStyle={{ fontFamily: 'Montserrat-SemiBold', fontSize: hp(2.3), }}
+                                                            />
+                                                        </View>
+
+                                                    </View>
+                                                }
+
+
+                                            </View>
+                                        </View>
+
+                                       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                        {/* <View style={[styles.ThirdContainers, { flex: 1, flexDirection: "row" }]}>
+                                           
+                                            {this.state.Wining_type == 'Swag' ? <View style={{ width: "100%" }}>
+>>>>>>> main
                                                 <Text style={styles.Text_Style_Label}>SWAG Product</Text>
                                                 <View style={[styles.Input_Container, { alignContent: 'center', padding: 5 }]}>
                                                     <Dropdown
@@ -1826,11 +2364,19 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
                                                     />
 
                                                 </View>
+<<<<<<< HEAD
                                             </View> : <View style={{ width: "49%" }}>
+=======
+                                            </View> : <View style={{ width: "100%" }}>
+>>>>>>> main
                                                     <Text style={styles.Text_Style_Label}>Guaranteed Winning Amount</Text>
                                                     <View style={[styles.Input_Containers, styles.inputPadding, styles.textboxborder]}>
                                                         <TextInput
                                                             placeholder='Guaranteed Amount'
+<<<<<<< HEAD
+=======
+                                                            value={this.state.Wining_amount}
+>>>>>>> main
                                                             placeholderTextColor={'#888888'}
                                                             onChangeText={(text) => this.setState({ Wining_amount: text })}
                                                             clearTextOnFocus={true}
@@ -1841,6 +2387,7 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
                                                         />
                                                     </View>
                                                 </View>}
+<<<<<<< HEAD
                                         </View>
 
                                         <View style={[styles.ThirdContainers, { flex: 1, flexDirection: "row" }]}>
@@ -1920,6 +2467,17 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
                                         {this.state.Bankroll_value == 'No' ? null : <View style={{ width: '100%', alignContent: 'center', justifyContent: 'center', alignItems: 'center' }}>
                                             <View style={[styles.ThirdContainers, { flex: 1, flexDirection: "row" }]}>
                                                 <View style={{ width: "49%", marginRight: "2%" }}>
+=======
+                                        </View> */}
+
+                                       
+
+
+                                     
+                                        {this.state.Bankroll_value == 'No' ? null : <View style={{ width: '100%', alignContent: 'center', justifyContent: 'center', alignItems: 'center' }}>
+                                            <View style={[styles.ThirdContainers, { flex: 1, flexDirection: "row" }]}>
+                                                <View style={{ width: "100%", marginRight: "2%" }}>
+>>>>>>> main
                                                     <Text style={styles.Text_Style_Label}>Allow Re-entry</Text>
                                                     <View style={[styles.Input_Containers, { backgroundColor: '', alignContent: 'center', flexDirection: 'row', flexWrap: 'wrap' }]}>
                                                         <RadioForm
@@ -1944,7 +2502,11 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
 
                                                     </View>
                                                 </View>
+<<<<<<< HEAD
                                                 <View style={{ width: "49%" }}>
+=======
+                                                {/* <View style={{ width: "49%" }}>
+>>>>>>> main
                                                     <Text style={styles.Text_Style_Label}>Currency Type</Text>
                                                     <View
                                                         style={[
@@ -1983,7 +2545,11 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
                                                         />
 
                                                     </View>
+<<<<<<< HEAD
                                                 </View>
+=======
+                                                </View> */}
+>>>>>>> main
                                             </View>
 
                                             <View style={[styles.ThirdContainers, { flex: 1, flexDirection: "row" }]}>
@@ -2032,7 +2598,11 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
                                                 return (
                                                     <View style={[styles.ThirdContainers, {   }]}>
                                                          {/* <View style={this.getTextStyle(index)}> */}
+<<<<<<< HEAD
                                                         
+=======
+                                                       
+>>>>>>> main
                                                         <Text style={styles.Text_Style_Label}>{'Re-Entry Amount ' + (index + 1)}</Text>
                                                         <View style={[styles.Input_Containers, styles.inputPadding, styles.textboxborder]}>
                                                             <TextInput
@@ -2044,7 +2614,11 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
                                                                 style={styles.Input_TextStyles}
 
                                                             />
+<<<<<<< HEAD
                                                       
+=======
+                                                     
+>>>>>>> main
                                                         </View>
                                                     </View>
                                                 )
@@ -2089,7 +2663,11 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
                       <Text style={styles.table_title_info_text}> i </Text>
                       </TouchableOpacity>
                     </View>
+<<<<<<< HEAD
                     
+=======
+                   
+>>>>>>> main
                   </View>
 
               <ToggleSwitch
@@ -2110,7 +2688,11 @@ export class G_PrivateContest extends AppValidationComponent<G_PrivateContestPro
                       <Text style={styles.table_title_info_text}> i </Text>
                       </TouchableOpacity>
                     </View>
+<<<<<<< HEAD
                     
+=======
+                   
+>>>>>>> main
               </View>
               </View>
 

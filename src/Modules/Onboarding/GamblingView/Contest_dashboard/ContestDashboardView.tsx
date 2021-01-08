@@ -1317,7 +1317,7 @@ this.setLeaugedata();
               this.setState({ valueofMoneylineDialogShow: '0.00' });
             }
             else {
-              //  AlertUtil.show('Unsuccesfull :' + response.message);
+              //  AlertUtil.show('Unsuccesful :' + response.message);
               this.setState({ betammount: '' });
               this.setState({ amounttowin: '' });
               this.setState({ valueofMoneylineDialog: '0.00' });
@@ -1375,7 +1375,7 @@ this.setLeaugedata();
               this.setState({ valueofMoneylineDialogShow: '0.00' });
             }
             else {
-              AlertUtil.show('Unsuccesfull :' + response.message);
+              AlertUtil.show('Unsuccesful :' + response.message);
               this.setState({ betammount: '' });
               this.setState({ amounttowin: '' });
               this.setState({ valueofMoneylineDialog: '0.00' });
@@ -4150,7 +4150,8 @@ goinfo() {
                                       {item.games.MONEY_LINE.home.value > 0 ? '+' : ''}{item.games.MONEY_LINE.home.value}
                                     </Text> */}
                                         <View style={[styles.flatlist_icon_style]} >
-                                          {item.games.MONEY_LINE.home.flag && <Icon name="check" size={12} color="white" />}
+                                          {item.games.MONEY_LINE.home.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                          {/* {item.games.MONEY_LINE.home.flag && <Icon name="check" size={12} color="white" />} */}
                                         </View>
                                         <View style={[styles.flatlist_odd_style]} >
                                           <Text style={[{ color: item.isMoneyLineSelect2 != true ? 'white' : '#68bcbc' }, styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -4176,7 +4177,8 @@ goinfo() {
                                       U {item.games.TOTAL.home.other_value} ({Math.sign(item.games.TOTAL.home.value) == +1 ? '+' : ''}{item.games.TOTAL.home.value})
                                     </Text> */}
                                         <View style={[styles.flatlist_icon_style]} >
-                                          {item.games.TOTAL.home.flag && <Icon name="check" size={12} color="white" />}
+                                          {item.games.TOTAL.home.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                          {/* {item.games.TOTAL.home.flag && <Icon name="check" size={12} color="white" />} */}
 
                                         </View>
                                         <View style={[styles.flatlist_odd_style]} >
@@ -4205,7 +4207,8 @@ goinfo() {
                                       {Math.sign(item.games.SPREAD.home.other_value) == +1 ? '+' : ''}{item.games.SPREAD.home.other_value} ({Math.sign(item.games.SPREAD.home.value) == +1 ? '+' : ''}{item.games.SPREAD.home.value})
                                     </Text> */}
                                         <View style={[styles.flatlist_icon_style]} >
-                                          {item.games.SPREAD.home.flag && <Icon name="check" size={12} color="white" />}
+                                          {item.games.SPREAD.home.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                          {/* {item.games.SPREAD.home.flag && <Icon name="check" size={12} color="white" />} */}
                                         </View>
                                         <View style={[styles.flatlist_odd_style]} >
                                           <Text style={[{ color: item.isSpreadSelect2 != true ? 'white' : '#68bcbc' }, styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -4238,7 +4241,8 @@ goinfo() {
                                     },styles[this.drawblockHeight]]}>
 
                                       <View style={[styles.flatlist_icon_style]} >
-                                        {item.games.MONEY_LINE.draw.flag && <Icon name="check" size={12} color="white" />}
+                                        {item.games.MONEY_LINE.draw.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                        {/* {item.games.MONEY_LINE.draw.flag && <Icon name="check" size={12} color="white" />} */}
                                       </View>
                                       <View style={[styles.flatlist_odd_style]} >
                                         <Text style={[{ color: item.isMoneyLineDraw != true ? '#FFF' : '#68bcbc' }, styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -4282,7 +4286,8 @@ goinfo() {
                                         {item.games.MONEY_LINE.away.value > 0 ? '+' : ''}{item.games.MONEY_LINE.away.value}
                                       </Text> */}
                                         <View style={[styles.flatlist_icon_style]} >
-                                          {item.games.MONEY_LINE.away.flag && <Icon name="check" size={12} color="white" />}
+                                          {item.games.MONEY_LINE.away.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                          {/* {item.games.MONEY_LINE.away.flag && <Icon name="check" size={12} color="white" />} */}
                                         </View>
                                         <View style={[styles.flatlist_odd_style]} >
                                           <Text style={[{ color: item.isMoneyLineSelect1 != true ? 'white' : '#68bcbc' }, styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -4309,7 +4314,8 @@ goinfo() {
                                         O {item.games.TOTAL.away.other_value} ({Math.sign(item.games.TOTAL.away.value) == +1 ? '+' : ''}{item.games.TOTAL.away.value})
                                       </Text> */}
                                         <View style={[styles.flatlist_icon_style]} >
-                                          {item.games.TOTAL.away.flag && <Icon name="check" size={12} color="white" />}
+                                          {item.games.TOTAL.away.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                          {/* {item.games.TOTAL.away.flag && <Icon name="check" size={12} color="white" />} */}
                                         </View>
                                         <View style={[styles.flatlist_odd_style]} >
 
@@ -4335,7 +4341,8 @@ goinfo() {
                                         {Math.sign(item.games.SPREAD.away.other_value) == +1 ? '+' : ''}{item.games.SPREAD.away.other_value} ({Math.sign(item.games.SPREAD.away.value) == +1 ? '+' : ''}{item.games.SPREAD.away.value})
                                       </Text> */}
                                         <View style={[styles.flatlist_icon_style]} >
-                                          {item.games.SPREAD.away.flag && <Icon name="check" size={12} color="white" />}
+                                          {item.games.SPREAD.away.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                          {/* {item.games.SPREAD.away.flag && <Icon name="check" size={12} color="white" />} */}
                                         </View>
                                         <View style={[styles.flatlist_odd_style]} >
                                           <Text style={[{ color: item.isSpreadSelect1 != true ? 'white' : '#68bcbc' }, styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -4382,7 +4389,8 @@ goinfo() {
                                         {item.games.MONEY_LINE.away.value > 0 ? '+' : ''}{item.games.MONEY_LINE.away.value}
                                       </Text> */}
                                           <View style={[styles.flatlist_icon_style]} >
-                                            {item.games.MONEY_LINE.away.flag && <Icon name="check" size={12} color="white" />}
+                                            {item.games.MONEY_LINE.away.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                            {/* {item.games.MONEY_LINE.away.flag && <Icon name="check" size={12} color="white" />} */}
                                           </View>
                                           <View style={[styles.flatlist_odd_style]} >
                                             <Text style={[{ color: item.isMoneyLineSelect1 != true ? 'white' : '#68bcbc' }, styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -4409,7 +4417,8 @@ goinfo() {
                                         O {item.games.TOTAL.away.other_value} ({Math.sign(item.games.TOTAL.away.value) == +1 ? '+' : ''}{item.games.TOTAL.away.value})
                                       </Text> */}
                                           <View style={[styles.flatlist_icon_style]} >
-                                            {item.games.TOTAL.away.flag && <Icon name="check" size={12} color="white" />}
+                                            {item.games.TOTAL.away.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                            {/* {item.games.TOTAL.away.flag && <Icon name="check" size={12} color="white" />} */}
                                           </View>
                                           <View style={[styles.flatlist_odd_style]} >
 
@@ -4435,7 +4444,8 @@ goinfo() {
                                         {Math.sign(item.games.SPREAD.away.other_value) == +1 ? '+' : ''}{item.games.SPREAD.away.other_value} ({Math.sign(item.games.SPREAD.away.value) == +1 ? '+' : ''}{item.games.SPREAD.away.value})
                                       </Text> */}
                                           <View style={[styles.flatlist_icon_style]} >
-                                            {item.games.SPREAD.away.flag && <Icon name="check" size={12} color="white" />}
+                                            {item.games.SPREAD.away.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                            {/* {item.games.SPREAD.away.flag && <Icon name="check" size={12} color="white" />} */}
                                           </View>
                                           <View style={[styles.flatlist_odd_style]} >
                                             <Text style={[{ color: item.isSpreadSelect1 != true ? 'white' : '#68bcbc' }, styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -4487,7 +4497,8 @@ goinfo() {
                                         {item.games.MONEY_LINE.home.value > 0 ? '+' : ''}{item.games.MONEY_LINE.home.value}
                                       </Text> */}
                                           <View style={[styles.flatlist_icon_style]} >
-                                            {item.games.MONEY_LINE.home.flag && <Icon name="check" size={12} color="white" />}
+                                            {item.games.MONEY_LINE.home.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                            {/* {item.games.MONEY_LINE.home.flag && <Icon name="check" size={12} color="white" />} */}
                                           </View>
                                           <View style={[styles.flatlist_odd_style]} >
                                             <Text style={[{ color: item.isMoneyLineSelect2 != true ? 'white' : '#68bcbc' }, styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -4513,7 +4524,8 @@ goinfo() {
                                         U {item.games.TOTAL.home.other_value} ({Math.sign(item.games.TOTAL.home.value) == +1 ? '+' : ''}{item.games.TOTAL.home.value})
                                       </Text> */}
                                           <View style={[styles.flatlist_icon_style]} >
-                                            {item.games.TOTAL.home.flag && <Icon name="check" size={12} color="white" />}
+                                            {item.games.TOTAL.home.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                            {/* {item.games.TOTAL.home.flag && <Icon name="check" size={12} color="white" />} */}
 
                                           </View>
                                           <View style={[styles.flatlist_odd_style]} >
@@ -4542,7 +4554,8 @@ goinfo() {
                                         {Math.sign(item.games.SPREAD.home.other_value) == +1 ? '+' : ''}{item.games.SPREAD.home.other_value} ({Math.sign(item.games.SPREAD.home.value) == +1 ? '+' : ''}{item.games.SPREAD.home.value})
                                       </Text> */}
                                           <View style={[styles.flatlist_icon_style]} >
-                                            {item.games.SPREAD.home.flag && <Icon name="check" size={12} color="white" />}
+                                            {item.games.SPREAD.home.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                            {/* {item.games.SPREAD.home.flag && <Icon name="check" size={12} color="white" />} */}
                                           </View>
                                           <View style={[styles.flatlist_odd_style]} >
                                             <Text style={[{ color: item.isSpreadSelect2 != true ? 'white' : '#68bcbc' }, styles[this.isfontSize], styles.flatlist_data_text]}>

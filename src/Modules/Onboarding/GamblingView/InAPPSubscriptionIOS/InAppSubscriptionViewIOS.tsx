@@ -240,7 +240,7 @@ class G_InAPPSubscriptionViewIOS extends AppValidationComponent<G_InAPPSubscript
                                           this.getProfile();
                                     }
                                     else {
-                                          AlertUtil.show('Unsuccesfull ' + response.message);
+                                          AlertUtil.show('Unsuccesful ' + response.message);
 
                                     }
 

@@ -1220,8 +1220,9 @@ class G_BetInfo extends AppValidationComponent<G_BetInfoViewProps, G_BetInfoView
                                             {/* <Text style={[styles.DescText, { marginTop: 15 }]}>Go to your favourite sport/team </Text>
                                             <Text style={styles.DescText}>to start betting. </Text> */}
                                         </View>:this.state.result_bet_type=='open'?<View style={styles.OtherTextSubContainer}>
-                                             <Text style={styles.UnderConstText1}>You cannot view bets for others</Text>
-                                             <Text style={styles.UnderConstText1}> before the game starts. Stay Tuned!</Text>
+                                             <Text style={styles.UnderConstText1}>You can view other players bets as</Text>
+                                             <Text style={styles.UnderConstText1}> soon as the game(s) start. Stay Tuned!</Text>
+                                              
                                             
                                             {/* <Text style={[styles.DescText, { marginTop: 15 }]}>Go to your favourite sport/team </Text>
                                             <Text style={styles.DescText}>to start betting. </Text> */}

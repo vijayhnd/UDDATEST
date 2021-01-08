@@ -2,6 +2,7 @@ import React, { createRef, useState } from 'react';
 import { View, Text, Image, FlatList, TouchableWithoutFeedback,SafeAreaView, TouchableOpacity, AsyncStorage, TextInput, TouchableHighlight, Animated, Keyboard, Dimensions, UIManager, Share, Modal } from "react-native";
 
 import styles from './agreedisagreestyles';
+import MasterCss from '../Mastercss'
 import Container from '../../../../Components/Container';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import AppValidationComponent, { Field, AppValidationComponentState, AppValidationComponentProps } from "../../../../Util/AppValidationComponent";
@@ -299,18 +300,18 @@ class G_AgreeDisagreeInfoView extends AppValidationComponent<G_AgreeDisagreeInfo
 
 
                     <View style={{ width: '100%', flexDirection: 'row' }}>
-                        <Text style={{ width: '40%', fontSize: 12, fontFamily: 'Montserrat-Regular', height: 20, alignItems: 'center' }}>Bet Date:</Text>
+                        <Text style={[MasterCss.Text_Style_Label_Medium,{ width: '40%', height: 20, alignItems: 'center' }]}>Bet Date:</Text>
 
                         <View style={{ flexDirection: 'row', width: '60%', justifyContent: 'flex-end', height: 20 }}>
-                            <Text style={{ fontFamily: 'Montserrat-Bold', fontSize: 12, alignItems: 'center' }}>{this.state.blackdialogDate}</Text>
+                            <Text style={[MasterCss.Text_Style_Value,{  alignItems: 'center' }]}>{this.state.blackdialogDate}</Text>
                         </View>
                     </View>
 
                     <View style={{ width: '100%', flexDirection: 'row' }}>
-                        <Text style={{ width: '40%', fontSize: 12, fontFamily: 'Montserrat-Regular', height: 20, alignItems: 'center' }}>Creator</Text>
+                        <Text style={[MasterCss.Text_Style_Label_Medium,{ width: '40%', height: 20, alignItems: 'center' }]}>Creator</Text>
 
                         <View style={{ flexDirection: 'row', width: '60%', justifyContent: 'flex-end', height: 20 }}>
-                            <Text style={{ fontFamily: 'Montserrat-Bold', fontSize: 12, alignItems: 'center' }}>{this.state.agreedata.creator}</Text>
+                            <Text style={[MasterCss.Text_Style_Value,{  alignItems: 'center' }]}>{this.state.agreedata.creator}</Text>
                         </View>
                     </View>
 
@@ -321,6 +322,19 @@ class G_AgreeDisagreeInfoView extends AppValidationComponent<G_AgreeDisagreeInfo
 
                     {this.state.agreedata.share_info.length > 0 ?
                     <View style={{height:hp(63)}}>
+
+                        <View style={{justifyContent:'center',alignContent:'center',alignItems:'center',flexDirection:'row',width:'100%'}}>
+                                  <View style={{justifyContent:'flex-start',alignContent:'flex-start',alignItems:'flex-start',width:'40%'}} >
+                                      <Text style={[MasterCss.Text_Style_Label_Large]}>Name</Text>
+                                  </View>
+                                  <View style={{justifyContent:'flex-start',alignContent:'flex-start',alignItems:'flex-start',width:'35%'}} >
+                                      <Text style={[MasterCss.Text_Style_Label_Large,{}]} >Amount</Text>
+                                 </View>
+                                 <View style={{justifyContent:'flex-start',alignContent:'flex-start',alignItems:'flex-start',width:'25%'}} >
+                                      <Text style={[MasterCss.Text_Style_Label_Large]}>Status</Text>
+                                </View>
+                        </View>
+                        
                         <FlatList
                             extraData={this.state}
                             data={this.state.agreedata.share_info}
@@ -329,21 +343,82 @@ class G_AgreeDisagreeInfoView extends AppValidationComponent<G_AgreeDisagreeInfo
                             renderItem={({ item, index }: any) => {
                                 return (
                                     item.status == 1 ? <View>
-                                        <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between' , height:40,alignItems:'center',alignContent:'center'}}>
-                                            <View style={{ width: '50%' }}><Text style={{ fontSize: 12, fontFamily: 'Montserrat-Bold', height: 20, alignItems: 'center' }}>{item.username}</Text></View>
-
-                                            <View style={{ flexDirection: 'row', height: 20, width: '30%' }}>
-                                                <Image source={require('../../../../images/BucksWhite.png')} style={{ height: 8, width: 8, alignItems: 'center', marginRight: 2, marginTop: 3 }} />
-                                                <Text style={{ fontFamily: 'Montserrat-Bold', fontSize: 12, alignItems: 'center' }}>{item.amount}</Text>
+                                      
+                                        <View style={{ width: '100%', flexDirection: 'row', height:60,paddingTop:5}}>
+                                            
+                                            <View style={{ width: '40%',alignContent:'flex-start',alignItems:'flex-start',justifyContent:'flex-start',marginRight:'1%' }}>
+                                                <View style={{flexDirection:'row',width:'100%'}}>
+                                                 <View style={{width:'70%'}}>
+                                                <Text style={[MasterCss.Text_Style_Value,{  }]}>{item.username}</Text>
+                                                </View>
+                                                <View style={{width:'30%'}}>
+                                                <Image source={require('../../../../images/ftpprize_icon.png')} style={{ width: 20, height: 20 }}
+                                                            resizeMode={'contain'} />
+                                                </View>
+                                                </View>
+                                               
+                                                <Text style={[MasterCss.Text_Style_Label_Small,{width:'99%'}]}>My Answer: <Text style={[MasterCss.Text_Style_Value,{  }]} >{item.username}</Text></Text>
+                                                
+                                               
+                                                </View>
+                                                <View style={{  width: '35%' }}>
+                                            <View style={{ flexDirection: 'row',  width: '100%' }}>
+                                                <Image source={require('../../../../images/BucksDark.png')} style={{ height: 8, width: 8, marginRight: 2, marginTop: 6 }} />
+                                                <Text style={[MasterCss.Text_Style_Value,{  }]}>{item.amount}</Text>
+                                                
                                             </View>
-                                            <View style={{ width: '20%' }}><Text style={{ color: '#808080', fontFamily: 'Montserrat-Bold', fontSize: 12, alignItems: 'center', textAlign: "right"}}>{item.settled_status}</Text></View>
+                                            <Text style={[MasterCss.Text_Style_Label_Small]}>Win Amount:</Text>
+                                            {/* <Text style={[MasterCss.Text_Style_Value,{  }]}>{item.amount}</Text> */}
+                                            </View>
+                                            <View style={{ width: '25%' }}>
+                                                <Text style={[MasterCss.Text_Style_Value,{  }]}>{item.settled_status}</Text>
+                                                 <Text style={[MasterCss.Text_Style_Value,{  }]}>{item.amount}</Text>
+                                            </View>
+                                          
                                         </View>
                                         <View style={styles.hrline1} />
 
                                        
                                         
                                     </View> : <View >
-                                            <View style={{ height:40,width: '100%', flexDirection: 'row', justifyContent: 'space-between',alignContent:'center',alignItems:'center' }}>
+
+
+                                    <View style={{ width: '100%', flexDirection: 'row', height:60,paddingTop:5}}>
+                                            
+                                            <View style={{ width: '40%',alignContent:'flex-start',alignItems:'flex-start',justifyContent:'flex-start',marginRight:'1%' }}>
+                                                <View style={{flexDirection:'row',width:'100%'}}>
+                                                 <View style={{width:'70%'}}>
+                                                <Text style={[MasterCss.Text_Style_Value,{ textDecorationLine: 'line-through' }]}>{item.username}</Text>
+                                                </View>
+                                                <View style={{width:'30%'}}>
+                                                <Image source={require('../../../../images/ftpprize_icon.png')} style={{ width: 20, height: 20 }}
+                                                            resizeMode={'contain'} />
+                                                </View>
+                                                </View>
+                                               
+                                                <Text style={[MasterCss.Text_Style_Label_Small,{width:'99%'}]}>My Answer: <Text style={[MasterCss.Text_Style_Value,{  }]} >{item.username}</Text></Text>
+                                                
+                                               
+                                                </View>
+                                                <View style={{  width: '35%' }}>
+                                            <View style={{ flexDirection: 'row',  width: '100%' }}>
+                                                <Image source={require('../../../../images/BucksDark.png')} style={{ height: 8, width: 8, marginRight: 2, marginTop: 6 }} />
+                                                <Text style={[MasterCss.Text_Style_Value,{textDecorationLine: 'line-through'  }]}>{item.amount}</Text>
+                                                
+                                            </View>
+                                            <Text style={[MasterCss.Text_Style_Label_Small]}>Win Amount:</Text>
+                                            {/* <Text style={[MasterCss.Text_Style_Value,{  }]}>{item.amount}</Text> */}
+                                            </View>
+                                            <View style={{ width: '25%' }}>
+                                                <Text style={[MasterCss.Text_Style_Value,{  }]}>{item.settled_status}</Text>
+                                                 <Text style={[MasterCss.Text_Style_Value,{  }]}>{item.amount}</Text>
+                                            </View>
+                                          
+                                        </View>
+
+
+
+                                            {/* <View style={{ height:40,width: '100%', flexDirection: 'row', justifyContent: 'space-between',alignContent:'center',alignItems:'center' }}>
                                                 <View style={{ width: '50%' }}> <Text style={{ color: '#808080', fontSize: 12, fontFamily: 'Montserrat-Bold', height: 20, alignItems: 'center', textDecorationLine: 'line-through' }}>{item.username}</Text></View>
 
                                                 <View style={{ flexDirection: 'row', height: 20, width: '30%'}}>
@@ -351,7 +426,7 @@ class G_AgreeDisagreeInfoView extends AppValidationComponent<G_AgreeDisagreeInfo
                                                     <Text style={{ color: '#808080', fontFamily: 'Montserrat-Bold', fontSize: 12, alignItems: 'center', textDecorationLine: 'line-through' }}>{item.amount}</Text>
                                                 </View>
                                                 <View style={{ width: '20%', }}> <Text style={{ color: '#808080', fontFamily: 'Montserrat-Bold', fontSize: 12, alignItems: 'center',textAlign:"right" }}>{item.settled_status}</Text></View>
-                                            </View>
+                                            </View> */}
                                             <View style={styles.hrline1} />
                                         </View>
                                 )
@@ -364,13 +439,13 @@ class G_AgreeDisagreeInfoView extends AppValidationComponent<G_AgreeDisagreeInfo
                         </View>
 
                     }
-                    {this.state.agreedata.result_type == 4 ?null:this.state.agreedata.settlement_status == 'Settlement In-Progress' ? this.state.agreedata.bet_type == 2 && this.state.agreedata.creator_index == '0' ? <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    {this.state.agreedata.result_type == 4 ?null:this.state.agreedata.settlement_status == 'Settlement In-Progress' ? this.state.agreedata.bet_type == 2 && this.state.agreedata.creator_index == '0' && this.state.agreedata.result_type == '0'? <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                         <TouchableWithoutFeedback onPress={() => { this.shareOption(this.state.agreedata) }}>
                             <View style={{ backgroundColor: '#68bcbc', paddingVertical: 7, marginVertical: 10, width: '95%', alignItems: 'center', borderRadius: 3 }}>
                                 <Text style={{ color: 'white', fontFamily: 'Montserrat-Bold', fontSize: 15, alignItems: 'center' }}> Invite More Friends</Text>
                             </View>
                         </TouchableWithoutFeedback>
-                    </View> : this.state.agreedata.bet_type == 1 ? <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    </View> : this.state.agreedata.bet_type == 1 && this.state.agreedata.result_type == '0' ? <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                         <TouchableWithoutFeedback onPress={() => { this.shareOption(this.state.agreedata) }}>
                             <View style={{ backgroundColor: '#68bcbc', paddingVertical: 7, marginVertical: 10, width: '95%', alignItems: 'center', borderRadius: 3 }}>
                                 <Text style={{ color: 'white', fontFamily: 'Montserrat-Bold', fontSize: 15, alignItems: 'center' }}> Invite More Friends</Text>
@@ -896,9 +971,10 @@ class G_AgreeDisagreeInfoView extends AppValidationComponent<G_AgreeDisagreeInfo
               </View>
               <View style={{ alignContent: 'flex-start', alignItems: 'flex-start', width:'70%' }}>
                 <Text style={[styles.customheadtext,{color:'#68bcbc'}]}>{(this.state.result_status == '0') ? 'POOL DETAIL' : 'CUSTOM POOL RESULT'}</Text>
-              </View>
+              </View> 
         </View>
-                            {this.state.agreedata.qr_code!='' &&<View style={{justifyContent:'center',flexDirection:'row',alignContent:'center',alignItems:'center',paddingLeft:'5%',paddingRight:'5%'}}>
+        
+                            {this.state.agreedata.qr_code != '' &&<View style={{justifyContent:'center',flexDirection:'row',alignContent:'center',alignItems:'center',paddingLeft:'5%',paddingRight:'5%'}}>
                              
                               <TouchableOpacity onPress={()=>{this.openQrModel(this.state.agreedata.qr_code)}}>
                               <Image
@@ -909,6 +985,10 @@ class G_AgreeDisagreeInfoView extends AppValidationComponent<G_AgreeDisagreeInfo
                                 </Image>
                               </TouchableOpacity>
                             </View>}
+
+                            {this.state.agreedata.settlement_status == 'Settlement In-Progress' && <View style={{justifyContent:'center',alignContent:'center',alignItems:'center',marginTop:5}}>
+                                <Text style={{ fontFamily: 'Montserrat-Bold', fontSize: hp(2.4), color: '#222', textAlign: 'justify', paddingLeft: 0 }}>{this.state.agreedata.settlement_status == 'Settlement In-Progress' ? this.state.agreedata.settlement_status :null}</Text>                                
+                                </View>}
                             <View style={{ flex: 1, padding: '5%' }}>
                                 <View>
                                     <View style={{ backgroundColor: 'white' }} >
@@ -974,7 +1054,7 @@ class G_AgreeDisagreeInfoView extends AppValidationComponent<G_AgreeDisagreeInfo
 
                                            <View style={{width:'50%'}}>
                                             <Text style={{ padding: 10, fontFamily: 'Montserrat-Semibold', fontSize: hp(2.1), color: 'grey', textAlign: 'justify' }}>
-                                                {this.state.agreedata.settlement_status == 'Settlement In-Progress' ? this.state.agreedata.settlement_status : (this.state.agreedata.winning_status == 'R' || this.state.agreedata.winning_status == 'W') ? '+' + this.state.agreedata.amount_to_win : '-' + this.state.agreedata.amount_to_win}
+                                                {this.state.agreedata.settlement_status == 'Settlement In-Progress' ? null : (this.state.agreedata.winning_status == 'R' || this.state.agreedata.winning_status == 'W') ? '+' + this.state.agreedata.amount_to_win : '-' + this.state.agreedata.amount_to_win}
                                                 {this.state.agreedata.settlement_status == 'Settlement In-Progress' ? '' : ((this.state.agreedata.winning_status == 'R') ? '(Refunded)' : '')}
 
                                             </Text>
@@ -997,18 +1077,18 @@ class G_AgreeDisagreeInfoView extends AppValidationComponent<G_AgreeDisagreeInfo
                                             </View> : <View style={[styles.customtextinputpool, { padding: 10, backgroundColor: 'white' }]}>
                                                     <Dash dashColor={'#cfcfcf'} style={{ width: '100%' }} />
                                                     <View style={{ flexDirection: 'row' }}>
-                                                        <Dash dashColor={'#cfcfcf'} style={{ width: 1, height: hp(8), flexDirection: 'column' }} />
+                                                        <Dash dashColor={'#cfcfcf'} style={{ width: 1, height: hp(11), flexDirection: 'column' }} />
                                                         <TouchableOpacity style={{ width: '100%' }} onPress={() => { this.imageZoom(this.state.agreedata.result_image, '1') }}>
-                                                            <View style={{ width: '100%', height: hp(8), flexDirection: 'row', backgroundColor: 'white', }}>
+                                                            <View style={{ width: '100%', height: hp(11), flexDirection: 'row', backgroundColor: 'white', }}>
                                                                 <View style={{ width: '90%', justifyContent: 'center', alignContent: 'center' }}>
                                                                     <Text style={[styles.datetimetext, { color: 'black' }]}>{'Uploaded Image'}</Text>
                                                                 </View>
                                                                 <View style={styles.datetimeicon}>
-                                                                    <View style={{ marginRight: 8 }}><CircleImage width={wp(10)} imageFilePath={this.state.agreedata.result_image} /></View>
+                                                                    <View style={{ marginRight: 8 }}><CircleImage width={wp(20)} imageFilePath={this.state.agreedata.result_image} /></View>
                                                                 </View>
                                                             </View>
                                                         </TouchableOpacity>
-                                                        <Dash dashColor={'#cfcfcf'} style={{ width: 1, height: hp(8), flexDirection: 'column' }} />
+                                                        <Dash dashColor={'#cfcfcf'} style={{ width: 1, height: hp(11), flexDirection: 'column' }} />
                                                     </View>
                                                     <Dash dashColor={'#cfcfcf'} style={{ width: '100%' }} />
                                                 </View>}

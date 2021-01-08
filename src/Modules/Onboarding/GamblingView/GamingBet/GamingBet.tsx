@@ -39,6 +39,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import ImagePicker from "react-native-image-picker";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import Icons from 'react-native-vector-icons/MaterialIcons';
+const CleverTap = require('clevertap-react-native');
 const { State: TextInputState } = TextInput;
 
 const ProfilePageContent = {
@@ -206,6 +207,7 @@ const bottom_initial = 0;
             if(UrlService.isLiveApp == '1'){
         this.referralservice.logEvent('BetList_Click', {});
         AppEventsLogger.logEvent('BetList_Click');
+        CleverTap.recordEvent('BetList_Click');
             }
             if(this.props.navigation.state.params){
                 this.setState({OpenPlaySwitchAccepted:true})
@@ -550,6 +552,7 @@ const bottom_initial = 0;
         if(UrlService.isLiveApp == '1'){
         this.referralservice.logEvent('BetHistory_Click', {});
         AppEventsLogger.logEvent('BetHistory_Click');
+        CleverTap.recordEvent('BetHistory_Click');
         }
         RouterBuilder.replaceRouteTo(AppScreens.G_HistoryView, this.props)
 
@@ -2574,6 +2577,11 @@ componentWillMount() {
 
                                                                                         } */}
                                                                                         <View style={styles.gamelisttotalcontainer}>
+                                                                                            <TouchableOpacity 
+                                                                                            onPress={()=>{item.ttype=='cp'? this.blackdialogOpen(item, data_index, index2, index3):item.bet_type == 2 ?this.blackdialogOpen(item, data_index, index2, index3):null}}
+                                                                                            >
+                                                                                        <View>
+                                                                                            <View style={{flexDirection:'row',justifyContent:'center'}}>
                                                                                             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                                                                                             {/* { item.ttype=='cp'?null: */}
                                                                                             <Image source={require('../../../../images/White_Bucks.png')} style={{ height: 10, width: 10, marginRight: 3 }} />
@@ -2599,8 +2607,23 @@ componentWillMount() {
                                                                                             }
 
 <View style={{ marginRight: 2 }}>
-                                                                                                 
+                                                                                                 </View>
                                                                                             </View>
+                                                                                            { item.ttype=='cp'? <View style={{  }}>
+                                                                                            <Text style={[styles.teamtotaltext,{textDecorationLine:'underline',color: '#f26522'}]}>{"View( " + item.share_info.length + " )"}</Text>
+                                                                                                </View>:item.bet_type == 2 ?
+                                                                                                
+                                                                                                <View style={{ }}>
+                                                                                                    <Text style={[styles.teamtotaltext,{textDecorationLine:'underline',color: '#f26522'}]}>{"View( " + item.share_info.length + " )"}</Text>
+                                                                                                </View>
+                                                                                                : 
+                                                                                                null
+                                                                                            }
+
+                                                                                            {/* item.ttype=='cp'? this.blackdialogOpen(item, data_index, index2, index3):item.bet_type == 2 ?this.blackdialogOpen(item, data_index, index2, index3):null */}
+                                                                                            
+                                                                                            </View>
+                                                                                            </TouchableOpacity>
                                                                                         </View>
                                                                                         {item.BlackDialog == true ? this.getblackDialog(item.touchable ? item.touchable:null) : null}
                                                                                     </View>

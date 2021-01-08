@@ -95,6 +95,9 @@ import CircleImage from "../../../../Components/CustomComponents/CircleImage";
 import ImageViewer from "react-native-image-zoom-viewer";
 import Orientation from "react-native-orientation";
 import Popover from "react-native-popover-view";
+import CustomSquareRequest from "../../../../Services/Bets/CustomSquareRequest";
+import CustomSquareResponseParser from "../../../../Services/Bets/CustomSquareResponseParser";
+import CustomSquareResponse from "../../../../Services/Bets/CustomSquareResponse";
 
 var update = require("immutability-helper");
 
@@ -128,6 +131,10 @@ interface G_ContestSquareViewProps extends AppValidationComponentProps {
 
   serviceKey?: string;
   listeners?: any;
+
+  customSquareRequestStatus?: ServiceRequestStatus;
+  CustomSquareResponse?: CustomSquareResponse;
+  customSquareError?: UDDAError;
 }
 
 interface G_ContestSquareViewState extends AppValidationComponentState {
@@ -155,6 +162,9 @@ interface G_ContestSquareViewState extends AppValidationComponentState {
   blackdialogDate: any;
   displayname: any;
   imagezoom: any;
+  selectSquare: any;
+  valueofDialog: any;
+  valueofDialogShow: any;
 }
 
 const bottom_initial = 0;
@@ -206,9 +216,143 @@ class ContestSquare
       imagezoom: false,
       blackdialogDate: "",
       displayname: [],
+      selectSquare: [],
+      valueofDialog: "0.00",
+      valueofDialogShow: "0.00",
     };
   }
+  removeSquare(e) {
+    console.log('remove value',e)
+    // alert('456')
+    var array = this.state.selectSquare;
+    var index = array.splice(array.indexOf(e), 1); //array.indexOf(e); // Let's say it's Bob.
+    //delete array[index];
+    this.setState({ selectSquare: array });
+    var a =
+      parseFloat(this.state.valueofDialog) -
+      parseFloat(this.state.Squaredata.per_square_cost);
+    this.setState({ valueofDialog: a });
+  }
+  acceptSquare(index) {
+    console.log('add value',index)
+    // alert('123')
+    if (
+      this.state.Squaredata.square_limit_per_player >
+      this.state.selectSquare.length
+    ) {
+      //   if(5 > this.state.selectSquare.length)
+      this.state.selectSquare.push(index),
+        this.setState({ selectSquare: this.state.selectSquare });
+      var a =
+        parseFloat(this.state.valueofDialog) +
+        parseFloat(this.state.Squaredata.per_square_cost);
+      this.setState({ valueofDialog: a });
+    } else {
+      AlertUtil.show(
+        "You can not purchase more than the allowed squares limit."
+      );
+    }
+  }
 
+  squaresAcceptApi() {
+    this.setState({loader:true})
+    var customSquareRequset = new CustomSquareRequest(
+      "",
+      " ",
+      "",
+      "",
+      this.state.Squaredata.square_limit_per_player,
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "2",
+      this.state.selectSquare.toString(),
+      this.state.valueofDialog,
+      "",
+      this.state.Squaredata.id
+    );
+    console.log("accept square request", JSON.stringify(customSquareRequset));
+    var serviceAction = new ServiceAction();
+    var responseParser = new CustomSquareResponseParser();
+    this.props.dispatch!(
+      serviceAction.request(
+        ServiceType.Bets,
+        ServiceKeys.CustomSquareName,
+        customSquareRequset,
+        [this.constructor.name],
+        responseParser
+      )
+    );
+  }
+
+
+  componentWillReceiveProps(nextProps: G_ContestSquareViewProps) {
+    if (nextProps.listeners!.includes(this.constructor.name)) {
+      if (nextProps.serviceKey === ServiceKeys.GetProfileServiceName) {
+        switch (nextProps.requestStatus) {
+          case ServiceRequestStatus.FinishedWithSuccess:
+            this.serviceRequestInProgress = false;
+            var serviceAction = new ServiceAction();
+            nextProps.dispatch!(serviceAction.reset());
+            break;
+          case ServiceRequestStatus.FinishedWithError:
+            this.serviceRequestInProgress = false;
+            var errorMessage = nextProps.error!.message;
+            AlertUtil.show(errorMessage);
+            var serviceAction = new ServiceAction();
+            nextProps.dispatch!(serviceAction.reset());
+            break;
+          case ServiceRequestStatus.Started:
+          case ServiceRequestStatus.InProgress:
+            this.serviceRequestInProgress = true;
+            break;
+        }
+      } else if (nextProps.serviceKey === ServiceKeys.CustomSquareName) {
+        // Custom bet response
+       
+        switch (nextProps.requestStatus) {
+          case ServiceRequestStatus.FinishedWithSuccess:
+            this.setState({loader:false})
+            this.serviceRequestInProgress = false;
+            console.log(
+              "betaFriendResponse " +
+                JSON.stringify(nextProps.CustomSquareResponse)
+            );
+            var response = nextProps.CustomSquareResponse!.response;
+            if (response.message == "success") {
+              console.log("custom bet success");
+              RouterBuilder.replaceRouteTo(
+                AppScreens.G_UddaContests,
+                this.props
+              );
+            } else {
+              AlertUtil.show("Unsuccesful :" + response.message);
+            }
+           // this.getProfile();
+            var serviceAction = new ServiceAction();
+            nextProps.dispatch!(serviceAction.reset());
+            break;
+          case ServiceRequestStatus.FinishedWithError:
+            this.setState({loader:false})
+            this.serviceRequestInProgress = false;
+            var errorMessage = nextProps.error!.message;
+            AlertUtil.show(errorMessage);
+            var serviceAction = new ServiceAction();
+            nextProps.dispatch!(serviceAction.reset());
+            break;
+          case ServiceRequestStatus.Started:
+            this.setState({loader:false})
+          case ServiceRequestStatus.InProgress:
+            this.setState({loader:false})
+            this.serviceRequestInProgress = true;
+            break;
+        }
+      } // end
+    }
+  }
   showPopover() {
     var new_time_stamp = this.state.gamedetail.bet_time_stamp * 1000;
     var formated_time = moment(new_time_stamp).format("MMMM DD,YYYY");
@@ -1043,6 +1187,7 @@ class ContestSquare
     var b = [1, 2, 3, 99, 32, 55, 66, 78];
     var c = [1, 20, 30, 9, 30, 5, 68, 77];
     var x = [1, 20, 30, 9, 30, 5, 68, 77, 55, 11];
+    var d = [];
     // var b =[]
     // var c =[]
 
@@ -1084,13 +1229,12 @@ class ContestSquare
                   ]}
                   data={pool}
                   value={this.state.quatervalue}
-                  textColor={"white"}
+                  style={{ color: "white" }}
                   baseColor={"rgba(255, 255, 255, 1)"}
-                  selectedItemColor={"black"}
                   onChangeText={(value) => {
                     this.changeAxis(value);
                   }}
-                  fontSize={hp(1.8)}
+                  fontSize={hp(1.7)}
                 />
               </View>
             </View>
@@ -1156,18 +1300,26 @@ class ContestSquare
                 );
               })}
             </View>
-            {/* <View style={[styles.sidetext,{width:'6%'}]}>
-      <Text style={{ width:15,fontSize: 15, color: 'white', fontFamily: 'Montserrat-Bold',textAlign:'center' }}> {this.state.sideteamname}</Text>
-      </View> */}
+            {/* <View style={styles.sidetext}>
+                  {this.state.sideteamname1.map((item,index)=>{
+                    return(                     
+                      <Text style={{ fontSize: 15, color: 'white', fontFamily: 'Montserrat-Bold',textAlign:'center' }}> {item}</Text>
+                    )
+                  })}
+                {/* <Text style={{ fontSize: 15, color: 'white', fontFamily: 'Montserrat-Bold',textAlign:'center' }}> {'1'}</Text>
+                <Text style={{ fontSize: 15, color: 'white', fontFamily: 'Montserrat-Bold',textAlign:'center' }}> {'1'}</Text> 
+                </View> */}
             <ScrollView scrollEnabled={true} horizontal={true}>
               <View style={{ backgroundColor: "#EEEEEE", padding: 0 }}>
                 {data.map((item, i) => {
+                   d.push({ value: [] });
                   if (i < 10) {
                     if (i == 0) {
                       return (
                         <View style={{ flexDirection: "row" }}>
                           {data.map((item, index) => {
                             a = a + 1;
+                            d[i].value.push(a)
                             if (index == 0) {
                               return (
                                 <View style={[styles.header1, { width: 70 }]}>
@@ -1310,6 +1462,23 @@ class ContestSquare
                                           }
                                         )
                                       ) : (
+                                        <View>
+                                                  <TouchableOpacity
+                                                  onPress={() => {
+                                                    this.state.selectSquare.includes(
+                                                      d[i].value[index]
+                                                    )
+                                                      ? this.removeSquare(d[i].value[index])
+                                                      : this.acceptSquare(d[i].value[index]);
+                                                  }}
+                                                    // onPress={() => {
+                                                    //   this.state.selectSquare.includes(
+                                                    //     a
+                                                    //   )
+                                                    //     ? this.removeSquare(a)
+                                                    //     : this.acceptSquare(a);
+                                                    // }}
+                                                  >
                                         <View
                                           style={{
                                             backgroundColor:
@@ -1324,7 +1493,9 @@ class ContestSquare
                                                     JSON.stringify(a)
                                                   )
                                                 ? "#888888"
-                                                : "white",
+                                                :this.state.selectSquare.includes(
+                                                  a
+                                                )?"#68bcbc": "white",
                                             width: 50,
                                             height: 39,
                                             justifyContent: "center",
@@ -1367,6 +1538,8 @@ class ContestSquare
                                           >
                                             {a}
                                           </Text>
+                                        </View>
+                                        </TouchableOpacity>
                                         </View>
                                       )}
                                     </View>
@@ -1486,6 +1659,21 @@ class ContestSquare
                                       }
                                     })
                                   ) : (
+                                    <View>
+                                    <TouchableOpacity
+                                     onPress={() => {
+                                      this.state.selectSquare.includes(
+                                        d[i].value[index]
+                                      )
+                                        ? this.removeSquare(d[i].value[index])
+                                        : this.acceptSquare(d[i].value[index]);
+                                    }}
+                                      // onPress={() =>
+                                      //   AlertUtil.show(
+                                      //    ' item.box_purchase_display_name'
+                                      //   )
+                                      // }
+                                    >
                                     <View
                                       style={{
                                         backgroundColor:
@@ -1500,7 +1688,9 @@ class ContestSquare
                                                 JSON.stringify(a)
                                               )
                                             ? "#888888"
-                                            : "white",
+                                            : this.state.selectSquare.includes(
+                                              a
+                                            )?"#68bcbc":"white",
                                         width: 50,
                                         height: 39,
                                         justifyContent: "center",
@@ -1544,6 +1734,8 @@ class ContestSquare
                                         {a}
                                       </Text>
                                     </View>
+                                    </TouchableOpacity>
+                                    </View>
                                   )}
                                 </View>
                               );
@@ -1556,6 +1748,7 @@ class ContestSquare
                         <View style={{ flexDirection: "row" }}>
                           {data.map((item, index) => {
                             a = a + 1;
+                            d[i].value.push(a)
                             if (index == 0) {
                               return (
                                 <View
@@ -1689,6 +1882,16 @@ class ContestSquare
                                           }
                                         )
                                       ) : (
+                                        <View>
+                                        <TouchableOpacity
+                                           onPress={() => {
+                                            this.state.selectSquare.includes(
+                                              d[i].value[index]
+                                            )
+                                              ? this.removeSquare(d[i].value[index])
+                                              : this.acceptSquare(d[i].value[index]);
+                                          }}
+                                        >
                                         <View
                                           style={{
                                             backgroundColor:
@@ -1703,7 +1906,11 @@ class ContestSquare
                                                     JSON.stringify(a)
                                                   )
                                                 ? "#888888"
-                                                : "white",
+                                                : this.state.selectSquare.includes(
+                                                 a
+                                                )
+                                                  ? "#68bcbc"
+                                                  : "white",
                                             width: 50,
                                             height: 39,
                                             justifyContent: "center",
@@ -1746,6 +1953,8 @@ class ContestSquare
                                           >
                                             {a}
                                           </Text>
+                                        </View>
+                                        </TouchableOpacity>
                                         </View>
                                       )}
                                     </View>
@@ -1856,6 +2065,16 @@ class ContestSquare
                                       }
                                     })
                                   ) : (
+                                    <View>
+                                    <TouchableOpacity
+                                     onPress={() => {
+                                      this.state.selectSquare.includes(
+                                        d[i].value[index]
+                                      )
+                                        ? this.removeSquare(d[i].value[index])
+                                        : this.acceptSquare(d[i].value[index]);
+                                    }}
+                                    >
                                     <View
                                       style={{
                                         backgroundColor:
@@ -1870,7 +2089,11 @@ class ContestSquare
                                                 JSON.stringify(a)
                                               )
                                             ? "#888888"
-                                            : "white",
+                                            :  this.state.selectSquare.includes(
+                                              a
+                                            )
+                                              ? "#68bcbc"
+                                              :"white",
                                         width: 50,
                                         height: 39,
                                         justifyContent: "center",
@@ -1914,6 +2137,8 @@ class ContestSquare
                                         {a}
                                       </Text>
                                     </View>
+                                    </TouchableOpacity>
+                                    </View>
                                   )}
                                 </View>
                               );
@@ -1929,6 +2154,38 @@ class ContestSquare
               </View>
             </ScrollView>
           </View>
+          {/* {this.state.Squaredata.creator_index == 0 ? (
+            this.state.Squaredata.refund_event_state == null ? (
+              this.state.Squaredata.final_result_score == null ? (
+                <View style={{ width: "95%", margin: 10, borderRadius: 3 }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.cancelSquare();
+                    }}
+                    style={[styles.placebutton1, { height: hp(7.0) }]}
+                  >
+                    <View>
+                      <Text
+                        style={{
+                          textAlign: "center",
+                          fontFamily: "Montserrat-Regular",
+                          fontSize: hp(3.8),
+                          color: "#68bcbc",
+                        }}
+                      >
+                        
+                       {"Cancel Squares"}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              ) : null
+            ) : null
+          ) : null} */}
+           
+          {/* <View style={{padding:0}}>
+            <Text style={{ fontSize: 14, color: '#69bbbb', fontFamily: 'Montserrat-Semibold',padding:5,textAlign:'center',textDecorationLine:'underline',textDecorationColor: "#888888"}} onPress={()=>{alert('hello udda')}}>Not now,I think I'II pass</Text>
+            </View> */}
         </ScrollView>
       </View>
     ) : (
@@ -2762,12 +3019,14 @@ class ContestSquare
             <ScrollView scrollEnabled={true} horizontal={true}>
               <View style={{ backgroundColor: "#EEEEEE", padding: 0 }}>
                 {data.map((item, i) => {
+                   d.push({ value: [] });
                   if (i < 10) {
                     if (i == 0) {
                       return (
                         <View style={{ flexDirection: "row" }}>
                           {data.map((item, index) => {
                             a = a + 1;
+                            d[i].value.push(a)
                             if (index == 0) {
                               return (
                                 <View style={[styles.header1, { width: 70 }]}>
@@ -2910,6 +3169,23 @@ class ContestSquare
                                           }
                                         )
                                       ) : (
+                                        <View>
+                                                  <TouchableOpacity
+                                                  onPress={() => {
+                                                    this.state.selectSquare.includes(
+                                                      d[i].value[index]
+                                                    )
+                                                      ? this.removeSquare(d[i].value[index])
+                                                      : this.acceptSquare(d[i].value[index]);
+                                                  }}
+                                                    // onPress={() => {
+                                                    //   this.state.selectSquare.includes(
+                                                    //     a
+                                                    //   )
+                                                    //     ? this.removeSquare(a)
+                                                    //     : this.acceptSquare(a);
+                                                    // }}
+                                                  >
                                         <View
                                           style={{
                                             backgroundColor:
@@ -2924,7 +3200,9 @@ class ContestSquare
                                                     JSON.stringify(a)
                                                   )
                                                 ? "#888888"
-                                                : "white",
+                                                :this.state.selectSquare.includes(
+                                                  a
+                                                )?"#68bcbc": "white",
                                             width: 50,
                                             height: 39,
                                             justifyContent: "center",
@@ -2967,6 +3245,8 @@ class ContestSquare
                                           >
                                             {a}
                                           </Text>
+                                        </View>
+                                        </TouchableOpacity>
                                         </View>
                                       )}
                                     </View>
@@ -3086,6 +3366,21 @@ class ContestSquare
                                       }
                                     })
                                   ) : (
+                                    <View>
+                                    <TouchableOpacity
+                                     onPress={() => {
+                                      this.state.selectSquare.includes(
+                                        d[i].value[index]
+                                      )
+                                        ? this.removeSquare(d[i].value[index])
+                                        : this.acceptSquare(d[i].value[index]);
+                                    }}
+                                      // onPress={() =>
+                                      //   AlertUtil.show(
+                                      //    ' item.box_purchase_display_name'
+                                      //   )
+                                      // }
+                                    >
                                     <View
                                       style={{
                                         backgroundColor:
@@ -3100,7 +3395,9 @@ class ContestSquare
                                                 JSON.stringify(a)
                                               )
                                             ? "#888888"
-                                            : "white",
+                                            : this.state.selectSquare.includes(
+                                              a
+                                            )?"#68bcbc":"white",
                                         width: 50,
                                         height: 39,
                                         justifyContent: "center",
@@ -3144,6 +3441,8 @@ class ContestSquare
                                         {a}
                                       </Text>
                                     </View>
+                                    </TouchableOpacity>
+                                    </View>
                                   )}
                                 </View>
                               );
@@ -3156,6 +3455,7 @@ class ContestSquare
                         <View style={{ flexDirection: "row" }}>
                           {data.map((item, index) => {
                             a = a + 1;
+                            d[i].value.push(a)
                             if (index == 0) {
                               return (
                                 <View
@@ -3289,6 +3589,16 @@ class ContestSquare
                                           }
                                         )
                                       ) : (
+                                        <View>
+                                        <TouchableOpacity
+                                           onPress={() => {
+                                            this.state.selectSquare.includes(
+                                              d[i].value[index]
+                                            )
+                                              ? this.removeSquare(d[i].value[index])
+                                              : this.acceptSquare(d[i].value[index]);
+                                          }}
+                                        >
                                         <View
                                           style={{
                                             backgroundColor:
@@ -3303,7 +3613,11 @@ class ContestSquare
                                                     JSON.stringify(a)
                                                   )
                                                 ? "#888888"
-                                                : "white",
+                                                : this.state.selectSquare.includes(
+                                                 a
+                                                )
+                                                  ? "#68bcbc"
+                                                  : "white",
                                             width: 50,
                                             height: 39,
                                             justifyContent: "center",
@@ -3346,6 +3660,8 @@ class ContestSquare
                                           >
                                             {a}
                                           </Text>
+                                        </View>
+                                        </TouchableOpacity>
                                         </View>
                                       )}
                                     </View>
@@ -3456,6 +3772,16 @@ class ContestSquare
                                       }
                                     })
                                   ) : (
+                                    <View>
+                                    <TouchableOpacity
+                                     onPress={() => {
+                                      this.state.selectSquare.includes(
+                                        d[i].value[index]
+                                      )
+                                        ? this.removeSquare(d[i].value[index])
+                                        : this.acceptSquare(d[i].value[index]);
+                                    }}
+                                    >
                                     <View
                                       style={{
                                         backgroundColor:
@@ -3470,7 +3796,11 @@ class ContestSquare
                                                 JSON.stringify(a)
                                               )
                                             ? "#888888"
-                                            : "white",
+                                            :  this.state.selectSquare.includes(
+                                              a
+                                            )
+                                              ? "#68bcbc"
+                                              :"white",
                                         width: 50,
                                         height: 39,
                                         justifyContent: "center",
@@ -3514,6 +3844,8 @@ class ContestSquare
                                         {a}
                                       </Text>
                                     </View>
+                                    </TouchableOpacity>
+                                    </View>
                                   )}
                                 </View>
                               );
@@ -3548,8 +3880,8 @@ class ContestSquare
                           color: "#68bcbc",
                         }}
                       >
-                        {" "}
-                        Cancel Squares
+                        
+                       {"Cancel Squares"}
                       </Text>
                     </View>
                   </TouchableOpacity>
@@ -3557,6 +3889,73 @@ class ContestSquare
               ) : null
             ) : null
           ) : null}
+           <View style={{ width: "95%", margin: 10, borderRadius: 3 }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      // this.cancelSquare();
+                      this.state.selectSquare.length == 0? null:this.squaresAcceptApi()
+                    }}
+                    style={[styles.placebutton1, { height: hp(9.0),backgroundColor:this.state.selectSquare.length == 0?'#DDDDDD':'white' }]}
+                  >
+                    <View>
+                      <Text
+                        style={{
+                          textAlign: "center",
+                          fontFamily: "Montserrat-Regular",
+                          fontSize: hp(3.8),
+                          color: "#68bcbc",
+                        }}
+                      >
+                        
+                       {"Update Squares"}
+                      </Text>
+                      <View
+                    style={{
+                      justifyContent: "center",
+                      alignContent: "center",
+                      alignItems: "center",
+                      flexDirection: "row",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        fontFamily: "Montserrat-Semibold",
+                        fontSize: hp(2.1),
+                        color: "black",
+                      }}
+                    >
+                      {" "}
+                      Total Amount :{" "}
+                    </Text>
+                    <Image
+                      source={require("../../../../images/buck_dark.png")}
+                      style={{ height: 13, width: 13 }}
+                    />
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        fontFamily: "Montserrat-Bold",
+                        fontSize: hp(2.3),
+                        color: "black",
+                      }}
+                    >
+                      {this.state.valueofDialog}{" "}
+                    </Text>
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        fontFamily: "Montserrat-Semibold",
+                        fontSize: hp(2.1),
+                        color: "black",
+                      }}
+                    >
+                      ({this.state.selectSquare.length} Squares)
+                    </Text>
+                  </View>
+                    </View>
+                  </TouchableOpacity>
+                </View>
           {/* <View style={{padding:0}}>
             <Text style={{ fontSize: 14, color: '#69bbbb', fontFamily: 'Montserrat-Semibold',padding:5,textAlign:'center',textDecorationLine:'underline',textDecorationColor: "#888888"}} onPress={()=>{alert('hello udda')}}>Not now,I think I'II pass</Text>
             </View> */}
@@ -3600,6 +3999,10 @@ const mapStateToProps = (state: GlobalAppState) => ({
   feedbackRequestStatus: state.serviceReducer.requestStatus,
   feedbackResponse: state.serviceReducer.response as FeedbackResponse,
   feedbackError: state.serviceReducer.error,
+
+  customSquareRequestStatus: state.serviceReducer.requestStatus,
+  CustomSquareResponse: state.serviceReducer.response as CustomSquareResponse,
+  customSquareError: state.serviceReducer.error,
 });
 
 export default connect(mapStateToProps)(ContestSquare);

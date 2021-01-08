@@ -1322,7 +1322,7 @@ Would you like to accept the Bet? {referStr} </Text>
               this.setState({ valueofMoneylineDialogShow: '0.00' });
             }
             else {
-              AlertUtil.show('Unsuccesfull :' + response.message);
+              AlertUtil.show('Unsuccesful :' + response.message);
               this.setState({ customBetTest: '' });
               this.setState({ customBetQTest1: '' });
               this.setState({ customBetQTest2: '' });

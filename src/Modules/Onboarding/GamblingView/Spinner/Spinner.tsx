@@ -1,5 +1,5 @@
 import React, { createRef, useState } from 'react';
-import { View, Text, Image,StyleSheet,Button, FlatList,ImageBackground,Alert, Platform,TouchableWithoutFeedback, TouchableOpacity, AsyncStorage, TextInput, TouchableHighlight, Animated, Keyboard, Dimensions, UIManager, Share, Modal } from "react-native";
+import { View, Text, Image,StyleSheet,Button, FlatList,ImageBackground,Alert, Platform,TouchableWithoutFeedback, TouchableOpacity, AsyncStorage, TextInput, TouchableHighlight, Animated, Keyboard, Dimensions, UIManager, Share, Modal } from "react-native"; 
 
 // import styles from './settlepoolinfostyles';
 import Container from '../../../../Components/Container';
@@ -284,7 +284,7 @@ if (responseJson.message == "Access Expired.") {
       
        if(responseJson.response_code == '1')
        {
-         console.log('yes this is play ')
+         console.log('yes')
         this.setState({ loader: false });
        this.setState({windialog:true})
        }

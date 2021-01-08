@@ -478,7 +478,7 @@ this.setState({dialogVisible:true});
       body: formData,
     }).then((response) => response.json())
       .then((responseJson) => {
-        console.log('vreate pool response :   ' + JSON.stringify(responseJson)); 
+        console.log('vreate pool responsen :   ' + JSON.stringify(responseJson)); 
         if(callBack =='0') {
           this.setState({ btn_txt: 'POOL HISTORY'});
         }
@@ -1078,16 +1078,18 @@ this.setState({imagezoomqr:true})
                             <View style={styles.customtextinputpool}>
                               <Dash dashColor={'#cfcfcf'} style={{width:'100%'}}/>
                               <View style={{flexDirection:'row'}}>
-                                <Dash dashColor={'#cfcfcf'} style={{width:1, height:hp(8), flexDirection:'column'}}/>
+                                <Dash dashColor={'#cfcfcf'} style={{width:1, height:hp(11), flexDirection:'column'}}/>
                                 <TouchableOpacity style={{ width: '100%' }} onPress={()=>{this.state.flattext[index].url?AlertUtil.show('You can either upload image or enter external link.'):this.state.flattext[index].image?this.imageZoom(index,''):this.selectPhoto(index)}}>
-                                  <View style={{ width: '100%',height:hp(8), flexDirection: 'row', backgroundColor: 'white', }}>
+                                  <View style={{ width: '100%',height:hp(11), flexDirection: 'row', backgroundColor: 'white', }}>
                                     <View style={{ width: '90%',justifyContent:'center',alignContent:'center' }}>
                                       <Text style={[styles.datetimetext,{color:'c3c3c3'}]}>{'Upload Image'}</Text>
                                     </View>
                                     <View style={styles.datetimeicon}>
                                       {this.state.flattext[index].image?
                                         <View style={{marginRight: 8,flexDirection:'row'}}>
-                                          <CircleImage width={wp(8)} imageFilePath={this.state.flattext[index].image}/>
+                                          <View style={{marginTop: 2}}>
+                                          <CircleImage width={wp(20)} imageFilePath={this.state.flattext[index].image}/>
+                                          </View>
                                           <View style={{marginLeft:10, width:40,justifyContent:'center',alignContent:'center',alignItems:'center',padding:3}}>
                                             <Icon name="close" size={20}  color="black" onPress={()=>{this.closeImage(index)}} style={{padding:10}}/>
                                           </View>
@@ -1104,7 +1106,7 @@ this.setState({imagezoomqr:true})
                                     </View>
                                   </View>
                                 </TouchableOpacity>
-                                <Dash dashColor={'#cfcfcf'} style={{width:1, height:hp(8), flexDirection:'column'}}/>
+                                <Dash dashColor={'#cfcfcf'} style={{width:1, height:hp(11), flexDirection:'column'}}/>
                               </View>
                               <Dash dashColor={'#cfcfcf'} style={{width:'100%'}}/>
                             </View>
@@ -1223,18 +1225,20 @@ this.setState({imagezoomqr:true})
                             <View style={[styles.customtextinputpool,{backgroundColor:'white'}]}>
                             <Dash dashColor={'#cfcfcf'} style={{width:'100%'}}/>
                               <View style={{flexDirection:'row'}}>
-                                <Dash dashColor={'#cfcfcf'} style={{width:1, height:hp(8), flexDirection:'column'}}/>
+                                <Dash dashColor={'#cfcfcf'} style={{width:1, height:hp(11), flexDirection:'column'}}/>
                                           <TouchableOpacity style={{ width: '100%' }} onPress={()=>this.imageZoom('showImg',item.custom_pools.result_image)}>
-                                              <View style={{ width: '100%',height:hp(8), flexDirection: 'row', backgroundColor: 'white', }}>
+                                              <View style={{ width: '100%',height:hp(11), flexDirection: 'row', backgroundColor: 'white', }}>
                                                   <View style={{ width: '90%',justifyContent:'center',alignContent:'center' }}>
                                                       <Text style={[styles.datetimetext,{color: 'black'}]}>{'Uploaded Image'}</Text>
                                                   </View>
                                                   <View style={styles.datetimeicon}> 
-                                                      <View style={{marginRight:8}}><CircleImage width={wp(10)} imageFilePath={item.custom_pools.result_image} /></View>
+                                                      <View style={{marginRight:8,marginTop:2}}>
+                                                        <CircleImage width={wp(20)} imageFilePath={item.custom_pools.result_image} />
+                                                        </View>
                                                   </View>
                                               </View>
                                           </TouchableOpacity>
-                                          <Dash dashColor={'#cfcfcf'} style={{width:1, height:hp(8), flexDirection:'column'}}/>
+                                          <Dash dashColor={'#cfcfcf'} style={{width:1, height:hp(11), flexDirection:'column'}}/>
                                       </View>
                                       <Dash dashColor={'#cfcfcf'} style={{width:'100%'}}/>
                                   </View>

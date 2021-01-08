@@ -219,6 +219,7 @@ class Highlighted_Matchups_View extends AppValidationComponent<G_Highlighted_Mat
     if(UrlService.isLiveApp == '1'){
     this.referralservice.logEvent('HighlightMatchup_Click', {});
     AppEventsLogger.logEvent('HighlightMatchup_Click');
+    CleverTap.recordEvent('HighlightMatchup_Click');
     }
     var isFontsize: any;
     isFontsize = await AsyncStorage.getItem('isfontSize');
@@ -682,8 +683,7 @@ cleverTapWithParam(eventName,param)
 
     amount_to_win = this.state.valueofMoneylineDialog;
     bet_amount = this.state.betammount;
-    bet_amount = bet_amount[1];
-
+    
     var posneg = 0;
     if (Math.abs(selectedPropsArray.over) > 0) {
       posneg = Math.sign(selectedPropsArray.over)
@@ -854,7 +854,8 @@ cleverTapWithParam(eventName,param)
             if (response.message == 'success') {
               if (this.state.checkedBetText == 'P2') {
                 this.setState({ BetType: 'PROP' });
-                this.setState({ POSTBetAmount: bet_amount });
+                var that = this
+                this.setState({ POSTBetAmount: that.state.betammount });
                 this.shareOption(response, this.state.selectedPropsItem, 'PROP');
               }
               this.getProfile();
@@ -2123,6 +2124,9 @@ beats
     }
     else {
 
+
+      
+
       if (this.state.PropselctedFlag == 'O') {
         amount = "over " + selectedData.total + " (" + selectedData.over + ")";
       }
@@ -2140,22 +2144,34 @@ beats
       var newLine = '"' + amount + '"'
       var newAmount = '"' + this.state.POSTBetAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '"'
       var newWinAmount = '"' + this.state.POSTWinAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '"'
-      MessageString = "I’ll bet you " + newteamName + " beats " + newteamName2 + ". The " + teamName + " are " + newLine + " on the " + newoddsString + ". I’ll put up " + newAmount + " UDDA bucks to your " + newWinAmount + " UDDA bucks, you can accept "+ (this.state.POSTBetAmount >= 2000 ?"all of or any part of my bet ":"")+"or decline by tapping the link below.";
+     
+     
+     
+     
+      // MessageString = "I’ll bet you prop" + newteamName + " beats " + newteamName2 + ". The " + teamName + " are " + newLine + " on the " + newoddsString + ". I’ll put up " + newAmount + " UDDA bucks to your " + newWinAmount + " UDDA bucks, you can accept "+ (this.state.POSTBetAmount >= 2000 ?"all of or any part of my bet ":"")+"or decline by tapping the link below.";
 
+      // MessageString += referStr;
+
+      
+      MessageString = "I just bet a "+newAmount+" UDDA Bucks that " + selectedData.question + " is " + amount + ". Would you like to accept the Bet? "
       MessageString += referStr;
-
 
       var ShowString1 = <Text style={{ fontFamily: 'Montserrat-Regular', fontSize: hp(1.4), }}>
         I just bet <Text style={{ fontFamily: 'Montserrat-SemiBold' }}>{this.state.POSTBetAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} UDDA Bucks </Text>
         on the
       <Text style={{ fontFamily: 'Montserrat-SemiBold' }}> {oddsString} {amount} </Text> for the team <Text style={{ fontFamily: 'Montserrat-SemiBold', textDecorationLine: 'underline' }}>{teamName}</Text> v/s {teamName2}. {referStr}</Text>
+   ShowString = <Text style={{ fontFamily: 'Montserrat-Regular', fontSize: hp(1.4), }}>
+   I just bet a <Text style={{ fontFamily: 'Montserrat-SemiBold' }}>{this.state.POSTBetAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} UDDA Bucks </Text>
+   that
+<Text style={{ fontFamily: 'Montserrat-SemiBold' }}> {selectedData.question} </Text> is
+<Text style={{ fontFamily: 'Montserrat-SemiBold', textDecorationLine: 'underline' }}> {amount} </Text>. Would you like to accept the Bet? {referStr} </Text>
 
 
-      ShowString = <Text style={{ fontFamily: 'Montserrat-Regular', fontSize: hp(1.4), }}>
-        I’ll bet you <Text style={{ fontFamily: 'Montserrat-SemiBold' }}>{teamName} </Text>
-        beats
-      <Text style={{ fontFamily: 'Montserrat-SemiBold' }}> {teamName2}</Text> The {teamName} are <Text style={{ fontFamily: 'Montserrat-SemiBold' }}>{amount}</Text> on the <Text style={{ fontFamily: 'Montserrat-SemiBold' }}>{oddsString}</Text>. I’ll put up <Text style={{ fontFamily: 'Montserrat-SemiBold' }}>{this.state.POSTBetAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} UDDA</Text> bucks to your <Text style={{ fontFamily: 'Montserrat-SemiBold' }}>{this.state.POSTWinAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} UDDA</Text> {"bucks, you can accept "+ (this.state.POSTBetAmount >= 2000 ?"all of or any part of my bet ":"")+"or decline by tapping the link below."}
-  {referStr}</Text>
+  //     ShowString = <Text style={{ fontFamily: 'Montserrat-Regular', fontSize: hp(1.4), }}>
+  //       I’ll bet you prop<Text style={{ fontFamily: 'Montserrat-SemiBold' }}>{teamName} </Text>
+  //       beats
+  //     <Text style={{ fontFamily: 'Montserrat-SemiBold' }}> {teamName2}</Text> The {teamName} are <Text style={{ fontFamily: 'Montserrat-SemiBold' }}>{amount}</Text> on the <Text style={{ fontFamily: 'Montserrat-SemiBold' }}>{oddsString}</Text>. I’ll put up <Text style={{ fontFamily: 'Montserrat-SemiBold' }}>{this.state.POSTBetAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} UDDA</Text> bucks to your <Text style={{ fontFamily: 'Montserrat-SemiBold' }}>{this.state.POSTWinAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} UDDA</Text> {"bucks, you can accept "+ (this.state.POSTBetAmount >= 2000 ?"all of or any part of my bet ":"")+"or decline by tapping the link below."}
+  // {referStr}</Text>
 
       this.setState({ MessageString: MessageString });
       this.setState({ MessageUrl: url });
@@ -3037,7 +3053,7 @@ beats
                   }}/>:null}
           <View style={styles.scrollContent}>
             <View style={styles.mainContent}>
-            <View style={[{width:'100%',justifyContent:'center',flexDirection:'row'}]}>
+            <View style={[{width:'100%',justifyContent:'center',flexDirection:'row',paddingTop:7,paddingBottom:7}]}>
           <View style={{width:'10%',justifyContent:'center'}}>
           <Icons name="arrow-back" size={30} color="black" 
                 onPress={() => this.props.navigation?.goBack(null)}
@@ -3232,7 +3248,8 @@ beats
                                                                 {item.MONEY_LINE.home.value > 0 ? '+' : ''}{item.MONEY_LINE.home.value}
                                                               </Text> */}
                                                         <View style={[styles.flatlist_icon_style]} >
-                                                          {item.MONEY_LINE.home.flag && <Icon name="check" size={12} color="white" />}
+                                                          {item.MONEY_LINE.home.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                                          {/* {item.MONEY_LINE.home.flag && <Icon name="check" size={12} color="white" />} */}
                                                         </View>
                                                         <View style={[styles.flatlist_odd_style]} >
                                                           <Text style={[{ color: item.isMoneyLineSelect2 != true ? 'white' : '#68bcbc' }, styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -3256,7 +3273,8 @@ beats
                                                                 U {item.TOTAL.home.other_value} ({Math.sign(item.TOTAL.home.value) == +1 ? '+' : ''}{item.TOTAL.home.value})
                                                           </Text> */}
                                                         <View style={[styles.flatlist_icon_style]} >
-                                                          {item.TOTAL.home.flag && <Icon name="check" size={12} color="white" />}
+                                                          {item.TOTAL.home.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                                          {/* {item.TOTAL.home.flag && <Icon name="check" size={12} color="white" />} */}
 
                                                         </View>
                                                         <View style={[styles.flatlist_odd_style]} >
@@ -3281,7 +3299,8 @@ beats
                                                                 {Math.sign(item.SPREAD.home.other_value) == +1 ? '+' : ''}{item.SPREAD.home.other_value} ({Math.sign(item.SPREAD.home.value) == +1 ? '+' : ''}{item.SPREAD.home.value})
                                                           </Text> */}
                                                         <View style={[styles.flatlist_icon_style]} >
-                                                          {item.SPREAD.home.flag && <Icon name="check" size={12} color="white" />}
+                                                          {item.SPREAD.home.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                                          {/* {item.SPREAD.home.flag && <Icon name="check" size={12} color="white" />} */}
                                                         </View>
                                                         <View style={[styles.flatlist_odd_style]} >
                                                           <Text style={[{ color: item.isSpreadSelect2 != true ? 'white' : '#68bcbc' }, styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -3313,7 +3332,8 @@ beats
                                                     },styles[this.drawblockHeight]]}>
 
                                                       <View style={[styles.flatlist_icon_style]} >
-                                                        {item.MONEY_LINE.draw.flag && <Icon name="check" size={12} color="white" />}
+                                                        {item.MONEY_LINE.draw.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                                        {/* {item.MONEY_LINE.draw.flag && <Icon name="check" size={12} color="white" />} */}
                                                       </View>
                                                       <View style={[styles.flatlist_odd_style]} >
                                                         <Text style={[{ color: item.isMoneyLineDraw != true ? '#FFF' : '#68bcbc' }, styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -3380,7 +3400,8 @@ beats
                                                           O {item.TOTAL.away.other_value} ({Math.sign(item.TOTAL.away.value) == +1 ? '+' : ''}{item.TOTAL.away.value})
                                                     </Text> */}
                                                         <View style={[styles.flatlist_icon_style]} >
-                                                          {item.TOTAL.away.flag && <Icon name="check" size={12} color="white" />}
+                                                          {item.TOTAL.away.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                                          {/* {item.TOTAL.away.flag && <Icon name="check" size={12} color="white" />} */}
                                                         </View>
                                                         <View style={[styles.flatlist_odd_style]} >
 
@@ -3405,7 +3426,8 @@ beats
                                                           {Math.sign(item.SPREAD.away.other_value) == +1 ? '+' : ''}{item.SPREAD.away.other_value} ({Math.sign(item.SPREAD.away.value) == +1 ? '+' : ''}{item.SPREAD.away.value})
                                                     </Text> */}
                                                         <View style={[styles.flatlist_icon_style]} >
-                                                          {item.SPREAD.away.flag && <Icon name="check" size={12} color="white" />}
+                                                          {item.SPREAD.away.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                                          {/* {item.SPREAD.away.flag && <Icon name="check" size={12} color="white" />} */}
                                                         </View>
                                                         <View style={[styles.flatlist_odd_style]} >
                                                           <Text style={[{ color: item.isSpreadSelect1 != true ? 'white' : '#68bcbc' }, styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -3452,7 +3474,8 @@ beats
                                                           {item.MONEY_LINE.away.value > 0 ? '+' : ''}{item.MONEY_LINE.away.value}
                                                         </Text> */}
                                                           <View style={[styles.flatlist_icon_style]} >
-                                                            {item.MONEY_LINE.away.flag && <Icon name="check" size={12} color="white" />}
+                                                            {item.MONEY_LINE.away.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                                            {/* {item.MONEY_LINE.away.flag && <Icon name="check" size={12} color="white" />} */}
                                                           </View>
                                                           <View style={[styles.flatlist_odd_style]} >
                                                             <Text style={[{ color: item.isMoneyLineSelect1 != true ? 'white' : '#68bcbc' }, styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -3477,7 +3500,8 @@ beats
                                                           O {item.TOTAL.away.other_value} ({Math.sign(item.TOTAL.away.value) == +1 ? '+' : ''}{item.TOTAL.away.value})
                                                     </Text> */}
                                                           <View style={[styles.flatlist_icon_style]} >
-                                                            {item.TOTAL.away.flag && <Icon name="check" size={12} color="white" />}
+                                                            {item.TOTAL.away.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                                            {/* {item.TOTAL.away.flag && <Icon name="check" size={12} color="white" />} */}
                                                           </View>
                                                           <View style={[styles.flatlist_odd_style]} >
 
@@ -3502,7 +3526,8 @@ beats
                                                           {Math.sign(item.SPREAD.away.other_value) == +1 ? '+' : ''}{item.SPREAD.away.other_value} ({Math.sign(item.SPREAD.away.value) == +1 ? '+' : ''}{item.SPREAD.away.value})
                                                     </Text> */}
                                                           <View style={[styles.flatlist_icon_style]} >
-                                                            {item.SPREAD.away.flag && <Icon name="check" size={12} color="white" />}
+                                                            {item.SPREAD.away.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                                            {/* {item.SPREAD.away.flag && <Icon name="check" size={12} color="white" />} */}
                                                           </View>
                                                           <View style={[styles.flatlist_odd_style]} >
                                                             <Text style={[{ color: item.isSpreadSelect1 != true ? 'white' : '#68bcbc' }, styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -3555,7 +3580,8 @@ beats
                                                           {item.MONEY_LINE.home.value > 0 ? '+' : ''}{item.MONEY_LINE.home.value}
                                                         </Text> */}
                                                           <View style={[styles.flatlist_icon_style]} >
-                                                            {item.MONEY_LINE.home.flag && <Icon name="check" size={12} color="white" />}
+                                                            {item.MONEY_LINE.home.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                                            {/* {item.MONEY_LINE.home.flag && <Icon name="check" size={12} color="white" />} */}
                                                           </View>
                                                           <View style={[styles.flatlist_odd_style]} >
                                                             <Text style={[{ color: item.isMoneyLineSelect2 != true ? 'white' : '#68bcbc' }, styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -3579,7 +3605,8 @@ beats
                                                           U {item.TOTAL.home.other_value} ({Math.sign(item.TOTAL.home.value) == +1 ? '+' : ''}{item.TOTAL.home.value})
                                                     </Text> */}
                                                           <View style={[styles.flatlist_icon_style]} >
-                                                            {item.TOTAL.home.flag && <Icon name="check" size={12} color="white" />}
+                                                            {item.TOTAL.home.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                                            {/* {item.TOTAL.home.flag && <Icon name="check" size={12} color="white" />} */}
 
                                                           </View>
                                                           <View style={[styles.flatlist_odd_style]} >
@@ -3604,7 +3631,8 @@ beats
                                                           {Math.sign(item.SPREAD.home.other_value) == +1 ? '+' : ''}{item.SPREAD.home.other_value} ({Math.sign(item.SPREAD.home.value) == +1 ? '+' : ''}{item.SPREAD.home.value})
                                                     </Text> */}
                                                           <View style={[styles.flatlist_icon_style]} >
-                                                            {item.SPREAD.home.flag && <Icon name="check" size={12} color="white" />}
+                                                            {item.SPREAD.home.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                                            {/* {item.SPREAD.home.flag && <Icon name="check" size={12} color="white" />} */}
                                                           </View>
                                                           <View style={[styles.flatlist_odd_style]} >
                                                             <Text style={[{ color: item.isSpreadSelect2 != true ? 'white' : '#68bcbc' }, styles[this.isfontSize], styles.flatlist_data_text]}>

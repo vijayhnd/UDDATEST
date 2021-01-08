@@ -1,5 +1,5 @@
 import React, { createRef, useState } from 'react';
-import { View, Text, Image,StyleSheet,Button, FlatList,ImageBackground,Alert, Platform,TouchableWithoutFeedback, TouchableOpacity, AsyncStorage, TextInput, TouchableHighlight, Animated, Keyboard, Dimensions, UIManager, Share, Modal } from "react-native";
+import { View, Text, Image,StyleSheet,Button, FlatList,ImageBackground,Alert, Platform,TouchableWithoutFeedback, TouchableOpacity, AsyncStorage, TextInput, TouchableHighlight, Animated, Keyboard, Dimensions, UIManager, Share, Modal } from "react-native"; 
 
 import SettingsStyles from "./styles";
 import Container from '../../../../Components/Container';

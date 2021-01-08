@@ -1207,7 +1207,7 @@ class ContestDashboardView extends AppValidationComponent<G_ContestDashboardView
               this.setState({ valueofMoneylineDialogShow: '0.00' });
             }
             else {
-              //  AlertUtil.show('Unsuccesfull :' + response.message);
+              //  AlertUtil.show('Unsuccesful :' + response.message);
               this.setState({ betammount: '' });
               this.setState({ amounttowin: '' });
               this.setState({ valueofMoneylineDialog: '0.00' });
@@ -1255,7 +1255,7 @@ class ContestDashboardView extends AppValidationComponent<G_ContestDashboardView
               this.setState({ valueofMoneylineDialogShow: '0.00' });
             }
             else {
-              AlertUtil.show('Unsuccesfull :' + response.message);
+              AlertUtil.show('Unsuccesful :' + response.message);
               this.setState({ betammount: '' });
               this.setState({ amounttowin: '' });
               this.setState({ valueofMoneylineDialog: '0.00' });

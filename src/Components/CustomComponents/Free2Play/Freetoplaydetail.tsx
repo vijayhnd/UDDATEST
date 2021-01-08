@@ -379,7 +379,7 @@ export default class FreetoplayDetailComponent extends Component<FreetoplayDetai
     
               {this.state.contestDetail.settlement_status ==
               "In-Progress" ? 
-                  <View style={{ justifyContent: "center", alignItems: "center" }}>
+              this.state.contestDetail.creator_index == '1' ? this.state.contestDetail.is_share == '1'?null: <View style={{ justifyContent: "center", alignItems: "center" }}>
                     <TouchableWithoutFeedback
                       onPress={() => {
                         this.shareOption(this.state.contestDetail);
@@ -408,7 +408,36 @@ export default class FreetoplayDetailComponent extends Component<FreetoplayDetai
                         </Text>
                       </View>
                     </TouchableWithoutFeedback>
-                  </View>
+                  </View>:this.state.contestDetail.creator_index == '0'? <View style={{ justifyContent: "center", alignItems: "center" }}>
+                    <TouchableWithoutFeedback
+                      onPress={() => {
+                        this.shareOption(this.state.contestDetail);
+                      }}
+                    >
+                      <View
+                        style={{
+                          backgroundColor: "#68bcbc",
+                          paddingVertical: 7,
+                          marginVertical: 10,
+                          width: "95%",
+                          alignItems: "center",
+                          borderRadius: 3,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            color: "white",
+                            fontFamily: "Montserrat-Bold",
+                            fontSize: 15,
+                            alignItems: "center",
+                          }}
+                        >
+                          {" "}
+                          Invite More Friends
+                        </Text>
+                      </View>
+                    </TouchableWithoutFeedback>
+                  </View>:null
                 : (
                 <View />
               )}
@@ -581,97 +610,198 @@ export default class FreetoplayDetailComponent extends Component<FreetoplayDetai
             <ScrollView>
                <View style={{width:'100%',justifyContent:'center',alignContent:'center',alignItems:'center',marginTop:5}}>
                    <View style={{width:'95%'}}>
-                       <Text style={{padding:3, fontSize: hp(2), color: 'grey', fontFamily: 'Montserrat-Bold' }}>Contest Name</Text>
+                       <Text style={[styles.Text_Style_Label,{padding:3}]}>Contest Name</Text>
                                         <Text style={{ padding: 3, fontSize: hp(2.2), color: 'black', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.contest_name}</Text>
-                       <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:5}}/>
-                       <Text style={{padding:3, fontSize: hp(2), color: 'grey', fontFamily: 'Montserrat-Bold' }}>Max Users</Text>
-                                        <Text style={{ padding: 3, fontSize: hp(2.2), color: 'black', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.max_user}</Text>
-                      
-                       <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:10}}/>
-                       <Text style={{padding:3, fontSize: hp(2), color: 'grey', fontFamily: 'Montserrat-Bold' }}>Min Picks</Text>
-                                        <Text style={{ padding: 3, fontSize: hp(2.2), color: 'black', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.min_picks}</Text>
-                      
-                       <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:10}}/>
-                       <Text style={{padding:3, fontSize: hp(2), color: 'grey', fontFamily: 'Montserrat-Bold' }}>Max Picks</Text>
-                                        <Text style={{ padding: 3, fontSize: hp(2.2), color: 'black', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.max_picks}</Text>
-                      
-                       <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:10}}/>
-                       <Text style={{padding:3, fontSize: hp(2), color: 'grey', fontFamily: 'Montserrat-Bold' }}>Contest Type</Text>
-                                        <Text style={{ padding: 3, fontSize: hp(2.2), color: 'black', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.contest_type}</Text>
+
 
                                         <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:10}}/>
-                       <Text style={{padding:3, fontSize: hp(2), color: 'grey', fontFamily: 'Montserrat-Bold' }}>Sports/Leagues</Text>
+                       <Text style={[styles.Text_Style_Label,{padding:3}]}>Sports/Leagues</Text>
                                         <Text style={{ padding: 3, fontSize: hp(2.2), color: 'black', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.league_name}</Text>
-                      
-                       <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:10}}/>
-
-                       <Text style={{padding:3, fontSize: hp(2), color: 'grey', fontFamily: 'Montserrat-Bold' }}>Winning Type</Text>
-                                        <Text style={{ padding: 3, fontSize: hp(2.2), color: 'black', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.winning_type}</Text>
-                      
-                       <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:10}}/>
-
-        <Text style={{padding:3, fontSize: hp(2), color: 'grey', fontFamily: 'Montserrat-Bold' }}>{this.props.join_type=='public_contest'?'Guaranteed Winning Amount':this.props.join_type=='private_contest'?'Guaranteed Winning Amount':'Prize'}</Text>
-                                        <Text style={{ padding: 3, fontSize: hp(2.2), color: 'black', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.winning_type=='UDDA Bucks'?<Image source={require('../../../images/buck_dark.png')} style={{ width: wp(4), height: wp(4),marginTop:0}} resizeMode='contain' />:null} {this.state.contestDetail.winning_amount}</Text>
-                      
-                       <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:10}}/>
-
-                       <Text style={{padding:3, fontSize: hp(2), color: 'grey', fontFamily: 'Montserrat-Bold' }}>Prize Type</Text>
-                       <TouchableOpacity onPress={()=>{this.state.contestDetail.prize_type=='Winner Takes All'?null:this.gotoinfo()}}>
-                                        <Text style={{ padding: 3, fontSize: hp(2.2), color:this.state.contestDetail.prize_type=='Winner Takes All'? 'black':'#68bcbc', fontFamily: 'Montserrat-Bold', textDecorationLine: this.state.contestDetail.prize_type=='Winner Takes All'?  'none':'underline' }}>{this.state.contestDetail.prize_type}</Text>
-                                        </TouchableOpacity>
-                       <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:10}}/>
 
 
-
-                       <Text style={{padding:3, fontSize: hp(2), color: 'grey', fontFamily: 'Montserrat-Bold' }}>Contest Fee</Text>
-                                        <Text style={{ padding: 3, fontSize: hp(2.2), color: '#373737', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.join_fee}</Text>
-                       <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:5}}/>
-                       <Text style={{padding:3, fontSize: hp(2), color: 'grey', fontFamily: 'Montserrat-Bold' }}>First Game Date</Text>
-                                        <Text style={{ padding: 3, fontSize: hp(2.2), color: '#373737', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.contest_start_date}</Text>
-                       <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:5}}/>                  
-                       <Text style={{padding:3, fontSize: hp(2), color: 'grey', fontFamily: 'Montserrat-Bold' }}>Last Game Date</Text>
-                                        <Text style={{ padding: 3, fontSize: hp(2.2), color: '#373737', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.contest_end_date}</Text>
                                         <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:5}}/>
-                       <Text style={{padding:3, fontSize: hp(2), color: 'grey', fontFamily: 'Montserrat-Bold' }}>Last Date to Register</Text>
+                       <View style={{width:'100%',padding:3,flexDirection:'row'}}>
+                         <View style={{width:'49%'}}> 
+                         <Text style={[styles.Text_Style_Label]}>First Game Date</Text>
+                                        <Text style={{ padding: 3, fontSize: hp(2.2), color: '#373737', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.contest_start_date}</Text>
+                         </View>
+                         <View style={{width:'2%'}} />
+                         <View style={{width:'49%'}}>                 
+                       <Text style={[styles.Text_Style_Label]}>Last Game Date</Text>
+                                        <Text style={{ padding: 3, fontSize: hp(2.2), color: '#373737', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.contest_end_date}</Text>
+                         </View>
+                       </View>
+
+
+
+
+                       <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:5}}/>
+                       <View style={{width:'100%',padding:3,flexDirection:'row'}}>
+                         <View style={{width:this.props.join_type=='public_contest' || this.props.join_type=='private_contest'?'49%':'100%'}}> 
+                         <Text style={[styles.Text_Style_Label]}>Last Date to Register</Text>
                                         <Text style={{ padding: 3, fontSize: hp(2.2), color: '#373737', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.last_date_to_register}</Text>
+                         </View>
+                         {this.props.join_type=='public_contest' || this.props.join_type=='private_contest'?<View style={{width:'2%'}} />:null}
+                         {this.props.join_type=='public_contest' || this.props.join_type=='private_contest'? <View style={{width:'49%'}}>                 
+                         <Text style={[styles.Text_Style_Label]}>Entry Fee</Text>
+                                        <Text style={{ padding: 3, fontSize: hp(2.2), color: '#373737', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.join_fee}</Text>
+                         </View>:null}
+                       </View>
+
+
+
+                       <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:5}}/>
+                       <View style={{width:'100%',padding:3,flexDirection:'row'}}>
+                      
+                          <View style={{width:'49%'}}>                 
+                         <Text style={[styles.Text_Style_Label]}>{'Prize'}</Text>
+                                        <Text style={{ padding: 3, fontSize: hp(2.2), color: 'black', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.winning_type=='UDDA Bucks'?<Image source={require('../../../images/buck_dark.png')} style={{ width: wp(4), height: wp(4),marginTop:0}} resizeMode='contain' />:null} {this.state.contestDetail.winning_amount}</Text>
+                         </View>
+
+                         <View style={{width:'2%'}} />
+
+                         <View style={{width:'49%'}}> 
+                         <Text style={[styles.Text_Style_Label]}>Winners Receive</Text>
+                                        <Text style={{ padding: 3, fontSize: hp(2.2), color: 'black', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.winning_type}</Text>
+                         </View>
+                       </View>
+
+
+
+                       <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:10}}/>
+
+<Text style={[styles.Text_Style_Label,{padding:3}]}>Prize Payout(s)</Text>
+<TouchableOpacity onPress={()=>{this.state.contestDetail.prize_type=='Winner Takes All'?null:this.gotoinfo()}}>
+                 <Text style={{ padding: 3, fontSize: hp(2.2), color:this.state.contestDetail.prize_type=='Winner Takes All'? 'black':'#68bcbc', fontFamily: 'Montserrat-Bold', textDecorationLine: this.state.contestDetail.prize_type=='Winner Takes All'?  'none':'underline' }}>{this.state.contestDetail.prize_type}</Text>
+                 </TouchableOpacity>
+
+
+
+                 <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:10}}/>
+                       <Text style={[styles.Text_Style_Label,{padding:3}]}>Minimum Picks Per</Text>
+                                        <Text style={{ padding: 3, fontSize: hp(2.2), color: 'black', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.contest_type}</Text>
+
+
+
+
+                                        <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:5}}/>
+                       <View style={{width:'100%',padding:3,flexDirection:'row'}}>
+                      
+                          <View style={{width:'49%'}}>                 
+                          <Text style={[styles.Text_Style_Label]}>Min Picks</Text>
+                                        <Text style={{ padding: 3, fontSize: hp(2.2), color: 'black', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.min_picks}</Text>
+                         </View>
+
+                         <View style={{width:'2%'}} />
+
+                         <View style={{width:'49%'}}> 
+                         <Text style={[styles.Text_Style_Label]}>Max Picks</Text>
+                                        <Text style={{ padding: 3, fontSize: hp(2.2), color: 'black', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.max_picks}</Text>
+                         </View>
+                       </View>
+
+
+
+
+
                        <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:5}}/>
                       { this.state.contestDetail.bankroll=='Y'?<View>  
                        {/* <Text style={{padding:3, fontSize: hp(2), color: 'grey', fontFamily: 'Montserrat-Bold' }}>Min Bankroll Amount</Text>
                                         <Text style={{ padding: 3, fontSize: hp(2.2), color: '#373737', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.min_bankroll_amount}</Text>
                        <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:5}}/>  */}
                        {/* <Text style={{padding:3, fontSize: hp(2), color: 'grey', fontFamily: 'Montserrat-Bold' }}>Max Bankroll Amount</Text> */}
-                       <Text style={{padding:3, fontSize: hp(2), color: 'grey', fontFamily: 'Montserrat-Bold' }}>Bankroll Amount</Text>
+                       <Text style={[styles.Text_Style_Label,{padding:3}]}>Bankroll Amount</Text>
                                         <Text style={{ padding: 3, fontSize: hp(2.2), color: '#373737', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.bankroll_amount}</Text>
-                                        {/* <Text style={{ padding: 3, fontSize: hp(2.2), color: '#373737', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.max_bankroll_amount}</Text> */}
-                       <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:5}}/> 
-                       <Text style={{padding:3, fontSize: hp(2), color: 'grey', fontFamily: 'Montserrat-Bold' }}>Min Bet Bankroll</Text>
+
+                                        <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:5}}/>
+                       <View style={{width:'100%',padding:3,flexDirection:'row'}}>
+                      
+                          <View style={{width:'49%'}}>                 
+                          <Text style={[styles.Text_Style_Label]}>Minimum Bet Amount</Text>
                                         <Text style={{ padding: 3, fontSize: hp(2.2), color: '#373737', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.min_bet_bankroll}</Text>
-                       <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:5}}/> 
-                       <Text style={{padding:3, fontSize: hp(2), color: 'grey', fontFamily: 'Montserrat-Bold' }}>Max Bet Bankroll</Text>
+                         </View>
+
+                         <View style={{width:'2%'}} />
+
+                         <View style={{width:'49%'}}> 
+                         <Text style={[styles.Text_Style_Label]}>Maximum Bet Amount</Text>
                                         <Text style={{ padding: 3, fontSize: hp(2.2), color: '#373737', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.max_bet_bankroll}</Text>
-                       <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:5}}/> 
-                       </View> :null     }             
-
-
-
-                       <Text style={{padding:3, fontSize: hp(2), color: 'grey', fontFamily: 'Montserrat-Bold' }}>Status</Text>
-                                             
-                       <View style={{flexDirection:'row'}}>
-                                            <Text style={{ padding: 5, fontSize: hp(2.2), color: '#373737', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.settlement_status}</Text>
-                      {this.props.join_type=='private_contest' && <View style={{ padding: 10 }}>
-                                                <TouchableHighlight 
-                                                 onPress={() => this.showPopover()}
-                                                 >
-                                                    <Image ref={ref => this.touchable = ref} source={require('./../../../images/Bet_Share.png')} style={{ height: 20, width: 20 , tintColor:"#68bcbc"}} resizeMode='contain' tintColor="#68bcbc" />
-
-                                                </TouchableHighlight>
-
-                                            </View>}
+                         </View>
                        </View>
 
-                       <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:15}}/>
-                       <Text style={{padding:3, fontSize: hp(2), color: 'grey', fontFamily: 'Montserrat-Bold' }}>Winner Declared By</Text>
-                                        <Text style={{ padding: 3, fontSize: hp(2.2), color: '#373737', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.winner_decleared_by}</Text>
+
+
+                       </View> :null     }  
+
+
+
+                        <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:15}}/>
+                       <Text style={[styles.Text_Style_Label,{padding:3}]}>Winner Declared By</Text>
+                                        <Text style={{ padding: 3, fontSize: hp(2.2), color: '#373737', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.winner_decleared_by}</Text> 
+
+
+
+
+                       <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:5}}/>
+                       <View style={{width:'100%',padding:3,flexDirection:'row'}}>
+                      
+                          <View style={{width:'49%'}}>                 
+                          <Text style={[styles.Text_Style_Label]}>Max Users</Text>
+                                        <Text style={{ padding: 3, fontSize: hp(2.2), color: 'black', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.max_user}</Text>
+                         </View>
+
+                         <View style={{width:'2%'}} />
+
+                         <View style={{width:'49%'}}> 
+                         <Text style={[styles.Text_Style_Label]}>Status</Text>
+                                             
+                                             <View style={{flexDirection:'row'}}>
+                                                                  <Text style={{ padding: 5, fontSize: hp(2.2), color: '#373737', fontFamily: 'Montserrat-Bold' }}>{this.state.contestDetail.settlement_status}</Text>
+                                            {this.props.join_type=='private_contest' && <View style={{ padding: 10 }}>
+                                                                      <TouchableHighlight 
+                                                                       onPress={() => this.showPopover()}
+                                                                       >
+                                                                          <Image ref={ref => this.touchable = ref} source={require('./../../../images/Bet_Share.png')} style={{ height: 20, width: 20 , tintColor:"#68bcbc"}} resizeMode='contain' tintColor="#68bcbc" />
+                      
+                                                                      </TouchableHighlight>
+                      
+                                                                  </View>}
+                                             </View>
+                         </View>
+                       </View> 
+
+
+
+
+
+
+
+                       
+                      
+                      
+                      
+                       
+                      
+                       
+
+                                        
+                      
+                      
+                      
+        
+                      
+                      
+                       
+                       
+                       
+                                  
+                               
+
+
+
+                       
+
+                      
                            
                        {/* <View style={{borderBottomWidth:1,borderBottomColor:'#c3c3c3',marginBottom:5,marginTop:15}}/> */}
                        <Text style={{padding:5, fontSize: hp(2), color: 'grey', fontFamily: 'Montserrat-Bold' }}></Text>

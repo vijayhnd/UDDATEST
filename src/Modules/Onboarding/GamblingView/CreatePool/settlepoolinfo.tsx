@@ -2,6 +2,7 @@ import React, { createRef, useState } from 'react';
 import { View, Text, Image, FlatList, TouchableWithoutFeedback,SafeAreaView, TouchableOpacity, AsyncStorage, TextInput, TouchableHighlight, Animated, Keyboard, Dimensions, UIManager, Share, Modal } from "react-native";
 
 import styles from './settlepoolinfostyles';
+import MasterCss from '../Mastercss'
 import Container from '../../../../Components/Container';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import AppValidationComponent, { Field, AppValidationComponentState, AppValidationComponentProps } from "../../../../Util/AppValidationComponent";
@@ -293,7 +294,7 @@ class G_SettlePoolInfoView extends AppValidationComponent<G_SettlePoolInfoViewPr
             body: formData,
         }).then((response) => response.json())
             .then((responseJson) => {
-                console.log('vreate pool response :   ' + JSON.stringify(responseJson));
+                console.log('vreate pool responsev :   ' + JSON.stringify(responseJson));
                 this.setState({ pooldate: '' })
                 this.setState({ poolanswer: '' })
                 this.setState({ loader: false });
@@ -879,13 +880,13 @@ class G_SettlePoolInfoView extends AppValidationComponent<G_SettlePoolInfoViewPr
                         </View>
 
                     }
-                    {this.state.betDetailData.settlement_status == 'Settlement In-Progress' ? this.state.betDetailData.bet_type == 2 && this.state.betDetailData.creator_index == '0' ? <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    {this.state.betDetailData.settlement_status == 'Settlement In-Progress' ? this.state.betDetailData.bet_type == 2 && this.state.betDetailData.creator_index == '0'&& this.state.betDetailData.result_type == '0' ? <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                         <TouchableWithoutFeedback onPress={() => { this.shareOption(this.state.betDetailData) }}>
                             <View style={{ backgroundColor: '#68bcbc', paddingVertical: 7, marginVertical: 10, width: '95%', alignItems: 'center', borderRadius: 3 }}>
                                 <Text style={{ color: 'white', fontFamily: 'Montserrat-Bold', fontSize: 15, alignItems: 'center' }}> Invite More Friends</Text>
                             </View>
                         </TouchableWithoutFeedback>
-                    </View> : this.state.betDetailData.bet_type == 1 ? <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    </View> : this.state.betDetailData.bet_type == 1 && this.state.betDetailData.result_type == '0'? <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                             <TouchableWithoutFeedback onPress={() => { this.shareOption(this.state.betDetailData) }}>
                             <View style={{ backgroundColor: '#68bcbc', paddingVertical: 7, marginVertical: 10, width: '95%', alignItems: 'center', borderRadius: 3 }}>
                                 <Text style={{ color: 'white', fontFamily: 'Montserrat-Bold', fontSize: 15, alignItems: 'center' }}> Invite More Friends</Text>
@@ -1113,7 +1114,7 @@ class G_SettlePoolInfoView extends AppValidationComponent<G_SettlePoolInfoViewPr
 
               <View style={{ justifyContent: "center", alignItems: "center", marginTop: 8, width: '100%' }} >
                 <Text style={{ fontFamily: 'Montserrat-semibold', textAlign: "center", fontSize: wp(4), color: '#222' }}>
-                Are you sure you want to cancel this bet ?
+                  Are you sure you want to cancel this bet?
 </Text>
                 <BigButton title="CONFIRM" style={[styles.verify_button, { backgroundColor: '#68bcbc' }]} textStyle={styles.verify_button_text_style}
                   listener={() => {this.cancelPool();}} />
@@ -1199,7 +1200,7 @@ class G_SettlePoolInfoView extends AppValidationComponent<G_SettlePoolInfoViewPr
               </View>
         </View>
                         <Animated.View style={[{ flex: 1 }, { transform: [{ translateY: this.state.shift }] }]}>
-                       {this.state.result_status == '0'?  this.state.pooldata.qr_code && <View style={{justifyContent:'center',flexDirection:'row',alignContent:'center',alignItems:'center',paddingLeft:'5%',paddingRight:'5%'}}>
+                       {this.state.result_status == '0'?  this.state.pooldata.qr_code!='' && <View style={{justifyContent:'center',flexDirection:'row',alignContent:'center',alignItems:'center',paddingLeft:'5%',paddingRight:'5%'}}>
                              
                               <TouchableOpacity onPress={()=>{this.openQrModel(this.state.result_status == '0' ?this.state.pooldata.qr_code:this.state.betDetailData.qr_code)}}>
                               <Image
@@ -1220,6 +1221,10 @@ class G_SettlePoolInfoView extends AppValidationComponent<G_SettlePoolInfoViewPr
                                </Image>
                              </TouchableOpacity>
                            </View>}
+                           {this.state.betDetailData.settlement_status == 'Settlement In-Progress' && <View style={{justifyContent:'center',alignContent:'center',alignItems:'center',marginTop:5}}>
+                                <Text style={{ fontFamily: 'Montserrat-Bold', fontSize: hp(2.4), color: '#222', textAlign: 'justify', paddingLeft: 0 }}>{this.state.betDetailData.settlement_status == 'Settlement In-Progress' ? this.state.betDetailData.settlement_status :null}</Text>                                
+                                </View>}
+                           
                             {this.state.result_status == '0' ? <View style={{ flex: 1, padding: '5%' }}>
                                 <View style={{ maxHeight: hp(10) }}>
                                     <ScrollView>
@@ -1267,17 +1272,21 @@ class G_SettlePoolInfoView extends AppValidationComponent<G_SettlePoolInfoViewPr
                                     <View style={styles.customtextinputpool}>
                                         <Dash dashColor={'#cfcfcf'} style={{ width: '100%' }} />
                                         <View style={{ flexDirection: 'row' }}>
-                                            <Dash dashColor={'#cfcfcf'} style={{ width: 1, height: hp(8), flexDirection: 'column' }} />
+                                            <Dash dashColor={'#cfcfcf'} style={{ width: 1, height: hp(11), flexDirection: 'column' }} />
                                             <TouchableOpacity style={{ width: '100%' }}
                                                 onPress={() => { this.state.poollink ? AlertUtil.show('You can either upload image or enter external link.') : this.state.uploadurl != '' ? this.imageZoom(this.state.uploadurl, '2') : this.selectPhoto() }}
                                             // onPress={()=>{alert('dialog photo')}}
                                             >
-                                                <View style={{ width: '100%', height: hp(8), flexDirection: 'row', backgroundColor: 'white', }}>
+                                                <View style={{ width: '100%', height: hp(11), flexDirection: 'row', backgroundColor: 'white', }}>
                                                     <View style={{ width: '90%', justifyContent: 'center', alignContent: 'center' }}>
                                                         <Text style={[styles.datetimetext, { color: 'c3c3c3' }]}>{'Upload Image'}</Text>
                                                     </View>
                                                     <View style={styles.datetimeicon}>
-                                                        {this.state.uploadurl ? <View style={{ marginRight: 8, flexDirection: 'row' }}><CircleImage width={wp(8)} imageFilePath={this.state.uploadurl} /><View style={{ marginLeft: 10, width: 40, justifyContent: 'center', alignContent: 'center', alignItems: 'center', padding: 3 }}>
+                                                        {this.state.uploadurl ? <View style={{ marginRight: 8, flexDirection: 'row' }}>
+                                                            <View>
+                                                            <CircleImage width={wp(20)} imageFilePath={this.state.uploadurl} />
+                                                            </View>
+                                                            <View style={{ marginLeft: 10, width: 40, justifyContent: 'center', alignContent: 'center', alignItems: 'center', padding: 3 }}>
                                                             <Icon name="close" size={20} color="black" onPress={() => { this.setState({ uploadurl: '' }) }} /></View></View> : <Image source={require('../../../../images/upload_image_icon.png')}
                                                                 style={{ height: 30, width: 30, marginRight: 8 }}
                                                                 resizeMode="contain" />}
@@ -1288,7 +1297,7 @@ class G_SettlePoolInfoView extends AppValidationComponent<G_SettlePoolInfoViewPr
                                                     </View>
                                                 </View>
                                             </TouchableOpacity>
-                                            <Dash dashColor={'#cfcfcf'} style={{ width: 1, height: hp(8), flexDirection: 'column' }} />
+                                            <Dash dashColor={'#cfcfcf'} style={{ width: 1, height: hp(11), flexDirection: 'column' }} />
                                         </View>
                                         <Dash dashColor={'#cfcfcf'} style={{ width: '100%' }} />
                                     </View>
@@ -1427,18 +1436,18 @@ class G_SettlePoolInfoView extends AppValidationComponent<G_SettlePoolInfoViewPr
                                             <View style={[styles.customtextinputpool, { backgroundColor: 'white' }]}>
                                                 <Dash dashColor={'#cfcfcf'} style={{ width: '100%' }} />
                                                 <View style={{ flexDirection: 'row' }}>
-                                                    <Dash dashColor={'#cfcfcf'} style={{ width: 1, height: hp(8), flexDirection: 'column' }} />
+                                                    <Dash dashColor={'#cfcfcf'} style={{ width: 1, height: hp(11), flexDirection: 'column' }} />
                                                     <TouchableOpacity style={{ width: '100%' }} onPress={() => this.imageZoom(this.state.betDetailData.result_image, '1')}>
-                                                        <View style={{ width: '100%', height: hp(8), flexDirection: 'row', backgroundColor: 'white', }}>
+                                                        <View style={{ width: '100%', height: hp(11), flexDirection: 'row', backgroundColor: 'white', }}>
                                                             <View style={{ width: '90%', justifyContent: 'center', alignContent: 'center' }}>
                                                                 <Text style={[styles.datetimetext, { color: 'black' }]}>{'Uploaded Image'}</Text>
                                                             </View>
                                                             <View style={styles.datetimeicon}>
-                                                                <View style={{ marginRight: 8 }}><CircleImage width={wp(10)} imageFilePath={this.state.betDetailData.result_image} /></View>
+                                                                <View style={{ marginRight: 8 }}><CircleImage width={wp(20)} imageFilePath={this.state.betDetailData.result_image} /></View>
                                                             </View>
                                                         </View>
                                                     </TouchableOpacity>
-                                                    <Dash dashColor={'#cfcfcf'} style={{ width: 1, height: hp(8), flexDirection: 'column' }} />
+                                                    <Dash dashColor={'#cfcfcf'} style={{ width: 1, height: hp(11), flexDirection: 'column' }} />
                                                 </View>
                                                 <Dash dashColor={'#cfcfcf'} style={{ width: '100%' }} />
                                             </View>
@@ -1506,7 +1515,7 @@ class G_SettlePoolInfoView extends AppValidationComponent<G_SettlePoolInfoViewPr
                                       
                                       <View style={{width:'50%'}}>
                                            <Text style={{ padding: 10, paddingLeft: 0, fontFamily: 'Montserrat-Regular', fontSize: hp(2.4), color: '#222', textAlign: 'justify' }} >
-                                           {this.state.betDetailData.settlement_status == 'Settlement In-Progress' ? this.state.betDetailData.settlement_status : (this.state.betDetailData.winning_status == 'R' || this.state.betDetailData.winning_status == 'W') ? '+' + this.state.betDetailData.amount_to_win : '-' + this.state.betDetailData.amount_to_win}
+                                           {this.state.betDetailData.settlement_status == 'Settlement In-Progress' ? null : (this.state.betDetailData.winning_status == 'R' || this.state.betDetailData.winning_status == 'W') ? '+' + this.state.betDetailData.amount_to_win : '-' + this.state.betDetailData.amount_to_win}
                                            {this.state.betDetailData.settlement_status == 'Settlement In-Progress' ? '' : ((this.state.betDetailData.winning_status == 'R') ? '(Refunded)' : '')}
                                        </Text></View>
                                    

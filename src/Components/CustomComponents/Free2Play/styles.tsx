@@ -304,4 +304,9 @@ export default EStyleSheet.create({
         marginTop: 10,
         marginBottom: 10
     },
+    Text_Style_Label: {
+        color: '#888888',
+        fontSize: hp(2.2),
+        fontFamily: 'Montserrat-Bold'
+    },
 });

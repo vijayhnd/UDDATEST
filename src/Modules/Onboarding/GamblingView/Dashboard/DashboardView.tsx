@@ -1,6 +1,6 @@
 import React from "react";
 import { Linking, View, Text, FlatList, TextInput, Platform, Alert, TouchableOpacity, ScrollView, AsyncStorage, Animated, UIManager,TouchableHighlight, TouchableWithoutFeedback, AppState, Share, BackHandler, Keyboard, Dimensions, KeyboardAvoidingView,ImageBackground,Modal, PermissionsAndroid } from "react-native";
-import styles from './styles';
+import styles from './styles'; 
 import Modals from 'react-native-modal';
 import { SafeAreaView } from 'react-navigation';
 import Container from '../../../../Components/Container';
@@ -266,6 +266,7 @@ interface G_DashboardViewState extends AppValidationComponentState {
   apinextDate: any;
   apipreDate: any;
   custonDropDown: any;
+  bingoDropDwon:any;
   custonDropDownvalue: any;
   showProBasketBall: any;
   textlength:any;
@@ -277,6 +278,7 @@ interface G_DashboardViewState extends AppValidationComponentState {
   aceeptoverlay:any;
   guest2:any;
   betArray:any;
+  bingoBetArray:any;
   ReferDialog:any;
   image_array:any;
   slider_image_array:any;
@@ -516,6 +518,7 @@ class DashboardView extends AppValidationComponent<G_DashboardViewProps, G_Dashb
       apinextDate: '',
       apipreDate: '',
       custonDropDown: false,
+      bingoDropDwon:false,
       custonDropDownvalue: 'Select Custom Bet',
       showProBasketBall:false,
       textlength:0,
@@ -533,9 +536,10 @@ class DashboardView extends AppValidationComponent<G_DashboardViewProps, G_Dashb
   video_list:[],
   banner_time:1000,
   betArray:[{id:'1',value:'CUSTOM BET',isSelect:false,isSelectimage:require('../../../../images/custom-bet-active.png'),notselect:require('../../../../images/custom-bet-normal.png')},{id:'2',value:'POOL',isSelect:false,isSelectimage:require('../../../../images/pool-active.png'),notselect:require('../../../../images/pool-normal.png')},{id:'3',value:'SQUARES',isSelect:false,isSelectimage:require('../../../../images/squares_active.png'),notselect:require('../../../../images/squares_normal.png')},{id:'4',value:'BINGO',isSelect:false,isSelectimage:require('../../../../images/bingo_active.png'),notselect:require('../../../../images/bingo_normal.png')}],
+  bingoBetArray:[{id:'4',value:'BABY BINGO',isSelect:false,isSelectimage:require('../../../../images/bingo_active.png'),notselect:require('../../../../images/bingo_normal.png')},{id:'2',value:'BABY POOL',isSelect:false,isSelectimage:require('../../../../images/pool-active.png'),notselect:require('../../../../images/pool-normal.png')}],
   Update_msg:'',
-  Update_notnow:'',
-  submitfeedbackbtn :true
+  Update_notnow:''
+     
 
     };
 
@@ -559,6 +563,26 @@ class DashboardView extends AppValidationComponent<G_DashboardViewProps, G_Dashb
     this.changecustomdrop(value)
 
    }
+
+
+   changeBetBingo(index,value){
+    var data =  this.state.bingoBetArray
+    var bet= this.state.bingoBetArray
+    bet.map((item,i)=>{
+      if(i==index)
+      {
+       data[index].isSelect = true
+      }else{
+       data[i].isSelect = false
+      }
+    })
+   //  data[index].isSelect = true,
+    this.setState({bingoBetArray:data})
+
+   this.changecustomdropBingo(value)
+
+  }
+
   async saveoverlay(){
     this.setState({overlaylocal:'true'})
     try {
@@ -1655,9 +1679,25 @@ CleverTap.profileGetCleverTapAttributionIdentifier((err, res) => {
    });
   
   });
-  appsFlyer.logEvent('test_ios',{'textflag':'test'})
+  //appsFlyer.logEvent('test_ios1',{'textflag':'test'})
   
+  appsFlyer.onInstallConversionData((res) => { 
 
+    const dataRes = res;
+    
+    console.log('>>>>>>'+dataRes)
+    
+    })
+
+    appsFlyer.onAppOpenAttribution((res) => { 
+
+      const dataRes = res;
+      
+      console.log('>>>>>>onAppOpenAttribution'+dataRes)
+      
+      })
+  
+    
     if (league_id==""){
       this.setState({ showProBasketBall: false });//ashish
       this.setState({ showFighting: false }); //garima
@@ -1668,6 +1708,8 @@ CleverTap.profileGetCleverTapAttributionIdentifier((err, res) => {
       this.setState({ showClgFootball: false }); //vijay
       this.setState({ showProBasketBall: false }); 
       this.setState({custonDropDown:true})
+      this.setState({bingoDropDwon:false})
+      
       if (Application.sharedApplication().user!.profile.userType == 'Guest') {
         this.setState({ guestUserDialog: true });
     }else{
@@ -1690,8 +1732,8 @@ CleverTap.profileGetCleverTapAttributionIdentifier((err, res) => {
       this.setState({ showClgBasketBall: false }); //vijay
       this.setState({ showClgFootball: false }); //vijay
       this.setState({ showProBasketBall: false }); 
-     
       this.setState({custonDropDown:false})
+      this.setState({bingoDropDwon:true})
       if(UrlService.isLiveApp == '1'){
         this.referralservice.logEvent('CreateBingo_Click',{});
         AppEventsLogger.logEvent('CreateBingo_Click');
@@ -1705,13 +1747,14 @@ CleverTap.profileGetCleverTapAttributionIdentifier((err, res) => {
       
           var status =  this.checkUserStatusDelay("bingo")
           if(status){
-            this.props.navigation!.navigate(AppScreens.G_CreateBingo,{param:{fromHeader:1}});
+           // this.props.navigation!.navigate(AppScreens.G_CreateBingo,{param:{fromHeader:1}});
       }
       
       
     }
     }else{
       this.setState({custonDropDown:false})
+      this.setState({bingoDropDwon:false})
     this.setState({ showView: true });
     console.log('ashish start_page no :', this.state.startPage)
 
@@ -3147,7 +3190,7 @@ async callAllData(league_id:any,value:any){
                 }
                 this.setState({ selectedItem: this.state.selectedItem });
                 // alert('Bet Placed. Please share bet')
-                this.shareOption(response, this.state.selectedItem, 'ODDS');
+                this.shareOption(response, this.state.selectedItem, 'ODDS','');
 
                 this.rightTickAfterBet();
 
@@ -3211,7 +3254,7 @@ async callAllData(league_id:any,value:any){
                 this.setState({ BetType: 'PROP' });
                 this.setState({ POSTBetAmount: bet_amount });
                 //alert('Bet Placed. Please share ')
-                this.shareOption(response, this.state.selectedPropsItem, 'PROP');
+                this.shareOption(response, this.state.selectedPropsItem, 'PROP',this.state.betammount);
 
               }
               var isPublickAlertOn = false;
@@ -3269,7 +3312,7 @@ async callAllData(league_id:any,value:any){
                 this.setState({ BetType: 'PROP' });
                 this.setState({ POSTBetAmount: bet_amount });
 
-                this.shareOption(response, this.state.selectedPropsItem, 'PROP');
+                this.shareOption(response, this.state.selectedPropsItem, 'PROP',this.state.betammount);
 
               }
               this.getProfile();
@@ -3316,7 +3359,7 @@ async callAllData(league_id:any,value:any){
                 this.setState({ BetType: 'CUSTOM' });
                 this.setState({ POSTBetAmount: bet_amount });
 
-                this.shareOption(response, this.state.selectedPropsItem, 'CUSTOM');
+                this.shareOption(response, this.state.selectedPropsItem, 'CUSTOM','');
 
               }
               //else {
@@ -3875,6 +3918,7 @@ var status = true;
         if(UrlService.isLiveApp == '1'){
         this.referralservice.logEvent('TotalBet_Click', {});
         AppEventsLogger.logEvent('TotalBet_Click');
+        CleverTap.recordEvent('TotalBet_Click');
         }
         if (item.games.TOTAL.away.value == 0 || item.games.TOTAL.away.value == '') {
           AlertUtil.show("You can't bet on 0 odds");
@@ -3924,6 +3968,7 @@ var status = true;
         if(UrlService.isLiveApp == '1'){
         this.referralservice.logEvent('SpreadBet_Click', {});
         AppEventsLogger.logEvent('SpreadBet_Click');
+        CleverTap.recordEvent('SpreadBet_Click');
         }
         if (item.games.SPREAD.away.value == 0 || item.games.SPREAD.away.value == '') {
           AlertUtil.show("You can't bet on 0 odds");
@@ -3991,6 +4036,7 @@ var status = true;
         if(UrlService.isLiveApp == '1'){
         this.referralservice.logEvent('MoneylineBet_Click', {});
         AppEventsLogger.logEvent('MoneylineBet_Click');
+        CleverTap.recordEvent('MoneylineBet_Click');
         }
         if (item.games.MONEY_LINE.home.value == 0 || item.games.MONEY_LINE.home.value == '') {
           AlertUtil.show("You can't bet on 0 odds");
@@ -4041,6 +4087,7 @@ var status = true;
         if(UrlService.isLiveApp == '1'){
         this.referralservice.logEvent('TotalBet_Click', {});
         AppEventsLogger.logEvent('TotalBet_Click');
+        CleverTap.recordEvent('TotalBet_Click');
         }
         if (item.games.TOTAL.home.value == 0 || item.games.TOTAL.home.value == '') {
           AlertUtil.show("You can't bet on 0 odds");
@@ -4091,6 +4138,7 @@ var status = true;
         if(UrlService.isLiveApp == '1'){
         this.referralservice.logEvent('SpreadBet_Click', {});
         AppEventsLogger.logEvent('SpreadBet_Click');
+        CleverTap.recordEvent('SpreadBet_Click');
         }
         if (item.games.SPREAD.home.value == 0 || item.games.SPREAD.home.value == '') {
           AlertUtil.show("You can't bet on 0 odds");
@@ -4192,6 +4240,7 @@ var status = true;
     if(UrlService.isLiveApp == '1'){
     this.referralservice.logEvent('PropBet_Click', {});
     AppEventsLogger.logEvent('PropBet_Click');
+    CleverTap.recordEvent('PropBet_Click');
     }
     this.checkUserStatus("prop_bet")
     this.USERAvailableUddaBucks = Application.sharedApplication().user!.profile.chip_balance!;
@@ -4665,7 +4714,7 @@ var status = true;
 
 
 
-  async shareOption(item: any, selectedDatavalues: any, bettype: any) {
+  async shareOption(item: any, selectedDatavalues: any, bettype: any,betValue:any) {
     if(bettype !='PROP'){
     //this.DialogClose(this.selectedItemData,this.selectedItemIndex);
     }
@@ -4857,11 +4906,11 @@ ShowString = <Text style={{ fontFamily: 'Montserrat-Regular', fontSize: hp(1.4),
 
       url = await this.referralservice.getReferralUrl(url, this.state.ReferString, "U"); // Getting Dynamic Share Link From Firebase
       referStr = "\n Use Referral Code " + this.state.ReferString + " to sign up.";
-      MessageString = "I just bet a UDDA Bucks that " + selectedData.question + " is " + amount + ". Would you like to accept the Bet? "
+      MessageString = "I just bet a "+betValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+" UDDA Bucks that " + selectedData.question + " is " + amount + ". Would you like to accept the Bet? "
       MessageString += referStr;
 
       ShowString = <Text style={{ fontFamily: 'Montserrat-Regular', fontSize: hp(1.4), }}>
-        I just bet a <Text style={{ fontFamily: 'Montserrat-SemiBold' }}> UDDA Bucks </Text>
+        I just bet a <Text style={{ fontFamily: 'Montserrat-SemiBold' }}>{betValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} UDDA Bucks </Text>
         that
     <Text style={{ fontFamily: 'Montserrat-SemiBold' }}> {selectedData.question} </Text> is
     <Text style={{ fontFamily: 'Montserrat-SemiBold', textDecorationLine: 'underline' }}> {amount} </Text>. Would you like to accept the Bet? {referStr} </Text>
@@ -5281,6 +5330,7 @@ changecustomdrop(item:any){
     if(UrlService.isLiveApp == '1'){
     this.referralservice.logEvent('CreateCustomBet_Click',{});
     AppEventsLogger.logEvent('CreateCustomBet_Click');
+    CleverTap.recordEvent('CreateCustomBet_Click');
     }
     if (Application.sharedApplication().user!.profile.userType == 'Guest') {
     this.setState({ guestUserDialog: true });
@@ -5292,6 +5342,7 @@ changecustomdrop(item:any){
     if(UrlService.isLiveApp == '1'){
     this.referralservice.logEvent('CreatePool_Click', {});
     AppEventsLogger.logEvent('CreatePool_Click');
+    CleverTap.recordEvent('CreatePool_Click');
     }
     if (Application.sharedApplication().user!.profile.userType == 'Guest') {
       this.setState({ guestUserDialog: true });
@@ -5305,6 +5356,7 @@ changecustomdrop(item:any){
     if(UrlService.isLiveApp == '1'){
     this.referralservice.logEvent('CreateSquares_Click', {});
     AppEventsLogger.logEvent('CreateSquares_Click');
+    CleverTap.recordEvent('CreateSquares_Click');
     }
     if (Application.sharedApplication().user!.profile.userType == 'Guest') {
       this.setState({ guestUserDialog: true });
@@ -5319,6 +5371,75 @@ changecustomdrop(item:any){
     if(UrlService.isLiveApp == '1'){
         this.referralservice.logEvent('CreateBingo_Click',{});
         AppEventsLogger.logEvent('CreateBingo_Click');
+        CleverTap.recordEvent('CreateBingo_Click');
+    }
+        if (Application.sharedApplication().user!.profile.userType == 'Guest') {
+        this.setState({ guestUserDialog: true });
+    }
+    else{
+      
+          var status =  this.checkUserStatusDelay("bingo")
+          if(status){
+            this.props.navigation!.navigate(AppScreens.G_CreateBingo);
+      }
+      
+      
+    }
+}
+}
+
+
+changecustomdropBingo(item:any)
+{
+  console.log('>>>>>text'+item)
+  this.setState({custonDropDownvalue:item})
+  if(item == 'CUSTOM BET')
+  { 
+    if(UrlService.isLiveApp == '1'){
+    this.referralservice.logEvent('CreateCustomBet_Click',{});
+    AppEventsLogger.logEvent('CreateCustomBet_Click');
+    CleverTap.recordEvent('CreateCustomBet_Click');
+    }
+    if (Application.sharedApplication().user!.profile.userType == 'Guest') {
+    this.setState({ guestUserDialog: true });
+}else{
+ var status =  this.checkUserStatusDelay("custom_bet")
+ if(status){
+    this.props.navigation!.navigate(AppScreens.G_CustomBet);}}
+  }else if(item == 'BABY POOL'){
+    if(UrlService.isLiveApp == '1'){
+    this.referralservice.logEvent('CreatePool_Click', {});
+    AppEventsLogger.logEvent('CreatePool_Click');
+    CleverTap.recordEvent('CreatePool_Click');
+    }
+    if (Application.sharedApplication().user!.profile.userType == 'Guest') {
+      this.setState({ guestUserDialog: true });
+  }else{
+    var status =  this.checkUserStatusDelay("pool")
+ if(status){
+    this.props.navigation!.navigate(AppScreens.G_Createpool);
+ }
+  }
+  } else if (item == 'SQUARES') {
+    if(UrlService.isLiveApp == '1'){
+    this.referralservice.logEvent('CreateSquares_Click', {});
+    AppEventsLogger.logEvent('CreateSquares_Click');
+    CleverTap.recordEvent('CreateSquares_Click');
+    }
+    if (Application.sharedApplication().user!.profile.userType == 'Guest') {
+      this.setState({ guestUserDialog: true });
+    } else {
+      var status =  this.checkUserStatusDelay("squares")
+ if(status){
+      this.props.navigation!.navigate(AppScreens.G_CreateSquareView);
+          }
+    }
+  }else if(item == 'BABY BINGO')
+  { 
+    if(UrlService.isLiveApp == '1'){
+        this.referralservice.logEvent('CreateBingo_Click',{});
+        AppEventsLogger.logEvent('CreateBingo_Click');
+        CleverTap.recordEvent('CreateBingo_Click');
     }
         if (Application.sharedApplication().user!.profile.userType == 'Guest') {
         this.setState({ guestUserDialog: true });
@@ -5350,6 +5471,7 @@ changecustomdrop(item:any){
               if(UrlService.isLiveApp == '1'){
               this.referralservice.logEvent(title, {});
               AppEventsLogger.logEvent(title);
+              CleverTap.recordEvent(title);
               }
             }
             this.setState({ selected_Legue_id: sport.league_id });
@@ -5359,8 +5481,8 @@ changecustomdrop(item:any){
         </View>
 
 
-       {this.state.custonDropDown ?null: <View style={{ width: '100%', height: hp(6), backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
-          {this.state.custonDropDown == false && this.state.showFighting == false && this.state.showSoccer == false && this.state.showAutoRacing == false && this.state.showHorseRacing == false && this.state.showClgFootball == false && this.state.showClgBasketBall == false && this.state.showProBasketBall == false ?
+       {this.state.custonDropDown ||  this.state.bingoDropDwon ?null: <View style={{ width: '100%', height: hp(6), backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
+          {this.state.custonDropDown == false && this.state.bingoDropDwon == false && this.state.showFighting == false && this.state.showSoccer == false && this.state.showAutoRacing == false && this.state.showHorseRacing == false && this.state.showClgFootball == false && this.state.showClgBasketBall == false && this.state.showProBasketBall == false ?
             <View style={{ width: '95%', backgroundColor: 'white', flexDirection: 'row' }}>
               <View style={{ width: '30%', height: '100%', justifyContent: 'center' }}>
                 <TouchableOpacity onPress={() => { this.pastResultClicked() }} style={{ width: '100%' }} >
@@ -7495,7 +7617,7 @@ gotorefree(){
 
 
             <View style={{ flex: 1, }}>
-            {!this.state.custonDropDown?<View style={styles.titleContainer} >
+            {!this.state.custonDropDown && !this.state.bingoDropDwon  ?<View style={styles.titleContainer} >
 
                 {/* --------------------- table titles  ---------------- */}
                 <View style={styles.table_titles_container}>
@@ -7548,6 +7670,63 @@ gotorefree(){
                   </View>
                   : null}
                 {/*garima */}
+                {this.state.bingoDropDwon ? <View style={{backgroundColor:'#dddddd'}}>
+                  {this.state.bingoBetArray.map((item,index)=>{
+                    return(
+                      <TouchableOpacity onPress={()=>{this.changeBetBingo(index,item.value)}} style={{height:hp(8),borderColor:'white',borderWidth:1,
+                      borderRadius:10,backgroundColor:item.isSelect?'#68bcbc':'white',margin:5}}>
+                        <View style={{flexDirection:'row',width:'100%',justifyContent:'center',alignContent:'center',alignItems:'center'}}>
+                          <View style={{width:'90%',flexDirection:'row',height:hp(8)}}>
+                          
+                          <View style={{justifyContent:'center',alignContent:'center',alignItems:'center',paddingLeft:10}}>
+                          <Circle_Image width={wp(10)} imageFilePath={item.isSelect?item.isSelectimage:item.notselect} />
+                          </View>
+                          <View style={{width:'5%'}}/>
+                          
+                          <View style={{justifyContent:'center',alignContent:'center',alignItems:'center'}}>
+                          <Text style={{ fontFamily: 'Montserrat-Bold',fontSize:24,color:item.isSelect?'white':'black',textAlign:'center' }}> {item.value}</Text>
+                          </View>
+                          </View>
+    
+                          <View style={{width:'10%'}}>
+                          <Icon name="chevron-right" size={30} color={item.isSelect?"white":'grey'} />
+                          </View>
+                        </View>
+    
+                      </TouchableOpacity>
+                    )
+                  })}
+
+
+{/* {this.state.bingoDropDwon ? <View style={{backgroundColor:'#dddddd'}}>
+                  {this.state.betArray.map((item,index)=>{
+                    return(
+                      <TouchableOpacity onPress={()=>{this.changeBet(index,item.value)}} style={{height:hp(8),borderColor:'white',borderWidth:1,
+                      borderRadius:10,backgroundColor:item.isSelect?'#68bcbc':'white',margin:5}}>
+                        <View style={{flexDirection:'row',width:'100%',justifyContent:'center',alignContent:'center',alignItems:'center'}}>
+                          <View style={{width:'90%',flexDirection:'row',height:hp(8)}}>
+                          
+                          <View style={{justifyContent:'center',alignContent:'center',alignItems:'center',paddingLeft:10}}>
+                          <Circle_Image width={wp(10)} imageFilePath={item.isSelect?item.isSelectimage:item.notselect} />
+                          </View>
+                          <View style={{width:'5%'}}/>
+                          
+                          <View style={{justifyContent:'center',alignContent:'center',alignItems:'center'}}>
+                          <Text style={{ fontFamily: 'Montserrat-Bold',fontSize:24,color:item.isSelect?'white':'black',textAlign:'center' }}> {item.value} </Text>
+                          </View>
+                          </View>
+    
+                          <View style={{width:'10%'}}>
+                          <Icon name="chevron-right" size={30} color={item.isSelect?"white":'grey'} />
+                          </View>
+                        </View>
+    
+                      </TouchableOpacity>
+                    )
+                  })} */}
+                 
+                </View>
+                :null}
                 {this.state.custonDropDown ? <View style={{backgroundColor:'#dddddd'}}>
                   {this.state.betArray.map((item,index)=>{
                     return(
@@ -7574,6 +7753,34 @@ gotorefree(){
                       </TouchableOpacity>
                     )
                   })}
+
+
+{/* {this.state.bingoDropDwon ? <View style={{backgroundColor:'#dddddd'}}>
+                  {this.state.betArray.map((item,index)=>{
+                    return(
+                      <TouchableOpacity onPress={()=>{this.changeBet(index,item.value)}} style={{height:hp(8),borderColor:'white',borderWidth:1,
+                      borderRadius:10,backgroundColor:item.isSelect?'#68bcbc':'white',margin:5}}>
+                        <View style={{flexDirection:'row',width:'100%',justifyContent:'center',alignContent:'center',alignItems:'center'}}>
+                          <View style={{width:'90%',flexDirection:'row',height:hp(8)}}>
+                          
+                          <View style={{justifyContent:'center',alignContent:'center',alignItems:'center',paddingLeft:10}}>
+                          <Circle_Image width={wp(10)} imageFilePath={item.isSelect?item.isSelectimage:item.notselect} />
+                          </View>
+                          <View style={{width:'5%'}}/>
+                          
+                          <View style={{justifyContent:'center',alignContent:'center',alignItems:'center'}}>
+                          <Text style={{ fontFamily: 'Montserrat-Bold',fontSize:24,color:item.isSelect?'white':'black',textAlign:'center' }}> {item.value} </Text>
+                          </View>
+                          </View>
+    
+                          <View style={{width:'10%'}}>
+                          <Icon name="chevron-right" size={30} color={item.isSelect?"white":'grey'} />
+                          </View>
+                        </View>
+    
+                      </TouchableOpacity>
+                    )
+                  })} */}
                  
                 </View>: <FlatList
                   key={this.state.DataList.length}
@@ -7665,7 +7872,8 @@ gotorefree(){
                                       borderRightWidth: 1,
                                     }, styles.flatlist_moneyline_style]}>
                                       <View style={[styles.flatlist_icon_style]} >
-                                        {item.games.MONEY_LINE.away.flag && <Icon name="check" size={12} color="white" />}
+                                        {item.games.MONEY_LINE.away.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                        {/* {item.games.MONEY_LINE.away.flag && <Icon name="check" size={12} color="white" />} */}
                                       </View>
                                       <View style={[styles.flatlist_odd_style]} >
                                         <Text style={[{ color: item.games.MONEY_LINE.away.value == "N/A" ? '#FFFFFF' : item.games.MONEY_LINE.away.result == "L" ? '#666666' : item.isMoneyLineSelect1 != true ? 'white' : '#68bcbc' },styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -7690,7 +7898,8 @@ gotorefree(){
                                       borderRightWidth: 1,
                                     }, styles.flatlist_total_style]}>
                                       <View style={[styles.flatlist_icon_style]} >
-                                        {item.games.TOTAL.away.flag && <Icon name="check" size={12} color="white" />}
+                                        {item.games.TOTAL.away.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                        {/* {item.games.TOTAL.away.flag && <Icon name="check" size={12} color="white" />} */}
                                       </View>
 
                                       <View style={[styles.flatlist_odd_style]} >
@@ -7716,7 +7925,8 @@ gotorefree(){
                                     }, styles.flatlist_spread_style]}>
 
                                       <View style={[styles.flatlist_icon_style]} >
-                                        {item.games.SPREAD.away.flag && <Icon name="check" size={12} color="white" />}
+                                        {item.games.SPREAD.away.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                        {/* {item.games.SPREAD.away.flag && <Icon name="check" size={12} color="white" />} */}
                                       </View>
                                       <View style={[styles.flatlist_odd_style]} >
                                         <Text style={[{ color: item.games.SPREAD.away.result == "N/A" ? '#FFFFFF' : item.games.SPREAD.away.result == "L" ? '#666666' : item.isSpreadSelect1 != true ? 'white' : '#68bcbc' },styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -7769,7 +7979,8 @@ gotorefree(){
                                       borderRightWidth: 1,
                                     }, styles.flatlist_moneyline_style]}>
                                       <View style={[styles.flatlist_icon_style]} >
-                                        {item.games.MONEY_LINE.home.flag && <Icon name="check" size={12} color="white" />}
+                                        {item.games.MONEY_LINE.home.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                        {/* {item.games.MONEY_LINE.home.flag && <Icon name="check" size={12} color="white" />} */}
                                       </View>
                                       <View style={[styles.flatlist_odd_style]} >
                                         <Text style={[{ color: item.games.MONEY_LINE.home.value == "N/A" ? '#FFFFFF' : item.games.MONEY_LINE.home.result == "L" ? '#666666' : item.isMoneyLineSelect2 != true ? 'white' : '#68bcbc' },styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -7794,7 +8005,8 @@ gotorefree(){
                                     }, styles.flatlist_total_style]}>
 
                                       <View style={[styles.flatlist_icon_style]} >
-                                        {item.games.TOTAL.home.flag && <Icon name="check" size={12} color="white" />}
+                                        {item.games.TOTAL.home.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                        {/* {item.games.TOTAL.home.flag && <Icon name="check" size={12} color="white" />} */}
 
                                       </View>
                                       <View style={[styles.flatlist_odd_style]} >
@@ -7821,7 +8033,8 @@ gotorefree(){
                                     }, styles.flatlist_spread_style]}>
 
                                       <View style={[styles.flatlist_icon_style]} >
-                                        {item.games.SPREAD.home.flag && <Icon name="check" size={12} color="white" />}
+                                        {item.games.SPREAD.home.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                        {/* {item.games.SPREAD.home.flag && <Icon name="check" size={12} color="white" />} */}
                                       </View>
                                       <View style={[styles.flatlist_odd_style]} >
                                         <Text style={[{ color: item.games.SPREAD.home.value == "N/A" ? '#FFFFFF' : item.games.SPREAD.home.result == "L" ? '#666666' : item.isSpreadSelect2 != true ? 'white' : '#68bcbc' },styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -7881,7 +8094,8 @@ gotorefree(){
                                       }, styles.flatlist_moneyline_style]}>
 
                                         <View style={[styles.flatlist_icon_style]} >
-                                          {item.games.MONEY_LINE.home.flag && <Icon name="check" size={12} color="white" />}
+                                          {item.games.MONEY_LINE.home.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                          {/* {item.games.MONEY_LINE.home.flag && <Icon name="check" size={12} color="white" />} */}
                                         </View>
                                         <View style={[styles.flatlist_odd_style]} >
                                           <Text style={[{ color: item.games.MONEY_LINE.home.value == "N/A" ? '#FFFFFF' : item.games.MONEY_LINE.home.result == "L" ? '#666666' : item.isMoneyLineSelect2 != true ? 'white' : '#68bcbc',paddingBottom:5 },styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -7911,7 +8125,8 @@ gotorefree(){
                                           U {item.games.TOTAL.home.other_value} ({Math.sign(item.games.TOTAL.home.value) == +1 ? '+' : ''}{item.games.TOTAL.home.value})
                                       </Text> */}
                                         <View style={[styles.flatlist_icon_style]} >
-                                          {item.games.TOTAL.home.flag && <Icon name="check" size={12} color="white" />}
+                                          {item.games.TOTAL.home.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                          {/* {item.games.TOTAL.home.flag && <Icon name="check" size={12} color="white" />} */}
 
                                         </View>
 
@@ -7941,7 +8156,8 @@ gotorefree(){
                                           {Math.sign(item.games.SPREAD.home.other_value) == +1 ? '+' : ''}{item.games.SPREAD.home.other_value} ({Math.sign(item.games.SPREAD.home.value) == +1 ? '+' : ''}{item.games.SPREAD.home.value})
                                       </Text> */}
                                         <View style={[styles.flatlist_icon_style]} >
-                                          {item.games.SPREAD.home.flag && <Icon name="check" size={12} color="white" />}
+                                          {item.games.SPREAD.home.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                          {/* {item.games.SPREAD.home.flag && <Icon name="check" size={12} color="white" />} */}
                                         </View>
                                         <View style={[styles.flatlist_odd_style]} >
                                           <Text style={[{ color: item.games.SPREAD.home.value == "N/A" ? '#FFFFFF' : item.games.SPREAD.home.result == "L" ? '#666666' : item.isSpreadSelect2 != true ? 'white' : '#68bcbc' },styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -7976,7 +8192,8 @@ gotorefree(){
                                       },styles[this.drawblockHeight]]}>
 
                                         <View style={[styles.flatlist_icon_style]} >
-                                        {item.games.MONEY_LINE.draw.flag && <Icon name="check" size={12} color="white" />}
+                                        {item.games.MONEY_LINE.draw.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                        {/* {item.games.MONEY_LINE.draw.flag && <Icon name="check" size={12} color="white" />} */}
                                         </View>
                                         <View style={[styles.flatlist_odd_style]} >
                                         <Text style={[{ color: (item.games.MONEY_LINE.draw.result == "L") ? '#666666' :item.isMoneyLineDraw != true ? '#FFF' : '#68bcbc' }, styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -8030,7 +8247,8 @@ gotorefree(){
                                           {item.games.MONEY_LINE.away.value > 0 ? '+' : ''}{item.games.MONEY_LINE.away.value}
                                         </Text> */}
                                         <View style={[styles.flatlist_icon_style, { top: ((item.odds.ml_draw_price != 0 || item.odds.ml_draw_price != "") && item.games.MONEY_LINE.away.flag)?'45%':'1%'}] } >
-                                          {item.games.MONEY_LINE.away.flag && <Icon name="check" size={12} color="white" />}
+                                          {item.games.MONEY_LINE.away.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                          {/* {item.games.MONEY_LINE.away.flag && <Icon name="check" size={12} color="white" />} */}
                                         </View>
                                         <View style={[styles.flatlist_odd_style, { marginTop: ((item.odds.ml_draw_price != 0 || item.odds.ml_draw_price != "") && item.games.MONEY_LINE.away.flag)?'10%':'1%' }]} >
                                           <Text style={[{ color: item.games.MONEY_LINE.away.value == "N/A" ? '#FFFFFF' : item.games.MONEY_LINE.away.result == "L" ? '#666666' : item.isMoneyLineSelect1 != true ? 'white' : '#68bcbc',paddingTop:15 },styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -8057,7 +8275,8 @@ gotorefree(){
                                           O {item.games.TOTAL.away.other_value} ({Math.sign(item.games.TOTAL.away.value) == +1 ? '+' : ''}{item.games.TOTAL.away.value})
                                       </Text> */}
                                         <View style={[styles.flatlist_icon_style]} >
-                                          {item.games.TOTAL.away.flag && <Icon name="check" size={12} color="white" />}
+                                          {item.games.TOTAL.away.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                          {/* {item.games.TOTAL.away.flag && <Icon name="check" size={12} color="white" />} */}
                                         </View>
                                         <View style={[styles.flatlist_odd_style]} >
 
@@ -8084,7 +8303,8 @@ gotorefree(){
                                           {Math.sign(item.games.SPREAD.away.other_value) == +1 ? '+' : ''}{item.games.SPREAD.away.other_value} ({Math.sign(item.games.SPREAD.away.value) == +1 ? '+' : ''}{item.games.SPREAD.away.value})
                                       </Text> */}
                                         <View style={[styles.flatlist_icon_style]} >
-                                          {item.games.SPREAD.away.flag && <Icon name="check" size={12} color="white" />}
+                                          {item.games.SPREAD.away.flag && <Image source={require('../../../../images/tick.png')} style={{ height: 12, width: 12 ,marginRight:3}}></Image>}
+                                          {/* {item.games.SPREAD.away.flag && <Icon name="check" size={12} color="white" />} */}
                                         </View>
                                         <View style={[styles.flatlist_odd_style]} >
                                           <Text style={[{ color: item.games.SPREAD.away.result == "L" ? '#FFFFFF' : item.games.SPREAD.away.result == "L" ? '#666666' : item.isSpreadSelect1 != true ? 'white' : '#68bcbc' },styles[this.isfontSize], styles.flatlist_data_text]}>
@@ -8178,7 +8398,7 @@ gotorefree(){
             </View>
             {this.state.keyboardOpen == false ?
               <View style={{  height: '16%' }}>
-                {this.state.DashboardCall == true  && this.state.selected_Legue_id!='' ?
+                {this.state.DashboardCall == true  && this.state.selected_Legue_id!='' && this.state.selected_Legue_id!='bingo'?
                   <FooterComponent
                     HighLightListner={this}
                     MostOpenedListener={this}
